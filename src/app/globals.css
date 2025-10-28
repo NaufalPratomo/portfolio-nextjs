@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-out;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 4.5rem;
+}
+
+section {
+    section .reveal {
+      opacity: 0;
+      transform: translateY(18px) scale(0.995);
+      transition: opacity 600ms cubic-bezier(.2,.8,.2,1) var(--delay, 0s),
+                  transform 600ms cubic-bezier(.2,.8,.2,1) var(--delay, 0s),
+                  filter 600ms cubic-bezier(.2,.8,.2,1) var(--delay, 0s);
+      will-change: opacity, transform;
+    }
+
+    section.in-view .reveal {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* Slight variation for images */
+    section .reveal-img {
+      opacity: 0;
+      transform: scale(0.98) translateY(10px);
+      transition: opacity 700ms cubic-bezier(.2,.8,.2,1) var(--delay, 0s), transform 700ms cubic-bezier(.2,.8,.2,1) var(--delay, 0s);
+    }
+    section.in-view .reveal-img {
+      opacity: 1;
+      transform: none;
+    }
+
+  scroll-snap-align: start;
+  scroll-margin-top: 4.5rem;
+}
+
+@layer utilities {
+  .scroll-snap-y {
+    scroll-snap-type: y mandatory;
+    height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Dark mode base overrides (minimal, supplement Tailwind dark: variants) */
+.dark body {
+  /* darker background gradient for dark mode */
+  background: linear-gradient(135deg, #071029 0%, #021026 100%);
+  color: #e6eef8;
+}
+
+.dark nav {
+  background-color: rgba(2,6,23,0.78) !important;
+  border-color: rgba(148,163,184,0.08) !important;
+  color: #e6eef8;
+}
+
+/* Slightly darken the translucent white cards used across the site */
+.dark .bg-white\/60 {
+  background-color: rgba(255,255,255,0.03) !important;
+}
+
+/* Improve text contrast in dark mode for common Tailwind text color utilities */
+.dark .text-slate-900 {
+  color: #e6eef8 !important;
+}
+.dark .text-slate-700 {
+  color: #cbd5e1 !important; /* paragraphs, smaller text */
+}
+.dark .text-slate-600 {
+  color: #9fb3c9 !important; /* muted text */
+}
+.dark .text-sky-600,
+.dark .text-blue-600 {
+  color: #7dd3fc !important; /* links / highlights */
+}
+
+/* Borders and shadows tuned for dark background */
+.dark .border-slate-200 {
+  border-color: rgba(148,163,184,0.08) !important;
+}
+.dark .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(2,6,23,0.6), 0 4px 6px -4px rgba(2,6,23,0.6) !important;
+}
+
+/* Buttons and interactive elements */
+.dark button,
+.dark a {
+  color: inherit;
+}
