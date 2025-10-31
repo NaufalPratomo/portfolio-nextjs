@@ -68,7 +68,7 @@ export default function About() {
             }}
           />
         ))}
-      </motion.div>
+      </motion.div> 
 
       <motion.div
         ref={sectionRef}
