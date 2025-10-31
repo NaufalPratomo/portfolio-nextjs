@@ -1,3 +1,9 @@
+"use client";
+
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import { useParallax } from '@/hooks/useParallax';
+
 export default function About() {
   const stats = [
     {
@@ -25,36 +31,131 @@ export default function About() {
     },
   ];
 
+  const [sectionRef, isInView] = useIntersectionObserver({ threshold: 0.3 });
+  const { scrollY } = useScroll();
+  const { ref: parallaxRef, y: parallaxY } = useParallax({ speed: 0.1 });
+
+  // Geometric pattern animation
+  const patternTranslateY = useTransform(scrollY, [0, 1000], ['0%', '20%']);
+  const patternOpacity = useTransform(scrollY, [0, 300], [0.1, 0.05]);
+
   return (
-    <section id="about" className="min-h-screen flex items-center px-4 py-20">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-8 text-center reveal" style={{ '--delay': '0.04s' }}>
+    <section id="about" className="relative min-h-screen flex items-center px-4 py-20 overflow-hidden">
+      {/* Geometric Patterns Background */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        style={{ y: patternTranslateY, opacity: patternOpacity }}
+      >
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-20 h-20 bg-sky-500/5"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              rotate: Math.random() * 360,
+              scale: Math.random() * 0.5 + 0.5,
+            }}
+            initial={false}
+            animate={{
+              rotate: [0, 360],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: Math.random() * 20 + 20,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+        ))}
+      </motion.div>
+
+      <motion.div
+        ref={sectionRef}
+        className="relative max-w-4xl mx-auto z-10"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ 
+          opacity: isInView ? 1 : 0,
+          y: isInView ? 0 : 50
+        }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <motion.h2 
+          className="text-4xl md:text-5xl font-bold text-slate-900 mb-8 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
           Tentang Saya
-        </h2>
-        <div className="bg-white/60 backdrop-blur-lg rounded-2xl p-8 border border-slate-200 shadow-lg reveal" style={{ '--delay': '0.08s' }}>
-          <p className="text-slate-700 text-lg leading-relaxed mb-6 reveal" style={{ '--delay': '0.12s' }}>
+        </motion.h2>
+
+        <motion.div 
+          ref={parallaxRef}
+          style={{ y: parallaxY }}
+          className="bg-white/60 backdrop-blur-lg rounded-2xl p-8 border border-slate-200 shadow-lg"
+        >
+          <motion.p 
+            className="text-slate-700 text-lg leading-relaxed mb-6"
+            initial={{ opacity: 0, x: -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
             Saya adalah mahasiswa semester 5 Program Studi D4 Teknik Informatika di Politeknik Negeri Malang. 
             Memiliki ketertarikan kuat pada Web Development dan kemampuan dalam mengembangkan aplikasi full stack.
-          </p>
-          <p className="text-slate-700 text-lg leading-relaxed mb-6 reveal" style={{ '--delay': '0.16s' }}>
+          </motion.p>
+
+          <motion.p 
+            className="text-slate-700 text-lg leading-relaxed mb-6"
+            initial={{ opacity: 0, x: -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
             Mahir berbahasa Inggris dengan pengalaman dalam proyek kolaborasi. Kemampuan komunikasi, 
             pemecahan masalah, dan kolaborasi tim yang baik menjadi kekuatan dalam beradaptasi dengan 
             lingkungan kerja yang dinamis.
-          </p>
-          <div className="grid md:grid-cols-3 gap-6 mt-8">
+          </motion.p>
+
+          <motion.div 
+            className="grid md:grid-cols-3 gap-6 mt-8"
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
             {stats.map((stat, index) => (
-              <div key={index} className="text-center p-6 bg-sky-100/50 rounded-xl border border-sky-200 reveal" style={{ '--delay': `${index * 0.08}s` }}>
+              <motion.div
+                key={index}
+                className="relative text-center p-6 bg-sky-100/50 rounded-xl border border-sky-200 hover:shadow-lg transition-shadow duration-300"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={isInView ? { 
+                  opacity: 1,
+                  scale: 1,
+                  transition: {
+                    duration: 0.4,
+                    delay: 0.6 + index * 0.1,
+                  }
+                } : {}}
+                whileHover={{ 
+                  scale: 1.02,
+                  transition: { duration: 0.2 }
+                }}
+              >
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-xl opacity-0"
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+                
                 <svg className="mx-auto mb-3 text-sky-600" width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   {stat.icon}
                 </svg>
                 <h3 className="text-slate-800 font-semibold text-xl mb-2">{stat.title}</h3>
                 {stat.subtitle && <p className="text-slate-600">{stat.subtitle}</p>}
                 <p className="text-blue-600 font-medium">{stat.highlight}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
-        </div>
-      </div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

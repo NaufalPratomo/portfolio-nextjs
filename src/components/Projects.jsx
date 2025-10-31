@@ -1,5 +1,10 @@
+"use client";
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import { useState, useRef } from 'react';
 
 export default function Projects() {
   const projects = [
@@ -29,59 +34,177 @@ export default function Projects() {
     },
   ];
 
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [sectionRef, isInView] = useIntersectionObserver({ threshold: 0.1 });
+  const timelineRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: timelineRef,
+    offset: ["start end", "end start"]
+  });
+
+  // Interactive cursor
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const handleMouseMove = (e) => {
+    setMousePosition({
+      x: e.clientX,
+      y: e.clientY
+    });
+  };
+
   return (
-    <section id="projects" className="min-h-screen flex items-center px-4 py-20">
-      <div className="max-w-6xl mx-auto w-full">
-        <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-12 text-center reveal" style={{ '--delay': '0.04s' }}>
+    <section
+      id="projects"
+      className="relative min-h-screen flex items-center px-4 py-20 overflow-hidden"
+      onMouseMove={handleMouseMove}
+      ref={timelineRef}
+    >
+      {/* Background Elements */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-transparent"
+        style={{
+          opacity: useTransform(scrollYProgress, [0, 0.5], [0, 0.5]),
+        }}
+      />
+
+      <div className="max-w-6xl mx-auto w-full relative z-10">
+        <motion.h2
+          className="text-4xl md:text-5xl font-bold text-slate-900 mb-12 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
           Proyek
-        </h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project) => (
-            <div
+        </motion.h2>
+
+        <div
+          ref={sectionRef}
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          {projects.map((project, index) => (
+            <motion.div
               key={project.title}
-              className="bg-white/60 backdrop-blur-lg rounded-2xl p-6 border border-slate-200 hover:border-sky-400 transition-all hover:scale-105 shadow-lg reveal"
-              style={{ '--delay': `${projects.indexOf(project) * 0.08}s` }}
+              className="relative group"
+              initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+              animate={isInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+              onHoverStart={() => setHoveredIndex(index)}
+              onHoverEnd={() => setHoveredIndex(null)}
+              whileHover={{ scale: 1.02 }}
             >
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-bold text-slate-900 reveal" style={{ '--delay': `${projects.indexOf(project) * 0.08 + 0.02}s` }}>{project.title}</h3>
-                <Link
-                  href={project.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sky-600 hover:text-blue-600 transition-colors"
+              <div className="bg-white/60 backdrop-blur-lg rounded-2xl p-6 border border-slate-200 shadow-lg transition-all duration-300 group-hover:shadow-xl">
+                {/* Project Header */}
+                <motion.div
+                  className="flex justify-between items-start mb-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
                 >
-                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </Link>
-              </div>
-              <div className="overflow-hidden rounded-xl mb-4 border border-slate-200">
-                <Image
-                  src={project.image}
-                  alt={`Cuplikan ${project.title}`}
-                  width={400}
-                  height={176}
-                  className="w-full h-44 object-cover reveal-img"
-                  style={{ '--delay': `${projects.indexOf(project) * 0.08 + 0.04}s` }}
-                />
-              </div>
-              <p className="text-sm text-sky-700 mb-4">{project.period}</p>
-              <p className="text-slate-600 mb-4 text-sm leading-relaxed reveal" style={{ '--delay': `${projects.indexOf(project) * 0.08 + 0.06}s` }}>
-                {project.description}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-3 py-1 bg-sky-200/70 text-sky-800 rounded-full text-xs font-medium"
+                  <h3 className="text-xl font-bold text-slate-900">{project.title}</h3>
+                  <motion.div
+                    whileHover={{ scale: 1.1, rotate: 45 }}
+                    whileTap={{ scale: 0.9 }}
                   >
-                    {tag}
-                  </span>
-                ))}
+                    <Link
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sky-600 hover:text-blue-600 transition-colors"
+                    >
+                      <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </Link>
+                  </motion.div>
+                </motion.div>
+
+                {/* Project Image */}
+                <motion.div
+                  className="relative overflow-hidden rounded-xl mb-4 border border-slate-200"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Image
+                    src={project.image}
+                    alt={`Cuplikan ${project.title}`}
+                    width={400}
+                    height={176}
+                    className="w-full h-44 object-cover transition-transform duration-700 ease-out"
+                  />
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-transparent"
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </motion.div>
+
+                {/* Project Period */}
+                <motion.p
+                  className="text-sm text-sky-700 mb-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  {project.period}
+                </motion.p>
+
+                {/* Project Description */}
+                <motion.p
+                  className="text-slate-600 mb-4 text-sm leading-relaxed"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  {project.description}
+                </motion.p>
+
+                {/* Project Tags */}
+                <motion.div
+                  className="flex flex-wrap gap-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  {project.tags.map((tag) => (
+                    <motion.span
+                      key={tag}
+                      className="px-3 py-1 bg-sky-200/70 text-sky-800 rounded-full text-xs font-medium"
+                      whileHover={{ scale: 1.1, backgroundColor: 'rgba(186, 230, 253, 0.9)' }}
+                    >
+                      {tag}
+                    </motion.span>
+                  ))}
+                </motion.div>
               </div>
-            </div>
+
+              {/* Interactive Hover Effect */}
+              {hoveredIndex === index && (
+                <motion.div
+                  className="absolute -inset-4 bg-gradient-to-r from-blue-500/10 to-sky-500/10 rounded-3xl -z-10"
+                  layoutId="projectHover"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                />
+              )}
+            </motion.div>
           ))}
         </div>
+
+        {/* Interactive Cursor */}
+        <motion.div
+          className="fixed w-8 h-8 rounded-full pointer-events-none mix-blend-difference z-50 hidden md:block"
+          animate={{
+            x: mousePosition.x - 16,
+            y: mousePosition.y - 16,
+            scale: hoveredIndex !== null ? 1.5 : 1,
+          }}
+          transition={{ type: "spring", stiffness: 150, damping: 15 }}
+          style={{
+            background: 'white',
+          }}
+        />
       </div>
     </section>
   );

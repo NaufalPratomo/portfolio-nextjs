@@ -1,4 +1,8 @@
+"use client";
+
 import Link from 'next/link';
+import { motion, useAnimation, useInView } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Contact() {
   const contacts = [
@@ -30,41 +34,151 @@ export default function Contact() {
     },
   ];
 
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
+  const controls = useAnimation();
+  const [hasAnimated, setHasAnimated] = useState(false);
+
+  useEffect(() => {
+    if (isInView && !hasAnimated) {
+      controls.start("visible");
+      setHasAnimated(true);
+    }
+  }, [isInView, controls, hasAnimated]);
+
   return (
-    <section id="contact" className="min-h-screen flex items-center px-4 py-20">
-      <div className="max-w-4xl mx-auto w-full text-center">
-        <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-8 reveal" style={{ '--delay': '0.04s' }}>
+    <section id="contact" className="relative min-h-screen flex items-center px-4 py-20 overflow-hidden">
+      {/* Gradient Mesh Background */}
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          background: 'linear-gradient(45deg, rgba(96, 165, 250, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)',
+          filter: 'blur(100px)',
+        }}
+        animate={{
+          background: [
+            'linear-gradient(45deg, rgba(96, 165, 250, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)',
+            'linear-gradient(45deg, rgba(59, 130, 246, 0.1) 0%, rgba(96, 165, 250, 0.1) 100%)',
+          ],
+        }}
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+          repeatType: "reverse",
+        }}
+      />
+
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          background: 'radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.15), transparent 80%)',
+        }}
+        animate={{
+          scale: [1, 1.2, 1],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      <div ref={sectionRef} className="max-w-4xl mx-auto w-full text-center relative z-10">
+        <motion.h2
+          className="text-4xl md:text-5xl font-bold text-slate-900 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={controls}
+          variants={{
+            visible: { opacity: 1, y: 0 },
+          }}
+          transition={{ duration: 0.6 }}
+        >
           Mari Terhubung
-        </h2>
-        <p className="text-slate-600 text-lg mb-12 reveal" style={{ '--delay': '0.08s' }}>
+        </motion.h2>
+
+        <motion.p
+          className="text-slate-600 text-lg mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={controls}
+          variants={{
+            visible: { opacity: 1, y: 0 },
+          }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
           Tertarik untuk berkolaborasi atau ingin berdiskusi? Jangan ragu untuk menghubungi saya!
-        </p>
-        <div className="grid md:grid-cols-3 gap-6">
-          {contacts.map((contact) => (
-            <Link
+        </motion.p>
+
+        <motion.div 
+          className="grid md:grid-cols-3 gap-6"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                delayChildren: 0.3,
+                staggerChildren: 0.2
+              }
+            }
+          }}
+          initial="hidden"
+          animate={controls}
+        >
+          {contacts.map((contact, index) => (
+            <motion.div
               key={contact.title}
-              href={contact.href}
-              target={contact.href.startsWith('http') ? '_blank' : undefined}
-              rel={contact.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              className="bg-white/60 backdrop-blur-lg rounded-2xl p-8 border border-slate-200 hover:border-sky-400 transition-all hover:scale-105 shadow-lg reveal"
-              style={{ '--delay': `${contacts.indexOf(contact) * 0.08}s` }}
+              variants={{
+                hidden: { y: 20, opacity: 0 },
+                visible: { y: 0, opacity: 1 }
+              }}
+              whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
             >
-              <svg
-                className="mx-auto mb-4 text-sky-600 reveal-img"
-                style={{ '--delay': `${contacts.indexOf(contact) * 0.08 + 0.02}s` }}
-                width="40"
-                height="40"
-                fill={contact.fill ? 'currentColor' : 'none'}
-                stroke={contact.fill ? 'none' : 'currentColor'}
-                viewBox="0 0 24 24"
+              <Link
+                href={contact.href}
+                target={contact.href.startsWith('http') ? '_blank' : undefined}
+                rel={contact.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                className="block bg-white/60 backdrop-blur-lg rounded-2xl p-8 border border-slate-200 shadow-lg group relative overflow-hidden"
               >
-                {contact.icon}
-              </svg>
-              <h3 className="text-slate-800 font-semibold mb-2">{contact.title}</h3>
-              <p className="text-slate-600 text-sm">{contact.value}</p>
-            </Link>
+                {/* Ripple effect on hover */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-sky-400/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  whileHover={{
+                    scale: 1.2,
+                    transition: { duration: 0.3 }
+                  }}
+                />
+
+                <motion.div
+                  className="relative z-10"
+                  initial={false}
+                  whileHover={{ y: -5 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <motion.svg
+                    className="mx-auto mb-4 text-sky-600"
+                    width="40"
+                    height="40"
+                    fill={contact.fill ? 'currentColor' : 'none'}
+                    stroke={contact.fill ? 'none' : 'currentColor'}
+                    viewBox="0 0 24 24"
+                    whileHover={{ scale: 1.2, rotate: 360 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    {contact.icon}
+                  </motion.svg>
+
+                  <motion.h3 
+                    className="text-slate-800 font-semibold mb-2"
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    {contact.title}
+                  </motion.h3>
+
+                  <p className="text-slate-600 text-sm">{contact.value}</p>
+                </motion.div>
+              </Link>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

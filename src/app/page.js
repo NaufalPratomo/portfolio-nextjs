@@ -9,16 +9,16 @@ import ScrollObserver from '@/components/ScrollObserver';
 
 export default function Home() {
   return (
-    <>
+    <div className="relative w-full">
       <Navbar />
-      <main className="scroll-snap-y">
+      <div className="w-full">
         <ScrollObserver />
         <Hero />
         <About />
         <Skills />
         <Projects />
         <Contact />
-      </main>
-    </>
+      </div>
+    </div>
   );
 }
