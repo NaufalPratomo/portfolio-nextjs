@@ -1,9 +1,23 @@
 "use client";
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useParallax } from '@/hooks/useParallax';
+
+// Generate consistent random positions
+const generateRandomPositions = (count) => {
+  const positions = [];
+  for (let i = 0; i < count; i++) {
+    positions.push({
+      x: `${(i * 5.3 + 1.8) % 100}%`,
+      y: `${(i * 4.7 + 2.3) % 100}%`,
+      scale: 0.5 + ((i * 2.1) % 50) / 100,
+      duration: 20 + ((i * 3.7) % 10)
+    });
+  }
+  return positions;
+};
 
 export default function Hero() {
   const greetings = [
@@ -28,6 +42,9 @@ export default function Hero() {
   const backgroundY = useTransform(scrollY, [0, 1000], ['0%', '20%']);
   const opacity = useTransform(scrollY, [0, 400], [1, 0]);
 
+  // Generate random positions once
+  const floatingElements = useMemo(() => generateRandomPositions(20), []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((i) => (i + 1) % greetings.length);
@@ -49,19 +66,19 @@ export default function Hero() {
       
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
+        {floatingElements.map((position, i) => (
           <motion.div
             key={i}
             className="absolute w-4 h-4 bg-blue-500/10 rounded-full"
             style={{
-              x: Math.random() * 100 + '%',
-              y: Math.random() * 100 + '%',
-              scale: Math.random() * 0.5 + 0.5,
+              x: position.x,
+              y: position.y,
+              scale: position.scale,
             }}
             animate={{
               y: ['0%', '100%'],
               transition: {
-                duration: Math.random() * 10 + 20,
+                duration: position.duration,
                 repeat: Infinity,
                 ease: 'linear',
               },

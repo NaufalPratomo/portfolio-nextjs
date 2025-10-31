@@ -3,6 +3,22 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { useParallax } from '@/hooks/useParallax';
+import { useMemo } from 'react';
+
+// Generate consistent positions for geometric patterns
+const generateGeometricPatterns = (count) => {
+  const patterns = [];
+  for (let i = 0; i < count; i++) {
+    patterns.push({
+      left: `${(i * 5.7 + 2.3) % 100}%`,
+      top: `${(i * 4.9 + 1.7) % 100}%`,
+      rotate: (i * 18) % 360,
+      scale: 0.5 + ((i * 2.3) % 50) / 100,
+      duration: 20 + ((i * 3.1) % 10),
+    });
+  }
+  return patterns;
+};
 
 export default function About() {
   const stats = [
@@ -35,6 +51,9 @@ export default function About() {
   const { scrollY } = useScroll();
   const { ref: parallaxRef, y: parallaxY } = useParallax({ speed: 0.1 });
 
+  // Generate geometric patterns once
+  const geometricPatterns = useMemo(() => generateGeometricPatterns(20), []);
+
   // Geometric pattern animation
   const patternTranslateY = useTransform(scrollY, [0, 1000], ['0%', '20%']);
   const patternOpacity = useTransform(scrollY, [0, 300], [0.1, 0.05]);
@@ -46,15 +65,15 @@ export default function About() {
         className="absolute inset-0 pointer-events-none"
         style={{ y: patternTranslateY, opacity: patternOpacity }}
       >
-        {[...Array(20)].map((_, i) => (
+        {geometricPatterns.map((pattern, i) => (
           <motion.div
             key={i}
             className="absolute w-20 h-20 bg-sky-500/5"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              rotate: Math.random() * 360,
-              scale: Math.random() * 0.5 + 0.5,
+              left: pattern.left,
+              top: pattern.top,
+              rotate: pattern.rotate,
+              scale: pattern.scale,
             }}
             initial={false}
             animate={{
@@ -62,7 +81,7 @@ export default function About() {
               scale: [1, 1.2, 1],
             }}
             transition={{
-              duration: Math.random() * 20 + 20,
+              duration: pattern.duration,
               repeat: Infinity,
               ease: "linear",
             }}

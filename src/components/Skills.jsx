@@ -2,7 +2,21 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+
+// Generate consistent positions for floating elements
+const generateFloatingElements = (count) => {
+  const elements = [];
+  for (let i = 0; i < count; i++) {
+    elements.push({
+      x: `${(i * 6.1 + 3.2) % 100}%`,
+      y: `${(i * 5.3 + 2.1) % 100}%`,
+      duration: 20 + ((i * 2.7) % 10),
+      rotate: (i * 24) % 360
+    });
+  }
+  return elements;
+};
 
 export default function Skills() {
   const hardSkills = [
@@ -29,25 +43,9 @@ export default function Skills() {
 
   const [sectionRef, isInView] = useIntersectionObserver({ threshold: 0.3 });
   const { scrollYProgress } = useScroll();
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-
-  useEffect(() => {
-    function handleResize() {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight
-      });
-    }
-
-    // Set initial dimensions
-    handleResize();
-
-    // Add event listener
-    window.addEventListener('resize', handleResize);
-    
-    // Cleanup
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  
+  // Generate floating elements once
+  const floatingElements = useMemo(() => generateFloatingElements(15), []);
   
   // Parallax effect for floating elements
   const floatingY = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
@@ -56,26 +54,21 @@ export default function Skills() {
     <section id="skills" className="relative min-h-screen flex items-center px-4 py-20 overflow-hidden">
       {/* Floating Tech Icons Background */}
       <div className="absolute inset-0 pointer-events-none">
-        {[...Array(15)].map((_, i) => (
+        {floatingElements.map((element, i) => (
           <motion.div
             key={i}
             className="absolute text-3xl opacity-5"
-            initial={{
-              x: Math.random() * (dimensions.width || 1000),
-              y: Math.random() * (dimensions.height || 800),
-            }}
+            initial={{ x: element.x, y: element.y }}
             animate={{
               y: ['0%', '100%'],
               rotate: [0, 360],
             }}
             transition={{
-              duration: 20 + Math.random() * 10,
+              duration: element.duration,
               repeat: Infinity,
               ease: 'linear',
             }}
-            style={{
-              x: Math.random() * 100 + '%',
-            }}
+            style={{ x: element.x }}
           >
             {`</>`}
           </motion.div>
