@@ -145,46 +145,63 @@ section {
 /* Dark mode base overrides (minimal, supplement Tailwind dark: variants) */
 .dark body {
   /* darker background gradient for dark mode */
-  background: linear-gradient(135deg, #071029 0%, #021026 100%);
-  color: #e6eef8;
+  background: linear-gradient(135deg, #000000 0%, #0a0a0a 100%);
+  color: #ffffff;
 }
 
 .dark nav {
-  background-color: rgba(2,6,23,0.78) !important;
-  border-color: rgba(148,163,184,0.08) !important;
-  color: #e6eef8;
+  background-color: rgba(0,0,0,0.85) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #ffffff;
 }
 
 /* Slightly darken the translucent white cards used across the site */
 .dark .bg-white\/60 {
-  background-color: rgba(255,255,255,0.03) !important;
+  background-color: rgba(255,255,255,0.05) !important;
 }
 
 /* Improve text contrast in dark mode for common Tailwind text color utilities */
 .dark .text-slate-900 {
-  color: #e6eef8 !important;
+  color: #ffffff !important;
 }
 .dark .text-slate-700 {
-  color: #cbd5e1 !important; /* paragraphs, smaller text */
+  color: #e2e8f0 !important; /* paragraphs, smaller text */
 }
 .dark .text-slate-600 {
-  color: #9fb3c9 !important; /* muted text */
+  color: #cbd5e1 !important; /* muted text */
 }
 .dark .text-sky-600,
 .dark .text-blue-600 {
-  color: #7dd3fc !important; /* links / highlights */
+  color: #60a5fa !important; /* links / highlights */
 }
 
 /* Borders and shadows tuned for dark background */
 .dark .border-slate-200 {
-  border-color: rgba(148,163,184,0.08) !important;
+  border-color: rgba(255,255,255,0.15) !important;
 }
 .dark .shadow-lg {
-  box-shadow: 0 10px 15px -3px rgba(2,6,23,0.6), 0 4px 6px -4px rgba(2,6,23,0.6) !important;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.8), 0 4px 6px -4px rgba(0,0,0,0.8) !important;
 }
 
 /* Buttons and interactive elements */
 .dark button,
 .dark a {
   color: inherit;
+}
+
+/* Additional dark mode improvements for better contrast */
+.dark .text-slate-800 {
+  color: #f8fafc !important;
+}
+.dark .text-slate-500 {
+  color: #94a3b8 !important;
+}
+.dark .text-gray-700 {
+  color: #e2e8f0 !important;
+}
+.dark .text-gray-600 {
+  color: #cbd5e1 !important;
+}
+.dark .text-gray-500 {
+  color: #94a3b8 !important;
 }
