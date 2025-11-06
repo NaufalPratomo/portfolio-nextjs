@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { SmoothScrollProvider } from '@/providers/SmoothScrollProvider';
+import AudioPlayer from '@/components/AudioPlayer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
           <main className="relative">
             {children}
           </main>
+          <AudioPlayer />
         </SmoothScrollProvider>
       </body>
     </html>
