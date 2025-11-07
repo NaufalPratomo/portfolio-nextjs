@@ -1,10 +1,12 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useScrollSnap } from '@/providers/SmoothScrollProvider';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState('light');
+  const { scrollToId } = useScrollSnap();
 
   const navLinks = [
     { href: '#home', label: 'home' },
@@ -27,6 +29,13 @@ export default function Navbar() {
     }
   }, []);
 
+  const handleNavLinkClick = (e, href) => {
+    e.preventDefault();
+    const id = href.substring(1); // Remove the '#' character
+    scrollToId(id);
+    setMobileMenuOpen(false); // Close mobile menu after clicking a link
+  };
+
   return (
     <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-lg z-50 border-b border-slate-200">
       <div className="max-w-6xl mx-auto px-4 py-4">
@@ -39,13 +48,14 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-6">
             <div className="flex space-x-8">
               {navLinks.map((link) => (
-                <Link
+                <a
                   key={link.href}
                   href={link.href}
+                  onClick={(e) => handleNavLinkClick(e, link.href)}
                   className="text-slate-600 hover:text-blue-600 transition-colors capitalize"
                 >
                   {link.label}
-                </Link>
+                </a>
               ))}
             </div>
 
@@ -91,14 +101,14 @@ export default function Navbar() {
         {mobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 space-y-2">
             {navLinks.map((link) => (
-              <Link
+              <a
                 key={link.href}
                 href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => handleNavLinkClick(e, link.href)}
                 className="block px-4 py-2 text-slate-600 hover:text-blue-600 hover:bg-sky-100/50 rounded capitalize"
               >
                 {link.label}
-              </Link>
+              </a>
             ))}
 
             {/* Mobile theme toggle */}

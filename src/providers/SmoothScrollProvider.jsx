@@ -3,6 +3,8 @@
 import { createContext, useContext, useEffect, useRef } from 'react';
 import Lenis from 'lenis';
 
+const NAVBAR_HEIGHT = 64; // Approximate height of your fixed navbar in pixels
+
 // SmoothScrollProvider with full-page snap scrolling (wheel/touch controlled)
 // Usage: wrap your app with <SmoothScrollProvider snap="full" /> or <SmoothScrollProvider snap={true} />
 export const ScrollSnapContext = createContext(null);
@@ -61,10 +63,10 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
         if (!target) return;
         isSnappingRef.current = true;
         try {
-          lenisRef.current.scrollTo(target, { duration: 0.9, easing: (t) => t });
+          lenisRef.current.scrollTo(target, { duration: 0.9, easing: (t) => t, offset: -NAVBAR_HEIGHT });
         } catch (e) {
           const top = target.getBoundingClientRect().top + window.scrollY;
-          window.scrollTo({ top, behavior: 'smooth' });
+          window.scrollTo({ top: top - NAVBAR_HEIGHT, behavior: 'smooth' });
         }
         // release lock after animation completes
         setTimeout(() => {
@@ -146,10 +148,10 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
       const idx = sections.findIndex((s) => s.id === id);
       if (idx !== -1) {
         try {
-          lenisRef.current?.scrollTo(sections[idx], { duration: 0.9, easing: (t) => t });
+          lenisRef.current?.scrollTo(sections[idx], { duration: 0.9, easing: (t) => t, offset: -NAVBAR_HEIGHT });
         } catch (e) {
           const top = sections[idx].getBoundingClientRect().top + window.scrollY;
-          window.scrollTo({ top, behavior: 'smooth' });
+          window.scrollTo({ top: top - NAVBAR_HEIGHT, behavior: 'smooth' });
         }
       }
     },
