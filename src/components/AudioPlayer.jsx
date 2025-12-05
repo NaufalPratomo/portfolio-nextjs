@@ -6,24 +6,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function AudioPlayer() {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const [volume, setVolume] = useState(0.3);
 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
-      // Attempt autoplay with low volume
       const playPromise = audioRef.current.play();
       if (playPromise !== undefined) {
-        playPromise.catch(error => {
-          console.log('Autoplay prevented by browser policy');
+        playPromise.catch(() => {
+          setIsPlaying(false);
         });
       }
     }
-  }, []); // Run once on mount
+  }, []);
 
-  const togglePlay = (e) => {
-    e.stopPropagation();
+  const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
@@ -35,7 +33,6 @@ export default function AudioPlayer() {
   };
 
   const handleVolumeChange = (e) => {
-    e.stopPropagation();
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
     if (audioRef.current) {
@@ -44,7 +41,11 @@ export default function AudioPlayer() {
   };
 
   return (
-    <>
+    <div
+      className="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-4"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <audio
         ref={audioRef}
         loop
@@ -54,77 +55,66 @@ export default function AudioPlayer() {
         src="/audio/jazz-background.mp3"
       />
 
-      <motion.div
-        className="fixed bottom-6 right-6 z-50 pointer-events-auto"
-        initial={false}
+      {/* Volume Slider (Vertical Pop-up) */}
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.9 }}
+            className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl mb-2"
+          >
+            <div className="h-32 flex items-center justify-center w-6">
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={volume}
+                onChange={handleVolumeChange}
+                className="w-28 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-500 hover:accent-sky-400 -rotate-90 origin-center"
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Main Circular Button */}
+      <motion.button
+        onClick={togglePlay}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className={`relative w-16 h-16 flex items-center justify-center rounded-full shadow-2xl transition-colors duration-300 ${isPlaying
+          ? 'bg-sky-500 text-white shadow-sky-500/30'
+          : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+          }`}
       >
-        <motion.div
-          className="flex items-center gap-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl p-2.5 rounded-full border border-white/20 dark:border-slate-700 shadow-2xl ring-1 ring-slate-900/5 dark:ring-white/10"
-          animate={{
-            width: isExpanded || isPlaying ? 'auto' : '48px',
-            transition: { duration: 0.4, type: "spring", stiffness: 200, damping: 20 }
-          }}
-          onHoverStart={() => setIsExpanded(true)}
-          onHoverEnd={() => setIsExpanded(false)}
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
-          {/* Animated Equalizer Icon */}
-          <div className="relative flex items-center justify-center w-6 h-6 shrink-0 cursor-pointer" onClick={togglePlay}>
-            {isPlaying ? (
-              <div className="flex items-center gap-[2px] h-3">
-                <motion.div
-                  className="w-1 bg-sky-500 rounded-full"
-                  animate={{ height: [4, 12, 6, 12, 4] }}
-                  transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
-                />
-                <motion.div
-                  className="w-1 bg-blue-600 rounded-full"
-                  animate={{ height: [8, 4, 12, 5, 8] }}
-                  transition={{ duration: 1.1, repeat: Infinity, ease: "linear" }}
-                />
-                <motion.div
-                  className="w-1 bg-indigo-500 rounded-full"
-                  animate={{ height: [5, 10, 5, 11, 5] }}
-                  transition={{ duration: 0.9, repeat: Infinity, ease: "linear" }}
-                />
-              </div>
-            ) : (
-              <svg className="w-5 h-5 text-slate-500 dark:text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-              </svg>
-            )}
-          </div>
+        {isPlaying ? (
+          <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6" stroke="currentColor" fill="none" />
+          </svg>
+        ) : (
+          <svg className="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+          </svg>
+        )}
 
-          <AnimatePresence>
-            {(isExpanded || isPlaying) && (
-              <motion.div
-                initial={{ opacity: 0, width: 0, scale: 0.95 }}
-                animate={{ opacity: 1, width: 'auto', scale: 1 }}
-                exit={{ opacity: 0, width: 0, scale: 0.95 }}
-                className="flex items-center gap-3 overflow-hidden"
-              >
-                <div className="w-[1px] h-4 bg-slate-200 dark:bg-slate-700 mx-1" />
-
-                {/* Volume Slider */}
-                <div className="flex items-center gap-2 pr-2" onClick={(e) => e.stopPropagation()}>
-                  <svg className="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                  </svg>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.05"
-                    value={volume}
-                    onChange={handleVolumeChange}
-                    className="w-24 h-1 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer accent-sky-500 hover:accent-sky-400"
-                  />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      </motion.div>
-    </>
+        {/* Ripple Effect when playing */}
+        {isPlaying && (
+          <>
+            <motion.div
+              className="absolute inset-0 rounded-full border border-sky-400"
+              animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+            <motion.div
+              className="absolute inset-0 rounded-full border border-sky-400"
+              animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+              transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+            />
+          </>
+        )}
+      </motion.button>
+    </div>
   );
 }
