@@ -9,6 +9,14 @@ import { useState, useRef } from 'react';
 export default function Projects() {
   const projects = [
     {
+      title: 'Deadline Reminder',
+      period: 'Nov 2025 - Dec 2025',
+      description: 'Aplikasi manajemen produktivitas cerdas untuk mengelola tugas dan tenggat waktu. Fitur unggulan meliputi sistem pengingat otomatis via email, manajemen prioritas dengan tracking real-time, dan autentikasi aman. Dibangun menggunakan Next.js dan MongoDB dengan antarmuka yang estetis dan responsif.',
+      image: '/projects/deadlinereminderapp.png',
+      tags: ['Next.js', 'MongoDB', 'TailwindCSS'],
+      link: 'https://deadline-reminder-app.vercel.app/',
+    },
+    {
       title: 'TALENTI',
       period: 'May 2025 - Oct 2025',
       description: 'Sistem informasi berbasis web untuk manajemen dan pencatatan prestasi mahasiswa di Jurusan Teknologi Informasi. Memfasilitasi mahasiswa dan dosen dalam mendokumentasikan, memvalidasi, dan mempublikasikan pencapaian akademik maupun non-akademik.',

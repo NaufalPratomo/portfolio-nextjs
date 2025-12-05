@@ -37,7 +37,7 @@ export default function Hero() {
   const [index, setIndex] = useState(0);
   const { scrollY } = useScroll();
   const { ref: parallaxRef, y: parallaxY } = useParallax({ speed: 0.4 });
-  
+
   // Background parallax effects
   const backgroundY = useTransform(scrollY, [0, 1000], ['0%', '20%']);
   const opacity = useTransform(scrollY, [0, 400], [1, 0]);
@@ -55,15 +55,15 @@ export default function Hero() {
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Parallax Background Layers */}
-      <motion.div 
+      <motion.div
         className="absolute inset-0 bg-gradient-to-b from-blue-100 to-transparent"
         style={{ y: backgroundY }}
       />
-      <motion.div 
+      <motion.div
         className="absolute inset-0 animated-gradient opacity-10"
         style={{ y: useTransform(scrollY, [0, 1000], ['0%', '30%']) }}
       />
-      
+
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {floatingElements.map((position, i) => (
@@ -88,12 +88,12 @@ export default function Hero() {
       </div>
 
       {/* Main Content */}
-      <motion.div 
+      <motion.div
         ref={parallaxRef}
         style={{ y: parallaxY }}
         className="relative z-10 text-center max-w-4xl mx-auto px-4"
       >
-        <motion.div 
+        <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -101,7 +101,7 @@ export default function Hero() {
         >
           <div className="relative inline-block">
             <Image
-              src="https://media.licdn.com/dms/image/v2/D5603AQFmv3ystx3rLA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1715648361515?e=1763596800&v=beta&t=fkduAo5_JrZDP3TDuJ0bEzXxMFFS4t2CgophfUmmIuM"
+              src="/images/profile.jpg"
               alt="Profile Picture"
               width={128}
               height={128}
@@ -153,7 +153,7 @@ export default function Hero() {
           </motion.span>
         </div>
 
-        <motion.div 
+        <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.5 }}
@@ -179,7 +179,7 @@ export default function Hero() {
           </Link>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="mt-12"
           animate={{
             y: [0, 10, 0],
