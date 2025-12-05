@@ -2,9 +2,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 export default function Projects() {
   const projects = [
@@ -50,20 +50,26 @@ export default function Projects() {
     offset: ["start end", "end start"]
   });
 
-  // Interactive cursor
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const handleMouseMove = (e) => {
-    setMousePosition({
-      x: e.clientX,
-      y: e.clientY
-    });
-  };
+  // Interactive cursor optimized with useMotionValue
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springConfig = { damping: 25, stiffness: 700 };
+  const cursorX = useSpring(mouseX, springConfig);
+  const cursorY = useSpring(mouseY, springConfig);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      mouseX.set(e.clientX - 16); // Center offset
+      mouseY.set(e.clientY - 16);
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY]);
 
   return (
     <section
       id="projects"
-      className="relative min-h-screen flex items-center px-4 py-20 overflow-hidden"
-      onMouseMove={handleMouseMove}
+      className="relative min-h-screen flex items-center px-4 py-12 md:py-20 overflow-hidden"
       ref={timelineRef}
     >
       {/* Background Elements */}
@@ -76,17 +82,17 @@ export default function Projects() {
 
       <div className="max-w-6xl mx-auto w-full relative z-10">
         <motion.h2
-          className="text-4xl md:text-5xl font-bold text-slate-900 mb-12 text-center"
+          className="text-3xl md:text-5xl font-bold text-slate-900 mb-8 md:mb-12 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          Proyek
+          Portfolio Proyek
         </motion.h2>
 
         <div
           ref={sectionRef}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
         >
           {projects.map((project, index) => (
             <motion.div
@@ -99,7 +105,7 @@ export default function Projects() {
               onHoverEnd={() => setHoveredIndex(null)}
               whileHover={{ scale: 1.02 }}
             >
-              <div className="bg-white/60 backdrop-blur-lg rounded-2xl p-6 border border-slate-200 shadow-lg transition-all duration-300 group-hover:shadow-xl">
+              <div className="bg-white/60 md:backdrop-blur-lg backdrop-blur-sm rounded-2xl p-6 border border-slate-200 shadow-lg transition-all duration-300 group-hover:shadow-xl">
                 {/* Project Header */}
                 <motion.div
                   className="flex justify-between items-start mb-4"
@@ -203,15 +209,15 @@ export default function Projects() {
         {/* Interactive Cursor */}
         <motion.div
           className="fixed w-8 h-8 rounded-full pointer-events-none mix-blend-difference z-50 hidden md:block"
+          style={{
+            x: cursorX,
+            y: cursorY,
+            background: 'white',
+          }}
           animate={{
-            x: mousePosition.x - 16,
-            y: mousePosition.y - 16,
             scale: hoveredIndex !== null ? 1.5 : 1,
           }}
           transition={{ type: "spring", stiffness: 150, damping: 15 }}
-          style={{
-            background: 'white',
-          }}
         />
       </div>
     </section>

@@ -43,13 +43,13 @@ export default function Skills() {
 
   const [sectionRef, isInView] = useIntersectionObserver({ threshold: 0.3 });
   const { scrollYProgress } = useScroll();
-  
+
   // Generate floating elements once
   const floatingElements = useMemo(() => generateFloatingElements(15), []);
-  
+
   // Parallax effect for floating elements
   const floatingY = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
-  
+
   return (
     <section id="skills" className="relative min-h-screen flex items-center px-4 py-20 overflow-hidden">
       {/* Floating Tech Icons Background */}
@@ -112,7 +112,7 @@ export default function Skills() {
                     <span className="text-slate-700 font-medium">{skill.name}</span>
                     <span className="text-blue-600 font-medium">{skill.level}%</span>
                   </div>
-                  <motion.div 
+                  <motion.div
                     className="w-full bg-slate-200/50 rounded-full h-3 overflow-hidden"
                     whileHover={{ scale: 1.02 }}
                   >

@@ -87,19 +87,19 @@ export default function About() {
             }}
           />
         ))}
-      </motion.div> 
+      </motion.div>
 
       <motion.div
         ref={sectionRef}
         className="relative max-w-4xl mx-auto z-10"
         initial={{ opacity: 0, y: 50 }}
-        animate={{ 
+        animate={{
           opacity: isInView ? 1 : 0,
           y: isInView ? 0 : 50
         }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
-        <motion.h2 
+        <motion.h2
           className="text-4xl md:text-5xl font-bold text-slate-900 mb-8 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -108,33 +108,32 @@ export default function About() {
           Tentang Saya
         </motion.h2>
 
-        <motion.div 
+        <motion.div
           ref={parallaxRef}
           style={{ y: parallaxY }}
           className="bg-white/60 backdrop-blur-lg rounded-2xl p-8 border border-slate-200 shadow-lg"
         >
-          <motion.p 
+          <motion.p
             className="text-slate-700 text-lg leading-relaxed mb-6"
             initial={{ opacity: 0, x: -20 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            Saya adalah mahasiswa semester 5 Program Studi D4 Teknik Informatika di Politeknik Negeri Malang. 
-            Memiliki ketertarikan kuat pada Web Development dan kemampuan dalam mengembangkan aplikasi full stack.
+            Mahasiswa D4 Teknik Informatika di Politeknik Negeri Malang dengan spesialisasi dalam pengembangan web full-stack.
+            Memiliki pengalaman praktis membangun aplikasi web yang skalabel dan user-friendly menggunakan teknologi modern seperti React, Next.js, dan Laravel.
           </motion.p>
 
-          <motion.p 
+          <motion.p
             className="text-slate-700 text-lg leading-relaxed mb-6"
             initial={{ opacity: 0, x: -20 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            Mahir berbahasa Inggris dengan pengalaman dalam proyek kolaborasi. Kemampuan komunikasi, 
-            pemecahan masalah, dan kolaborasi tim yang baik menjadi kekuatan dalam beradaptasi dengan 
-            lingkungan kerja yang dinamis.
+            Aktif mencari peluang untuk berkontribusi dalam tim pengembang perangkat lunak, dengan fokus pada penulisan kode yang bersih,
+            efisien, dan solusi inovatif untuk masalah nyata.
           </motion.p>
 
-          <motion.div 
+          <motion.div
             className="grid md:grid-cols-3 gap-6 mt-8"
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : {}}
@@ -145,7 +144,7 @@ export default function About() {
                 key={index}
                 className="relative text-center p-6 bg-sky-100/50 rounded-xl border border-sky-200 hover:shadow-lg transition-shadow duration-300"
                 initial={{ opacity: 0, scale: 0.9 }}
-                animate={isInView ? { 
+                animate={isInView ? {
                   opacity: 1,
                   scale: 1,
                   transition: {
@@ -153,7 +152,7 @@ export default function About() {
                     delay: 0.6 + index * 0.1,
                   }
                 } : {}}
-                whileHover={{ 
+                whileHover={{
                   scale: 1.02,
                   transition: { duration: 0.2 }
                 }}
@@ -163,7 +162,7 @@ export default function About() {
                   whileHover={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
                 />
-                
+
                 <svg className="mx-auto mb-3 text-sky-600" width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   {stat.icon}
                 </svg>

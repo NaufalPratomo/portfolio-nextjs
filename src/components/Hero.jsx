@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState, useMemo } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useParallax } from '@/hooks/useParallax';
+import { useScrollSnap } from '@/providers/SmoothScrollProvider';
 
 // Generate consistent random positions
 const generateRandomPositions = (count) => {
@@ -37,13 +38,14 @@ export default function Hero() {
   const [index, setIndex] = useState(0);
   const { scrollY } = useScroll();
   const { ref: parallaxRef, y: parallaxY } = useParallax({ speed: 0.4 });
+  const { scrollToId } = useScrollSnap();
 
   // Background parallax effects
   const backgroundY = useTransform(scrollY, [0, 1000], ['0%', '20%']);
   const opacity = useTransform(scrollY, [0, 400], [1, 0]);
 
   // Generate random positions once
-  const floatingElements = useMemo(() => generateRandomPositions(20), []);
+  const floatingElements = useMemo(() => generateRandomPositions(12), []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -52,8 +54,13 @@ export default function Hero() {
     return () => clearInterval(interval);
   }, []);
 
+  const handleScrollTo = (e, id) => {
+    e.preventDefault();
+    scrollToId(id);
+  };
+
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
       {/* Parallax Background Layers */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-b from-blue-100 to-transparent"
@@ -69,7 +76,7 @@ export default function Hero() {
         {floatingElements.map((position, i) => (
           <motion.div
             key={i}
-            className="absolute w-4 h-4 bg-blue-500/10 rounded-full"
+            className="absolute w-3 h-3 md:w-4 md:h-4 bg-blue-500/10 rounded-full"
             style={{
               x: position.x,
               y: position.y,
@@ -105,7 +112,7 @@ export default function Hero() {
               alt="Profile Picture"
               width={128}
               height={128}
-              className="mx-auto rounded-full object-cover shadow-2xl shadow-sky-500/50"
+              className="mx-auto rounded-full object-cover shadow-2xl shadow-sky-500/50 w-24 h-24 md:w-32 md:h-32"
             />
             <motion.div
               className="absolute -inset-4 rounded-full bg-gradient-to-r from-sky-500/20 to-blue-600/20 -z-10"
@@ -126,7 +133,7 @@ export default function Hero() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-5xl md:text-7xl font-bold text-slate-900 mb-4"
+          className="text-4xl md:text-7xl font-bold text-slate-900 mb-4"
         >
           Muhammad Naufal Pratomo
         </motion.h1>
@@ -137,7 +144,7 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-xl md:text-2xl text-blue-600 mb-8"
         >
-          Web Developer
+          Software Engineering Student
         </motion.p>
 
         <div className="h-[48px] text-slate-600 text-lg mb-8 max-w-2xl mx-auto overflow-hidden">
@@ -161,9 +168,10 @@ export default function Hero() {
         >
           <Link
             href="#projects"
+            onClick={(e) => handleScrollTo(e, 'projects')}
             className="group relative px-8 py-3 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-full font-semibold transition-all hover:shadow-lg hover:shadow-sky-500/50 overflow-hidden"
           >
-            <span className="relative z-10">Lihat Proyek</span>
+            <span className="relative z-10">Lihat Portfolio</span>
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-blue-600 to-sky-500"
               initial={{ x: "100%" }}
@@ -173,6 +181,7 @@ export default function Hero() {
           </Link>
           <Link
             href="#contact"
+            onClick={(e) => handleScrollTo(e, 'contact')}
             className="group px-8 py-3 border-2 border-sky-500 text-sky-600 rounded-full font-semibold hover:bg-sky-500 hover:text-white transition-all"
           >
             Hubungi Saya

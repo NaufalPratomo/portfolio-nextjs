@@ -130,13 +130,13 @@ section {
       transform: none;
     }
 
-  scroll-snap-align: start;
+  /* scroll-snap-align: start; removed for smoother experience */
   scroll-margin-top: 4.5rem;
 }
 
 @layer utilities {
   .scroll-snap-y {
-    scroll-snap-type: y mandatory;
+    /* scroll-snap-type: y mandatory; removed */
     height: 100vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;

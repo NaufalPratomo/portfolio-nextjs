@@ -93,7 +93,7 @@ export default function Contact() {
           }}
           transition={{ duration: 0.6 }}
         >
-          Mari Terhubung
+          Siap Berkolaborasi?
         </motion.h2>
 
         <motion.p
@@ -105,10 +105,10 @@ export default function Contact() {
           }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          Tertarik untuk berkolaborasi atau ingin berdiskusi? Jangan ragu untuk menghubungi saya!
+          Saya selalu terbuka untuk mendiskusikan proyek baru, ide kreatif, atau peluang menjadi bagian dari visi Anda.
         </motion.p>
 
-        <motion.div 
+        <motion.div
           className="grid md:grid-cols-3 gap-6"
           variants={{
             hidden: { opacity: 0 },
@@ -166,7 +166,7 @@ export default function Contact() {
                     {contact.icon}
                   </motion.svg>
 
-                  <motion.h3 
+                  <motion.h3
                     className="text-slate-800 font-semibold mb-2"
                     whileHover={{ scale: 1.1 }}
                   >

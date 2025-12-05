@@ -66,7 +66,7 @@ export default function Navbar() {
                 setTheme(next);
                 try {
                   localStorage.setItem('theme', next);
-                } catch (e) {}
+                } catch (e) { }
                 if (next === 'dark') document.documentElement.classList.add('dark');
                 else document.documentElement.classList.remove('dark');
               }}
@@ -75,8 +75,9 @@ export default function Navbar() {
               className="p-2 rounded-full hover:bg-slate-200/50 dark:hover:bg-slate-700/40 transition-colors"
             >
               {theme === 'dark' ? (
-                <svg className="w-5 h-5 text-yellow-300" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6.76 4.84l-1.8-1.79L3.17 4.84l1.79 1.8 1.8-1.8zM1 13h3v-2H1v2zm10 8h2v-3h-2v3zm7.03-2.03l1.79 1.8 1.79-1.79-1.79-1.8-1.79 1.79zM20 13v-2h3v2h-3zM6.76 19.16l1.79 1.8 1.79-1.79-1.79-1.8-1.79 1.79zM12 6a6 6 0 100 12A6 6 0 0012 6z" />
+                <svg className="w-5 h-5 text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="4" />
+                  <path strokeLinecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
                 </svg>
               ) : (
                 <svg className="w-5 h-5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -112,22 +113,34 @@ export default function Navbar() {
             ))}
 
             {/* Mobile theme toggle */}
-            <div className="px-4">
-              <button
-                onClick={() => {
-                  const next = theme === 'dark' ? 'light' : 'dark';
-                  setTheme(next);
-                  try {
-                    localStorage.setItem('theme', next);
-                  } catch (e) {}
-                  if (next === 'dark') document.documentElement.classList.add('dark');
-                  else document.documentElement.classList.remove('dark');
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full text-left px-4 py-2 rounded hover:bg-slate-200/50 dark:hover:bg-slate-700/40 transition-colors"
-              >
-                {theme === 'dark' ? 'Light mode' : 'Dark mode'}
-              </button>
+            <div className="px-4 mt-4 border-t border-slate-100 dark:border-slate-800 pt-4">
+              <div className="flex items-center justify-between">
+                <span className="text-slate-600 dark:text-slate-300 font-medium">Appearance</span>
+                <button
+                  onClick={() => {
+                    const next = theme === 'dark' ? 'light' : 'dark';
+                    setTheme(next);
+                    try {
+                      localStorage.setItem('theme', next);
+                    } catch (e) { }
+                    if (next === 'dark') document.documentElement.classList.add('dark');
+                    else document.documentElement.classList.remove('dark');
+                  }}
+                  className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-yellow-300 transition-colors"
+                  aria-label="Toggle theme"
+                >
+                  {theme === 'dark' ? (
+                    <svg className="w-5 h-5 text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="4" />
+                      <path strokeLinecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         )}
