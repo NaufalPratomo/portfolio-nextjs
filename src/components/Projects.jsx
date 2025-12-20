@@ -131,7 +131,7 @@ export default function Projects() {
       description: 'Membangun sistem manajemen lapangan full-stack yang mengubah proses manual menjadi digital. PALMA ROOTS memungkinkan pemantauan aktivitas perkebunan (Panen, Angkut, Perawatan) secara real-time, memastikan transparansi data dari lapangan hingga ke manajemen. Dilengkapi fitur Taksasi Panen dan Verification Flow untuk meminimalkan kebocoran hasil produksi dan meningkatkan akurasi penggajian (Upah) karyawan.',
       image: '/projects/palmaroots.png',
       tags: ['MongoDB', 'Express', 'React', 'Node.js', 'TypeScript', 'Tailwind CSS'],
-      link: '#', // Placeholder link as none was provided
+      link: 'https://github.com/NaufalPratomo/WebQuest_Project/tree/main/SawiTrack',
     }
   ];
 
