@@ -11,9 +11,16 @@ export const useIntersectionObserver = (options = {}) => {
     if (!element) return;
 
     const observer = new IntersectionObserver(([entry]) => {
-      setIsInView(entry.isIntersecting);
+      if (entry.isIntersecting) {
+        setIsInView(true);
+        if (options.triggerOnce) {
+          observer.disconnect();
+        }
+      } else if (!options.triggerOnce) {
+        setIsInView(false);
+      }
     }, {
-      threshold: options.threshold || 0.3,
+      threshold: options.threshold || 0.1,
       rootMargin: options.rootMargin || '0px'
     });
 
