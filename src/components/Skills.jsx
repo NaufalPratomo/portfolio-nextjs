@@ -20,15 +20,15 @@ const generateFloatingElements = (count) => {
 
 export default function Skills() {
   const hardSkills = [
-    { name: 'Laravel', level: 85, color: '#FF2D20' },
-    { name: 'Next.js', level: 90, color: '#000000' },
-    { name: 'Basis Data (MySQL, MongoDB)', level: 85, color: '#4479A1' },
-    { name: 'Editing (Canva, Capcut)', level: 85, color: '#00C4CC' },
-    { name: 'Microsoft Office (Word, Excel, PPT)', level: 90, color: '#D83B01' },
-    { name: 'PHP', level: 85, color: '#777BB4' },
-    { name: 'CSS', level: 90, color: '#1572B6' },
-    { name: 'HTML', level: 90, color: '#E34F26' },
-    { name: 'JavaScript', level: 85, color: '#F7DF1E' },
+    { name: 'Laravel', level: 75, color: '#FF2D20' },
+    { name: 'Next.js', level: 80, color: '#000000' },
+    { name: 'Basis Data (MySQL, MongoDB)', level: 80, color: '#4479A1' },
+    { name: 'Editing (Canva, Capcut)', level: 80, color: '#00C4CC' },
+    { name: 'Microsoft Office (Word, Excel, PPT)', level: 85, color: '#D83B01' },
+    { name: 'PHP', level: 80, color: '#777BB4' },
+    { name: 'CSS', level: 80, color: '#1572B6' },
+    { name: 'HTML', level: 80, color: '#E34F26' },
+    { name: 'JavaScript', level: 80, color: '#F7DF1E' },
   ];
 
   const softSkills = [
