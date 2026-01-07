@@ -10,13 +10,13 @@ export default function Achievements() {
         {
             title: 'Explor[AI]tion',
             description: 'Participation in the Explor[AI]tion competition.',
-            image: '/lomba/Explor[AI]tion.png',
+            image: '/images/lomba/Explor[AI]tion.png',
             date: '2025' // Placeholder
         },
         {
             title: '4C National Competition',
             description: 'Participation in the 4C National Competition.',
-            image: '/lomba/4C.png',
+            image: '/images/lomba/4C.png',
             date: '2024' // Placeholder
         }
     ];
@@ -93,6 +93,7 @@ export default function Achievements() {
                                             src={item.image}
                                             alt={item.title}
                                             fill
+                                            sizes="(max-width: 768px) 100vw, 50vw"
                                             className="object-cover object-center transition-transform duration-700 ease-out"
                                         />
                                         <motion.div

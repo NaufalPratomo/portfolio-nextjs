@@ -111,7 +111,7 @@ export default function About() {
         <motion.div
           ref={parallaxRef}
           style={{ y: parallaxY }}
-          className="bg-white/60 backdrop-blur-lg rounded-2xl p-8 border border-slate-200 shadow-lg"
+          className="relative bg-white/60 backdrop-blur-lg rounded-2xl p-8 border border-slate-200 shadow-lg"
         >
           <motion.p
             className="text-slate-700 text-lg leading-relaxed mb-6"

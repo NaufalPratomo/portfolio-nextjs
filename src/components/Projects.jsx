@@ -44,16 +44,16 @@ const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex, isInView }
 
       {/* Project Image */}
       <motion.div
-        className="relative overflow-hidden rounded-xl mb-4 border border-slate-200"
+        className="relative h-44 w-full overflow-hidden rounded-xl mb-4 border border-slate-200"
         whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.3 }}
       >
         <Image
           src={project.image}
           alt={`Cuplikan ${project.title}`}
-          width={400}
-          height={176}
-          className="w-full h-44 object-cover transition-transform duration-700 ease-out"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover transition-transform duration-700 ease-out"
         />
         <motion.div
           className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-transparent"
@@ -121,7 +121,7 @@ export default function Projects() {
       title: 'Dashboard Daily Cost Production Site - (PT Sari Aditya Loka)',
       period: 'Jul 2025 - Agustus 2025',
       description: 'Berkolaborasi dengan stakeholder dari PT Sari Aditya Loka untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional dan mendukung pengambilan keputusan strategis yang berbasis data untuk PT Sari Aditya Loka (anak usaha PT Astra Agro Lestari yang bergerak di bidang sawit).',
-      image: '/projects/costsite.png',
+      image: '/images/projects/costsite.png',
       tags: ['PHP', 'MySQL'],
       link: 'https://dasboardcost.com/',
     },
@@ -129,7 +129,7 @@ export default function Projects() {
       title: 'PALMA ROOTS - (PT Palma Group)',
       period: 'Oct 2025 - Sekarang',
       description: 'Membangun sistem manajemen lapangan full-stack yang mengubah proses manual menjadi digital. PALMA ROOTS memungkinkan pemantauan aktivitas perkebunan (Panen, Angkut, Perawatan) secara real-time, memastikan transparansi data dari lapangan hingga ke manajemen. Dilengkapi fitur Taksasi Panen dan Verification Flow untuk meminimalkan kebocoran hasil produksi dan meningkatkan akurasi penggajian (Upah) karyawan.',
-      image: '/projects/palmaroots.png',
+      image: '/images/projects/palmaroots.png',
       tags: ['MongoDB', 'Express', 'React', 'Node.js', 'TypeScript', 'Tailwind CSS'],
       link: 'https://github.com/NaufalPratomo/WebQuest_Project/tree/main/SawiTrack',
     }
@@ -140,7 +140,7 @@ export default function Projects() {
       title: 'Deadline Reminder',
       period: 'Nov 2025 - Dec 2025',
       description: 'Aplikasi manajemen produktivitas cerdas untuk mengelola tugas dan tenggat waktu. Fitur unggulan meliputi sistem pengingat otomatis via email, manajemen prioritas dengan tracking real-time, dan autentikasi aman. Dibangun menggunakan Next.js dan MongoDB dengan antarmuka yang estetis dan responsif.',
-      image: '/projects/deadlinereminderapp.png',
+      image: '/images/projects/deadlinereminderapp.png',
       tags: ['Next.js', 'MongoDB', 'TailwindCSS'],
       link: 'https://deadline-reminder-app.vercel.app/',
     },
@@ -148,7 +148,7 @@ export default function Projects() {
       title: 'TALENTI',
       period: 'May 2025 - Oct 2025',
       description: 'Sistem informasi berbasis web untuk manajemen dan pencatatan prestasi mahasiswa di Jurusan Teknologi Informasi. Memfasilitasi mahasiswa dan dosen dalam mendokumentasikan, memvalidasi, dan mempublikasikan pencapaian akademik maupun non-akademik.',
-      image: '/projects/talenti.png',
+      image: '/images/projects/talenti.png',
       tags: ['Laravel', 'MySQL'],
       link: 'https://github.com/hikmahabdillah/sim-pencatatan-prestasi-jti',
     },
@@ -156,7 +156,7 @@ export default function Projects() {
       title: 'SIBETA',
       period: 'Dec 2024 - Jan 2025',
       description: 'Sistem Informasi Bebas Tanggungan TA untuk membantu pengelolaan data bebas tanggungan tugas akhir di Politeknik Negeri Malang.',
-      image: '/projects/sibeta.png',
+      image: '/images/projects/sibeta.png',
       tags: ['Laravel', 'MySQL'],
       link: 'https://github.com/NaufalPratomo/PBL',
     },
@@ -164,7 +164,7 @@ export default function Projects() {
       title: 'WeatherAI Classification System',
       period: 'Oct 2025 - Dec 2025',
       description: 'Mengembangkan aplikasi mobile berbasis Flutter yang mengimplementasikan sistem visi komputer untuk klasifikasi cuaca secara real-time. Aplikasi ini mampu menganalisis gambar langit untuk mengidentifikasi dan mengklasifikasikan kondisi cuaca secara otomatis, memberikan pengguna informasi meteorologi yang cepat dan akurat.',
-      image: '/projects/weather.png',
+      image: '/images/projects/weather.png',
       tags: ['Flutter', 'AI', 'Machine Learning'],
       link: 'https://github.com/weather-classification-kelompok6',
     },
