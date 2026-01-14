@@ -126,7 +126,7 @@ export default function Projects() {
       link: 'https://dasboardcost.com/',
     },
     {
-      title: 'PALMA ROOTS - (PT Palma Group)',
+      title: 'PALMA ROOTS - (PT Palma Serasih Tbk)',
       period: 'Oct 2025 - Sekarang',
       description: 'Membangun sistem manajemen lapangan full-stack yang mengubah proses manual menjadi digital. PALMA ROOTS memungkinkan pemantauan aktivitas perkebunan (Panen, Angkut, Perawatan) secara real-time, memastikan transparansi data dari lapangan hingga ke manajemen. Dilengkapi fitur Taksasi Panen dan Verification Flow untuk meminimalkan kebocoran hasil produksi dan meningkatkan akurasi penggajian (Upah) karyawan.',
       image: '/images/projects/palmaroots.png',
