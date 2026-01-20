@@ -137,6 +137,14 @@ export default function Projects() {
 
   const privateProjects = [
     {
+      title: 'Attendify',
+      period: 'Jan 2026',
+      description: 'Aplikasi pelacak waktu (time tracker) berbasis web yang dirancang untuk profesional yang mengutamakan fokus. Dilengkapi fitur check-in/check-out real-time, dashboard statistik produktivitas, dan logbook aktivitas harian. Dibangun dengan Next.js 16, React 19, dan Tailwind CSS dengan desain dark mode yang elegan dan responsif.',
+      image: '/images/projects/attendify.png',
+      tags: ['Next.js 16', 'React 19', 'Tailwind CSS'],
+      link: 'https://attendify-three-sigma.vercel.app/',
+    },
+    {
       title: 'Deadline Reminder',
       period: 'Nov 2025 - Dec 2025',
       description: 'Aplikasi manajemen produktivitas cerdas untuk mengelola tugas dan tenggat waktu. Fitur unggulan meliputi sistem pengingat otomatis via email, manajemen prioritas dengan tracking real-time, dan autentikasi aman. Dibangun menggunakan Next.js dan MongoDB dengan antarmuka yang estetis dan responsif.',
