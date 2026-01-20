@@ -60,7 +60,7 @@ export default function Hero() {
   };
 
   return (
-    <section id="home" className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-20 md:pt-0">
       {/* Parallax Background Layers */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-b from-blue-100 to-transparent"
