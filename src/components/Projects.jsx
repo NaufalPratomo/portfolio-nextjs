@@ -5,13 +5,12 @@ import Link from 'next/link';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { useState, useRef, useEffect } from 'react';
-const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex, isInView }) => (
+const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
   <motion.div
     key={project.title}
     className="relative group"
-    initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-    animate={isInView ? { opacity: 1, x: 0 } : {}}
-    transition={{ duration: 0.6, delay: index * 0.2 }}
+    initial={{ opacity: 1, x: 0 }}
+    animate={{ opacity: 1, x: 0 }}
     onHoverStart={() => setHoveredIndex(index)}
     onHoverEnd={() => setHoveredIndex(null)}
     whileHover={{ scale: 1.02 }}
@@ -247,7 +246,6 @@ export default function Projects() {
                 index={index + 10}
                 hoveredIndex={hoveredIndex}
                 setHoveredIndex={setHoveredIndex}
-                isInView={isInView}
               />
             ))}
           </div>
@@ -271,7 +269,6 @@ export default function Projects() {
                 index={index + 20}
                 hoveredIndex={hoveredIndex}
                 setHoveredIndex={setHoveredIndex}
-                isInView={isInView}
               />
             ))}
           </div>
