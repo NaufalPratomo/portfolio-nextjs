@@ -24,21 +24,39 @@ const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
         transition={{ delay: 0.2 }}
       >
         <h3 className="text-xl font-bold text-slate-900">{project.title}</h3>
-        <motion.div
-          whileHover={{ scale: 1.1, rotate: 45 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <Link
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sky-600 hover:text-blue-600 transition-colors"
+        <div className="flex items-center gap-3">
+          {project.tryMe && (
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-sky-500 to-blue-600 text-white text-xs font-bold rounded-full shadow-md hover:shadow-lg transition-all"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                </span>
+                Try Me
+              </Link>
+            </motion.div>
+          )}
+          <motion.div
+            whileHover={{ scale: 1.1, rotate: 45 }}
+            whileTap={{ scale: 0.9 }}
           >
-            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </Link>
-        </motion.div>
+            <Link
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sky-600 hover:text-blue-600 transition-colors"
+            >
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </Link>
+          </motion.div>
+        </div>
       </motion.div>
 
       {/* Project Image */}
@@ -136,12 +154,31 @@ export default function Projects() {
 
   const privateProjects = [
     {
-      title: 'Attendify',
-      period: 'Jan 2026',
-      description: 'Aplikasi pelacak waktu (time tracker) berbasis web yang dirancang untuk profesional yang mengutamakan fokus. Dilengkapi fitur check-in/check-out real-time, dashboard statistik produktivitas, dan logbook aktivitas harian. Dibangun dengan Next.js 16, React 19, dan Tailwind CSS dengan desain dark mode yang elegan dan responsif.',
-      image: '/images/projects/attendify.png',
-      tags: ['Next.js 16', 'React 19', 'Tailwind CSS'],
-      link: 'https://attendify-three-sigma.vercel.app/',
+      title: 'Iqro Quran',
+      period: 'Feb 2026 - Mar 2026',
+      description: 'Aplikasi ini adalah platform Al-Qur’an berbasis web yang membantu pengguna membaca surah dan juz secara terstruktur, menandai ayat favorit (bookmark), serta memantau progres ibadah harian. Dilengkapi fitur pencarian, pengaturan tampilan bacaan, dan asisten AI untuk menjawab pertanyaan seputar Al-Qur’an, sistem ini dirancang dengan antarmuka modern, responsif, dan nyaman digunakan di berbagai perangkat.',
+      image: '/images/projects/iqroquran.png',
+      tags: ['Next.js', 'React', 'Tailwind CSS', 'Local Storage'],
+      link: 'https://iqro-quran-delta.vercel.app/',
+      tryMe: true,
+    },
+    {
+      title: 'Match Vibe',
+      period: 'Feb 2026 - Mar 2026',
+      description: 'MatchVibe adalah aplikasi web pencatat skor pertandingan multi-olahraga secara real-time, yang memudahkan pengguna memilih cabang olahraga, memasukkan nama pemain, lalu mengelola skor hingga penentuan pemenang dalam satu alur yang cepat dan intuitif. Sistem ini mendukung aturan skor berbeda untuk tiap olahraga (seperti badminton, basket, futsal, tenis, dan tenis meja), termasuk set, deuce, riwayat set, serta reset pertandingan, dengan antarmuka modern berbasis Next.js, React, Tailwind CSS, Zustand, dan Framer Motion.',
+      image: '/images/projects/matchvibe.png',
+      tags: ['Next.js', 'React', 'Tailwind CSS', 'Zustand', 'Framer Motion'],
+      link: 'https://match-vibe-six.vercel.app/',
+      tryMe: true,
+    },
+    {
+      title: 'Moto Tracker',
+      period: 'Feb 2026',
+      description: 'MotoTracker adalah aplikasi web untuk manajemen perawatan motor yang membantu pengguna memantau jadwal servis berdasarkan waktu dan kilometer, mengelola banyak kendaraan dalam satu dashboard, mencatat riwayat servis, serta mengekspor laporan servis ke PDF. Sistem ini dibangun dengan Next.js, React, TypeScript, Tailwind CSS, NextAuth, dan MongoDB sehingga tampil modern, responsif, dan aman untuk penggunaan harian.',
+      image: '/images/projects/mototracker.png',
+      tags: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'NextAuth', 'MongoDB'],
+      link: 'https://mototracker.vercel.app/',
+      tryMe: true,
     },
     {
       title: 'Deadline Reminder',
@@ -150,6 +187,16 @@ export default function Projects() {
       image: '/images/projects/deadlinereminderapp.png',
       tags: ['Next.js', 'MongoDB', 'TailwindCSS'],
       link: 'https://deadline-reminder-app.vercel.app/',
+      tryMe: true,
+    },
+    {
+      title: 'Attendify',
+      period: 'Jan 2026',
+      description: 'Aplikasi pelacak waktu (time tracker) berbasis web yang dirancang untuk profesional yang mengutamakan fokus. Dilengkapi fitur check-in/check-out real-time, dashboard statistik produktivitas, dan logbook aktivitas harian. Dibangun dengan Next.js 16, React 19, dan Tailwind CSS dengan desain dark mode yang elegan dan responsif.',
+      image: '/images/projects/attendify.png',
+      tags: ['Next.js 16', 'React 19', 'Tailwind CSS'],
+      link: 'https://attendify-three-sigma.vercel.app/',
+      tryMe: true,
     },
     {
       title: 'TALENTI',
@@ -225,7 +272,7 @@ export default function Projects() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          Portfolio Proyek
+          Portofolio Project
         </motion.h2>
 
         {/* Real Projects Section */}

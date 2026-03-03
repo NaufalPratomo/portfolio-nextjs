@@ -105,7 +105,7 @@ export default function Contact() {
           }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          Saya selalu terbuka untuk mendiskusikan proyek baru, ide kreatif, atau peluang menjadi bagian dari visi Anda.
+          Saya selalu terbuka untuk mendiskusikan project baru, ide kreatif, atau peluang menjadi bagian dari visi Anda.
         </motion.p>
 
         <motion.div
