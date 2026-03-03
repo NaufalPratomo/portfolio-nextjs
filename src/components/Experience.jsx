@@ -6,10 +6,10 @@ import { motion } from 'framer-motion';
 const experiences = [
     {
         title: 'Back End Developer',
-        company: 'PT UTERO KREATIF INDONESIA',
+        company: 'UTERO INDONESIA',
         type: 'Internship',
         date: 'Jan 2026 - Present',
-        duration: '1 mo',
+        duration: '3 mos',
         location: 'Kota Malang, East Java, Indonesia',
         locationType: 'On-site',
         logo: '/images/logopt/utero-logo.png',
@@ -20,24 +20,24 @@ const experiences = [
         company: 'WebQuest ID',
         type: 'Self-employed',
         date: 'Oct 2025 - Present',
-        duration: '4 mos',
+        duration: '6 mos',
         location: 'Kota Malang, East Java, Indonesia',
         locationType: 'Hybrid',
         logo: '/images/logopt/webquest-logo.png',
-        skills: ['Full-Stack Development', 'Project Management'],
+        skills: ['Full-Stack Development and Project Management'],
     },
     {
         title: 'Project Manager',
         company: 'PT. Palma Serasih Tbk.',
         type: 'Freelance',
-        date: 'Oct 2025 - Present',
-        duration: '4 mos',
+        date: 'Oct 2025 - Feb 2026',
+        duration: '5 mos',
         location: 'Jakarta, Indonesia',
         locationType: 'Remote',
-        description: 'Membangun sistem manajemen lapangan full-stack yang mengubah proses manual menjadi digital. PALMA ROOTS memungkinkan pemantauan aktivitas perkebunan (Panen, Angkut, Perawatan) secara real-time.',
+        description: 'Membangun sistem manajemen lapangan full-stack yang mengubah proses manual menjadi digital. PALMA ROOTS memungkinkan pemantauan aktivitas perkebunan (Panen, Angkut, Perawatan) secara real-time, memastikan transparansi data dari lapangan hingga ke manajemen. Dilengkapi fitur Taksasi Panen dan Verification Flow untuk meminimalkan kebocoran hasil produksi dan meningkatkan akurasi penggajian (Upah) karyawan.',
         logo: '/images/logopt/palma-logo.png',
         media: '/images/projects/palmaroots.png',
-        skills: ['Full-Stack Development', 'Project Management'],
+        skills: ['Full-Stack Development and Project Management'],
     },
     {
         title: 'Frontend Web Developer',
@@ -47,7 +47,7 @@ const experiences = [
         duration: '2 mos',
         location: 'Indonesia',
         locationType: 'Remote',
-        description: 'Berkolaborasi dengan stakeholder dari PT Sari Aditya Loka untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional.',
+        description: 'Berkolaborasi dengan stakeholder dari PT Sari Aditya Loka untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional dan mendukung pengambilan keputusan strategis yang berbasis data untuk PT Sari Aditya Loka (anak usaha PT Astra Agro Lestari yang bergerak di bidang sawit)',
         logo: '/images/logopt/sari-aditya-logo.png',
         skills: ['Front-End Development'],
     }
@@ -116,12 +116,16 @@ export default function Experience() {
                                             </h3>
                                             <div className="text-lg font-medium text-slate-700 dark:text-slate-300">
                                                 {exp.company}
-                                                <span className="mx-2 text-slate-400">•</span>
-                                                <span className="text-slate-600 dark:text-slate-400 text-base font-normal">{exp.type}</span>
+                                                {exp.type && (
+                                                    <>
+                                                        <span className="mx-2 text-slate-400">•</span>
+                                                        <span className="text-slate-600 dark:text-slate-400 text-base font-normal">{exp.type}</span>
+                                                    </>
+                                                )}
                                             </div>
                                         </div>
                                         <div className="text-sm text-slate-500 dark:text-slate-400 mt-1 md:mt-0 font-medium whitespace-nowrap bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full inline-block md:block w-fit">
-                                            {exp.date}
+                                            {exp.date} {exp.duration && `· ${exp.duration}`}
                                         </div>
                                     </div>
 
@@ -139,7 +143,7 @@ export default function Experience() {
                                     </div>
 
                                     {exp.description && (
-                                        <p className="text-slate-600 dark:text-slate-300 mb-4 leading-relaxed line-clamp-4 hover:line-clamp-none transition-all">
+                                        <p className="text-slate-600 dark:text-slate-300 mb-4 leading-relaxed transition-all">
                                             {exp.description}
                                         </p>
                                     )}
@@ -172,6 +176,7 @@ export default function Experience() {
                                                     src={exp.media}
                                                     alt="Attachment"
                                                     fill
+                                                    sizes="(max-width: 768px) 100vw, 320px"
                                                     className="object-cover"
                                                 />
                                             </div>

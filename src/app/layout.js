@@ -2,12 +2,16 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { SmoothScrollProvider } from '@/providers/SmoothScrollProvider';
 import AudioPlayer from '@/components/AudioPlayer';
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
   title: 'Muhammad Naufal Pratomo - Portfolio',
   description: 'Portfolio website of Muhammad Naufal Pratomo, Web Developer',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -20,6 +24,7 @@ export default function RootLayout({ children }) {
           </main>
           <AudioPlayer />
         </SmoothScrollProvider>
+        <Analytics />
       </body>
     </html>
   );
