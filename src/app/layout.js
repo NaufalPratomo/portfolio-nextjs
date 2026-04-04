@@ -12,6 +12,27 @@ export const metadata = {
   icons: {
     icon: '/favicon.ico',
   },
+  openGraph: {
+    title: 'Muhammad Naufal Pratomo - Portfolio',
+    description: 'Portfolio website of Muhammad Naufal Pratomo, Web Developer',
+    siteName: 'Muhammad Naufal Pratomo',
+    images: [
+      {
+        url: '/images/profile.jpg', // Menggunakan foto profil sebagai gambar preview
+        width: 800,
+        height: 600,
+        alt: 'Muhammad Naufal Pratomo - Portfolio',
+      },
+    ],
+    locale: 'id_ID',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Muhammad Naufal Pratomo - Portfolio',
+    description: 'Portfolio website of Muhammad Naufal Pratomo, Web Developer',
+    images: ['/images/profile.jpg'],
+  },
 };
 
 export default function RootLayout({ children }) {
