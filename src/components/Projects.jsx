@@ -25,7 +25,7 @@ const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
       >
         <h3 className="text-xl font-bold text-slate-900">{project.title}</h3>
         <div className="flex items-center gap-3">
-          {project.tryMe && (
+          {project.tryMe && project.link && (
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href={project.link}
@@ -41,21 +41,23 @@ const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
               </Link>
             </motion.div>
           )}
-          <motion.div
-            whileHover={{ scale: 1.1, rotate: 45 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <Link
-              href={project.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sky-600 hover:text-blue-600 transition-colors"
+          {project.link && (
+            <motion.div
+              whileHover={{ scale: 1.1, rotate: 45 }}
+              whileTap={{ scale: 0.9 }}
             >
-              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </Link>
-          </motion.div>
+              <Link
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sky-600 hover:text-blue-600 transition-colors"
+              >
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </Link>
+            </motion.div>
+          )}
         </div>
       </motion.div>
 
@@ -144,11 +146,26 @@ export default function Projects() {
     },
     {
       title: 'PALMA ROOTS - (PT Palma Serasih Tbk)',
-      period: 'Oct 2025 - Sekarang',
+      period: 'Oct 2025 - Feb 2026',
       description: 'Membangun sistem manajemen lapangan full-stack yang mengubah proses manual menjadi digital. PALMA ROOTS memungkinkan pemantauan aktivitas perkebunan (Panen, Angkut, Perawatan) secara real-time, memastikan transparansi data dari lapangan hingga ke manajemen. Dilengkapi fitur Taksasi Panen dan Verification Flow untuk meminimalkan kebocoran hasil produksi dan meningkatkan akurasi penggajian (Upah) karyawan.',
       image: '/images/projects/palmaroots.png',
       tags: ['MongoDB', 'Express', 'React', 'Node.js', 'TypeScript', 'Tailwind CSS'],
       link: 'https://github.com/NaufalPratomo/WebQuest_Project/tree/main/SawiTrack',
+    },
+    {
+      title: 'CARUBRA Virtual Assistant - (PT Utero Kreatif Indonesia)',
+      period: 'Jan 2026 - Mar 2026',
+      description: 'Mengembangkan asisten virtual berbasis suara untuk PT Utero Kreatif Indonesia yang memungkinkan pengguna berinteraksi secara natural tanpa mengetik. Sistem memproses suara pengguna (speech-to-text), mengirim konteks ke model AI melalui OpenRouter, lalu mengembalikan jawaban dalam bentuk suara (text-to-speech) yang terintegrasi dengan avatar interaktif. Saya juga menerapkan guardrails agar AI tetap fokus pada informasi perusahaan seperti layanan, portofolio, budaya kerja, dan kontak, sehingga respons lebih relevan dan aman untuk kebutuhan front-facing bisnis. Solusi ini membantu menghadirkan pengalaman digital yang modern, informatif, dan engaging untuk profil perusahaan.',
+      image: '/images/projects/carubra.png',
+      tags: ['Next.js', 'React', 'TypeScript', 'OpenRouter API', 'Web Speech API (STT)', 'Python Flask', 'gTTS', 'Tailwind CSS', 'VAD (Silero)'],
+      link: 'https://carubra-ai.vercel.app/',
+    },
+    {
+      title: 'AIDA - Advertisement Intelligence & Data Analytics - (PT Utero Kreatif Indonesia)',
+      period: 'Januari 2026 - Sekarang',
+      description: 'AIDA adalah sistem monitoring dan analitik billboard berbasis AI untuk deteksi serta perhitungan kendaraan secara real-time. Dalam proyek ini, saya tidak membangun sistem dari nol, tetapi berfokus pada improvement end-to-end: penyempurnaan tampilan dashboard agar lebih jelas dan usable, perbaikan logika proses data agar lebih stabil, serta retraining model YOLO untuk meningkatkan akurasi deteksi. Hasilnya, sistem memberikan insight trafik yang lebih presisi dan lebih siap digunakan untuk kebutuhan operasional serta pengambilan keputusan.',
+      image: '/images/projects/aida.png',
+      tags: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'Drizzle ORM', 'MySQL', 'Python', 'YOLO', 'OpenCV', 'MQTT'],
     }
   ];
 
