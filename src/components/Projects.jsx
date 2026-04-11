@@ -162,10 +162,17 @@ export default function Projects() {
     },
     {
       title: 'AIDA - Advertisement Intelligence & Data Analytics - (PT Utero Kreatif Indonesia)',
-      period: 'Januari 2026 - Sekarang',
+      period: 'Januari 2026 - Present',
       description: 'AIDA adalah sistem monitoring dan analitik billboard berbasis AI untuk deteksi serta perhitungan kendaraan secara real-time. Dalam proyek ini, saya tidak membangun sistem dari nol, tetapi berfokus pada improvement end-to-end: penyempurnaan tampilan dashboard agar lebih jelas dan usable, perbaikan logika proses data agar lebih stabil, serta retraining model YOLO untuk meningkatkan akurasi deteksi. Hasilnya, sistem memberikan insight trafik yang lebih presisi dan lebih siap digunakan untuk kebutuhan operasional serta pengambilan keputusan.',
       image: '/images/projects/aida.png',
       tags: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'Drizzle ORM', 'MySQL', 'Python', 'YOLO', 'OpenCV', 'MQTT'],
+    },
+    {
+      title: 'Enterprise Operations Dashboard - (PT Doa Suryo Agong)',
+      period: 'Mar 2026 - Present',
+      description: 'Membangun platform dashboard enterprise terintegrasi untuk mendukung operasional lintas divisi (Finance, HR, Produksi, Logistik, Sales, Management, dan Office) dalam satu ekosistem. Arsitektur backend dirancang secara hybrid, menggabungkan akses data langsung berbasis policy untuk CRUD ringan dan API server untuk business logic kompleks seperti approval workflow, payroll, reimburse, budget, serta agregasi metrik lintas modul. Solusi ini meningkatkan kecepatan proses kerja, akurasi data, dan kualitas pengambilan keputusan berbasis data real-time. Saya berfokus pada pengembangan backend end-to-end: merancang dan membangun API modular, menerapkan otorisasi berbasis role/access level, mengamankan data dengan Supabase Auth dan RLS, menyusun validasi payload serta service layer, mengembangkan workflow approval dan automasi perhitungan bisnis, serta melakukan hardening endpoint dan perbaikan bug kritikal agar sistem stabil di production.',
+      image: '/images/projects/suryo_agong.png',
+      tags: ['Next.js', 'TypeScript', 'Supabase', 'PostgreSQL', 'API Routes', 'RLS', 'Node.js'],
     }
   ];
 

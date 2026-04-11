@@ -9,7 +9,7 @@ const experiences = [
         company: 'UTERO INDONESIA',
         type: 'Internship',
         date: 'Jan 2026 - Present',
-        duration: '3 mos',
+        duration: '4 mos',
         location: 'Kota Malang, East Java, Indonesia',
         locationType: 'On-site',
         logo: '/images/logopt/utero-logo.png',
@@ -27,7 +27,7 @@ const experiences = [
         skills: ['Full-Stack Development and Project Management'],
     },
     {
-        title: 'Project Manager',
+        title: 'Fullstack Developer',
         company: 'PT. Palma Serasih Tbk.',
         type: 'Freelance',
         date: 'Oct 2025 - Feb 2026',
