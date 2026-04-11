@@ -19,6 +19,12 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
   const cleanupRef = useRef(null);
 
   useEffect(() => {
+    if (!snap) {
+      // Keep native browser scrolling when snap is disabled.
+      // This avoids wheel/trackpad lock issues caused by virtual scroll state.
+      return;
+    }
+
     // Create Lenis instance
     lenisRef.current = new Lenis({
       duration: 1.0,
@@ -147,10 +153,15 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
       const sections = Array.from(document.querySelectorAll('section[id]'));
       const idx = sections.findIndex((s) => s.id === id);
       if (idx !== -1) {
+        const top = sections[idx].getBoundingClientRect().top + window.scrollY;
+        if (!snap || !lenisRef.current) {
+          window.scrollTo({ top: top - NAVBAR_HEIGHT, behavior: 'smooth' });
+          return;
+        }
+
         try {
-          lenisRef.current?.scrollTo(sections[idx], { duration: 0.9, easing: (t) => t, offset: -NAVBAR_HEIGHT });
+          lenisRef.current.scrollTo(sections[idx], { duration: 0.9, easing: (t) => t, offset: -NAVBAR_HEIGHT });
         } catch (e) {
-          const top = sections[idx].getBoundingClientRect().top + window.scrollY;
           window.scrollTo({ top: top - NAVBAR_HEIGHT, behavior: 'smooth' });
         }
       }
