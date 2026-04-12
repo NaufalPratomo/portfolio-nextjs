@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState, useMemo } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { useParallax } from '@/hooks/useParallax';
 import { useScrollSnap } from '@/providers/SmoothScrollProvider';
 
@@ -36,16 +36,16 @@ export default function Hero() {
   ];
 
   const [index, setIndex] = useState(0);
+  const shouldReduceMotion = useReducedMotion();
   const { scrollY } = useScroll();
   const { ref: parallaxRef, y: parallaxY } = useParallax({ speed: 0.4 });
   const { scrollToId } = useScrollSnap();
 
   // Background parallax effects
   const backgroundY = useTransform(scrollY, [0, 1000], ['0%', '20%']);
-  const opacity = useTransform(scrollY, [0, 400], [1, 0]);
 
   // Generate random positions once
-  const floatingElements = useMemo(() => generateRandomPositions(12), []);
+  const floatingElements = useMemo(() => generateRandomPositions(8), []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -60,39 +60,43 @@ export default function Hero() {
   };
 
   return (
-    <section id="home" className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-20 md:pt-0">
+    <section id="home" className="relative min-h-[100svh] flex items-start lg:items-center justify-center overflow-x-hidden pt-24 md:pt-28 lg:pt-24 pb-12">
       {/* Parallax Background Layers */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-b from-blue-100 to-transparent"
-        style={{ y: backgroundY }}
+        style={{ y: shouldReduceMotion ? 0 : backgroundY }}
       />
-      <motion.div
-        className="absolute inset-0 animated-gradient opacity-10"
-        style={{ y: useTransform(scrollY, [0, 1000], ['0%', '30%']) }}
-      />
+      {!shouldReduceMotion && (
+        <motion.div
+          className="absolute inset-0 animated-gradient opacity-10"
+          style={{ y: useTransform(scrollY, [0, 1000], ['0%', '30%']) }}
+        />
+      )}
 
       {/* Floating Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {floatingElements.map((position, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-3 h-3 md:w-4 md:h-4 bg-blue-500/10 rounded-full"
-            style={{
-              x: position.x,
-              y: position.y,
-              scale: position.scale,
-            }}
-            animate={{
-              y: ['0%', '100%'],
-              transition: {
-                duration: position.duration,
-                repeat: Infinity,
-                ease: 'linear',
-              },
-            }}
-          />
-        ))}
-      </div>
+      {!shouldReduceMotion && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none hidden md:block">
+          {floatingElements.map((position, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-3 h-3 md:w-4 md:h-4 bg-blue-500/10 rounded-full"
+              style={{
+                x: position.x,
+                y: position.y,
+                scale: position.scale,
+              }}
+              animate={{
+                y: ['0%', '100%'],
+                transition: {
+                  duration: position.duration,
+                  repeat: Infinity,
+                  ease: 'linear',
+                },
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Main Content */}
       <motion.div
@@ -112,6 +116,8 @@ export default function Hero() {
               alt="Profile Picture"
               width={128}
               height={128}
+              priority
+              sizes="(max-width: 768px) 96px, 128px"
               className="mx-auto rounded-full object-cover shadow-2xl shadow-sky-500/50 w-24 h-24 md:w-32 md:h-32"
             />
             <motion.div
@@ -133,7 +139,7 @@ export default function Hero() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-4xl md:text-7xl font-bold text-slate-900 mb-4"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight font-bold text-slate-900 mb-4"
         >
           Muhammad Naufal Pratomo
         </motion.h1>
@@ -147,7 +153,7 @@ export default function Hero() {
           Software Engineering Student
         </motion.p>
 
-        <div className="h-[48px] text-slate-600 text-lg mb-8 max-w-2xl mx-auto overflow-hidden">
+        <div className="hero-greeting min-h-[3rem] md:min-h-[3.5rem] text-slate-600 text-lg mb-8 max-w-2xl mx-auto overflow-hidden">
           <motion.span
             key={index}
             initial={{ y: 20, opacity: 0 }}

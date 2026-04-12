@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { useState, useRef, useEffect } from 'react';
 const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
@@ -17,16 +17,11 @@ const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
   >
     <div className="bg-white/60 md:backdrop-blur-lg backdrop-blur-sm rounded-2xl p-6 border border-slate-200 shadow-lg transition-all duration-300 group-hover:shadow-xl h-full flex flex-col">
       {/* Project Header */}
-      <motion.div
-        className="flex justify-between items-start mb-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-      >
+      <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold text-slate-900">{project.title}</h3>
         <div className="flex items-center gap-3">
           {project.tryMe && project.link && (
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <div className="transition-transform duration-200 hover:scale-105 active:scale-95">
               <Link
                 href={project.link}
                 target="_blank"
@@ -39,13 +34,10 @@ const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
                 </span>
                 Try Me
               </Link>
-            </motion.div>
+            </div>
           )}
           {project.link && (
-            <motion.div
-              whileHover={{ scale: 1.1, rotate: 45 }}
-              whileTap={{ scale: 0.9 }}
-            >
+            <div className="transition-transform duration-200 hover:scale-110 hover:rotate-45 active:scale-95">
               <Link
                 href={project.link}
                 target="_blank"
@@ -56,69 +48,44 @@ const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </Link>
-            </motion.div>
+            </div>
           )}
         </div>
-      </motion.div>
+      </div>
 
       {/* Project Image */}
-      <motion.div
-        className="relative h-44 w-full overflow-hidden rounded-xl mb-4 border border-slate-200"
-        whileHover={{ scale: 1.05 }}
-        transition={{ duration: 0.3 }}
-      >
+      <div className="relative h-44 w-full overflow-hidden rounded-xl mb-4 border border-slate-200">
         <Image
           src={project.image}
           alt={`Cuplikan ${project.title}`}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover transition-transform duration-700 ease-out"
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-transparent"
-          initial={{ opacity: 0 }}
-          whileHover={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-        />
-      </motion.div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      </div>
 
       {/* Project Period */}
-      <motion.p
-        className="text-sm text-sky-700 mb-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-      >
+      <p className="text-sm text-sky-700 mb-4">
         {project.period}
-      </motion.p>
+      </p>
 
       {/* Project Description */}
-      <motion.p
-        className="text-slate-600 mb-4 text-sm leading-relaxed flex-grow"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-      >
+      <p className="text-slate-600 mb-4 text-sm leading-relaxed flex-grow">
         {project.description}
-      </motion.p>
+      </p>
 
       {/* Project Tags */}
-      <motion.div
-        className="flex flex-wrap gap-2 mt-auto"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-      >
+      <div className="flex flex-wrap gap-2 mt-auto">
         {project.tags.map((tag) => (
-          <motion.span
+          <span
             key={tag}
-            className="px-3 py-1 bg-sky-200/70 text-sky-800 rounded-full text-xs font-medium"
-            whileHover={{ scale: 1.1, backgroundColor: 'rgba(186, 230, 253, 0.9)' }}
+            className="px-3 py-1 bg-sky-200/70 text-sky-800 rounded-full text-xs font-medium transition-transform duration-200 hover:scale-105"
           >
             {tag}
-          </motion.span>
+          </span>
         ))}
-      </motion.div>
+      </div>
     </div>
 
     {/* Interactive Hover Effect */}
@@ -249,6 +216,8 @@ export default function Projects() {
   ];
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [enableInteractiveCursor, setEnableInteractiveCursor] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
   const [sectionRef, isInView] = useIntersectionObserver({ threshold: 0.1, triggerOnce: true });
   const timelineRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -264,13 +233,36 @@ export default function Projects() {
   const cursorY = useSpring(mouseY, springConfig);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      mouseX.set(e.clientX - 16); // Center offset
-      mouseY.set(e.clientY - 16);
+    if (typeof window === 'undefined') return;
+
+    const media = window.matchMedia('(min-width: 1024px) and (pointer: fine)');
+    const updateCursorMode = () => {
+      setEnableInteractiveCursor(media.matches && !shouldReduceMotion);
     };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
+
+    updateCursorMode();
+    media.addEventListener('change', updateCursorMode);
+
+    return () => media.removeEventListener('change', updateCursorMode);
+  }, [shouldReduceMotion]);
+
+  useEffect(() => {
+    if (!enableInteractiveCursor) return;
+
+    const handleMouseMove = (e) => {
+      const cursorSize = 32;
+      const maxX = Math.max(0, window.innerWidth - cursorSize);
+      const maxY = Math.max(0, window.innerHeight - cursorSize);
+      const clampedX = Math.max(0, Math.min(e.clientX - cursorSize / 2, maxX));
+      const clampedY = Math.max(0, Math.min(e.clientY - cursorSize / 2, maxY));
+
+      mouseX.set(clampedX);
+      mouseY.set(clampedY);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [enableInteractiveCursor, mouseX, mouseY]);
 
 
 
@@ -346,18 +338,20 @@ export default function Projects() {
         </div>
 
         {/* Interactive Cursor */}
-        <motion.div
-          className="fixed w-8 h-8 rounded-full pointer-events-none mix-blend-difference z-50 hidden md:block"
-          style={{
-            x: cursorX,
-            y: cursorY,
-            background: 'white',
-          }}
-          animate={{
-            scale: hoveredIndex !== null ? 1.5 : 1,
-          }}
-          transition={{ type: "spring", stiffness: 150, damping: 15 }}
-        />
+        {enableInteractiveCursor && (
+          <motion.div
+            className="fixed w-8 h-8 rounded-full pointer-events-none mix-blend-difference z-50"
+            style={{
+              x: cursorX,
+              y: cursorY,
+              background: 'white',
+            }}
+            animate={{
+              scale: hoveredIndex !== null ? 1.5 : 1,
+            }}
+            transition={{ type: "spring", stiffness: 150, damping: 15 }}
+          />
+        )}
       </div>
     </section>
   );

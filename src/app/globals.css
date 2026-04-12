@@ -9,6 +9,27 @@
     height: 100%;
     margin: 0;
     padding: 0;
+    width: 100%;
+    overflow-x: clip;
+  }
+
+  /* Keep scrolling behavior but hide scrollbar UI globally */
+  html {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge legacy */
+  }
+
+  body {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge legacy */
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar,
+  *::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none; /* Chrome, Safari, Edge (Chromium) */
   }
 
   html.lenis {
@@ -205,4 +226,15 @@ section {
 }
 .dark .text-gray-500 {
   color: #94a3b8 !important;
+}
+
+@media (max-height: 820px) {
+  #home {
+    padding-top: 6.5rem;
+    padding-bottom: 3rem;
+  }
+
+  #home h1 {
+    font-size: clamp(2.25rem, 7vw, 4.5rem);
+  }
 }

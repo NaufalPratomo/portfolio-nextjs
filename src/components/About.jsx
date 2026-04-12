@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { useParallax } from '@/hooks/useParallax';
 import { useMemo } from 'react';
@@ -48,11 +48,12 @@ export default function About() {
   ];
 
   const [sectionRef, isInView] = useIntersectionObserver({ threshold: 0.3 });
+  const shouldReduceMotion = useReducedMotion();
   const { scrollY } = useScroll();
   const { ref: parallaxRef, y: parallaxY } = useParallax({ speed: 0.1 });
 
   // Generate geometric patterns once
-  const geometricPatterns = useMemo(() => generateGeometricPatterns(20), []);
+  const geometricPatterns = useMemo(() => generateGeometricPatterns(10), []);
 
   // Geometric pattern animation
   const patternTranslateY = useTransform(scrollY, [0, 1000], ['0%', '20%']);
@@ -61,33 +62,35 @@ export default function About() {
   return (
     <section id="about" className="relative min-h-screen flex items-center px-4 py-20 overflow-hidden">
       {/* Geometric Patterns Background */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        style={{ y: patternTranslateY, opacity: patternOpacity }}
-      >
-        {geometricPatterns.map((pattern, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-20 h-20 bg-sky-500/5"
-            style={{
-              left: pattern.left,
-              top: pattern.top,
-              rotate: pattern.rotate,
-              scale: pattern.scale,
-            }}
-            initial={false}
-            animate={{
-              rotate: [0, 360],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: pattern.duration,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-        ))}
-      </motion.div>
+      {!shouldReduceMotion && (
+        <motion.div
+          className="absolute inset-0 pointer-events-none"
+          style={{ y: patternTranslateY, opacity: patternOpacity }}
+        >
+          {geometricPatterns.map((pattern, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-20 h-20 bg-sky-500/5"
+              style={{
+                left: pattern.left,
+                top: pattern.top,
+                rotate: pattern.rotate,
+                scale: pattern.scale,
+              }}
+              initial={false}
+              animate={{
+                rotate: [0, 360],
+                scale: [1, 1.2, 1],
+              }}
+              transition={{
+                duration: pattern.duration,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            />
+          ))}
+        </motion.div>
+      )}
 
       <motion.div
         ref={sectionRef}
