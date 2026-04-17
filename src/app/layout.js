@@ -1,9 +1,7 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { SmoothScrollProvider } from '@/providers/SmoothScrollProvider';
-import AudioPlayer from '@/components/AudioPlayer';
 import { Analytics } from "@vercel/analytics/react";
-
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
@@ -43,7 +41,6 @@ export default function RootLayout({ children }) {
           <main className="relative">
             {children}
           </main>
-          <AudioPlayer />
         </SmoothScrollProvider>
         <Analytics />
       </body>

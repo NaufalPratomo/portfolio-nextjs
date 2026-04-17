@@ -71,8 +71,7 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
         try {
           lenisRef.current.scrollTo(target, { duration: 0.9, easing: (t) => t, offset: -NAVBAR_HEIGHT });
         } catch (e) {
-          const top = target.getBoundingClientRect().top + window.scrollY;
-          window.scrollTo({ top: top - NAVBAR_HEIGHT, behavior: 'smooth' });
+          target.scrollIntoView({ behavior: 'smooth' });
         }
         // release lock after animation completes
         setTimeout(() => {
@@ -153,16 +152,15 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
       const sections = Array.from(document.querySelectorAll('section[id]'));
       const idx = sections.findIndex((s) => s.id === id);
       if (idx !== -1) {
-        const top = sections[idx].getBoundingClientRect().top + window.scrollY;
         if (!snap || !lenisRef.current) {
-          window.scrollTo({ top: top - NAVBAR_HEIGHT, behavior: 'smooth' });
+          sections[idx].scrollIntoView({ behavior: 'smooth' });
           return;
         }
 
         try {
           lenisRef.current.scrollTo(sections[idx], { duration: 0.9, easing: (t) => t, offset: -NAVBAR_HEIGHT });
         } catch (e) {
-          window.scrollTo({ top: top - NAVBAR_HEIGHT, behavior: 'smooth' });
+          sections[idx].scrollIntoView({ behavior: 'smooth' });
         }
       }
     },
