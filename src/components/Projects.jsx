@@ -218,7 +218,7 @@ export default function Projects() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [enableInteractiveCursor, setEnableInteractiveCursor] = useState(false);
   const shouldReduceMotion = useReducedMotion();
-  const [sectionRef, isInView] = useIntersectionObserver({ threshold: 0.1, triggerOnce: true });
+  const [sectionRef, isInView] = useIntersectionObserver({ threshold: 0.01, triggerOnce: true });
   const timelineRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: timelineRef,
