@@ -104,6 +104,22 @@ const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
 export default function Projects() {
   const realProjects = [
     {
+      title: 'E-Masjid Daarus Sholih Patraland',
+      period: 'May 2026',
+      description: 'Membangun sistem informasi masjid modern yang mengedepankan transparansi tata kelola keuangan dan kemudahan akses informasi jemaah. Sistem ini mengintegrasikan Dashboard Admin untuk manajemen operasional harian dengan Landing Page publik yang elegan, memastikan setiap data mulai dari laporan keuangan hingga jadwal agenda tersaji secara real-time dan akuntabel.',
+      image: '/images/projects/emasjidPatra.png',
+      tags: ['Next.js', 'TypeScript', 'MongoDB', 'Tailwind CSS', 'Cloudinary', 'Framer Motion'],
+      link: 'https://emasjid-daarus-sholih-patraland.vercel.app/',
+    },
+    {
+      title: 'Djoe Orchid Monitoring System',
+      period: 'April 2026',
+      description: 'Djoe Orchid Monitoring System adalah platform dashboard modern yang berfungsi sebagai pusat kendali inventaris tanaman anggrek. Sistem ini mempermudah pemilik bisnis dalam mencatat varietas, memantau kuantitas stok, dan mendokumentasikan fase penanaman secara digital. Dengan antarmuka yang bersih bertema botanical, aplikasi ini mengedepankan efisiensi operasional melalui fitur pemindaian QR Code untuk manajemen data yang akurat di lapangan.',
+      image: '/images/projects/djoesOrchid.png',
+      tags: ['Next.js 14', 'TypeScript', 'MongoDB', 'Tailwind CSS', 'HTML5-QRCode'],
+      link: 'https://djoe-orchid.vercel.app/',
+    },
+    {
       title: 'Dashboard Daily Cost Production Site - (PT Sari Aditya Loka)',
       period: 'Jul 2025 - Agustus 2025',
       description: 'Berkolaborasi dengan stakeholder dari PT Sari Aditya Loka untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional dan mendukung pengambilan keputusan strategis yang berbasis data untuk PT Sari Aditya Loka (anak usaha PT Astra Agro Lestari yang bergerak di bidang sawit).',
