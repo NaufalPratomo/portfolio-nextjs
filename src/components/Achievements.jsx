@@ -8,6 +8,12 @@ import { useState, useRef } from 'react';
 export default function Achievements() {
     const achievements = [
         {
+            title: 'Lomba Web Development Nasional - Technofest',
+            description: 'Peserta dalam lomba web development tingkat nasional yang diselenggarakan oleh HIMAFORTIKA & HIMATI Universitas PGRI Sumatera Barat.',
+            image: '/images/lomba/technofest.png',
+            date: '2026'
+        },
+        {
             title: 'Explor[AI]tion',
             description: 'Participation in the Explor[AI]tion competition.',
             image: '/images/lomba/Explor[AI]tion.png',

@@ -104,7 +104,7 @@ const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
 export default function Projects() {
   const realProjects = [
     {
-      title: 'E-Masjid Daarus Sholih Patraland',
+      title: 'E-Masjid Daarus Sholih Patraland (Masjid Daarus Sholih Patraland)',
       period: 'May 2026',
       description: 'Membangun sistem informasi masjid modern yang mengedepankan transparansi tata kelola keuangan dan kemudahan akses informasi jemaah. Sistem ini mengintegrasikan Dashboard Admin untuk manajemen operasional harian dengan Landing Page publik yang elegan, memastikan setiap data mulai dari laporan keuangan hingga jadwal agenda tersaji secara real-time dan akuntabel.',
       image: '/images/projects/emasjidPatra.png',
@@ -112,7 +112,7 @@ export default function Projects() {
       link: 'https://emasjid-daarus-sholih-patraland.vercel.app/',
     },
     {
-      title: 'Djoe Orchid Monitoring System',
+      title: 'Djoe Orchid Monitoring System (Djoe Orchid)',
       period: 'April 2026',
       description: 'Djoe Orchid Monitoring System adalah platform dashboard modern yang berfungsi sebagai pusat kendali inventaris tanaman anggrek. Sistem ini mempermudah pemilik bisnis dalam mencatat varietas, memantau kuantitas stok, dan mendokumentasikan fase penanaman secara digital. Dengan antarmuka yang bersih bertema botanical, aplikasi ini mengedepankan efisiensi operasional melalui fitur pemindaian QR Code untuk manajemen data yang akurat di lapangan.',
       image: '/images/projects/djoesOrchid.png',
