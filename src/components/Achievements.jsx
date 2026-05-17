@@ -9,7 +9,7 @@ export default function Achievements() {
     const achievements = [
         {
             title: 'Lomba Web Development Nasional - Technofest',
-            description: 'Peserta dalam lomba web development tingkat nasional yang diselenggarakan oleh HIMAFORTIKA & HIMATI Universitas PGRI Sumatera Barat.',
+            description: 'Participation in the Technofest competition.',
             image: '/images/lomba/technofest.png',
             date: '2026'
         },
