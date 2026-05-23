@@ -161,6 +161,15 @@ export default function Projects() {
 
   const privateProjects = [
     {
+      title: 'Frugalin.aja',
+      period: 'May 2026',
+      description: 'Aplikasi pengelolaan keuangan pribadi (personal finance tracker) modern dengan visualisasi interaktif. Dilengkapi fitur canggih seperti Pemindai Struk otomatis berbasis OCR AI (Tesseract.js & Gemini 2.5 Flash), limit anggaran dinamis, pelacakan bunga bank bulanan, serta dukungan penuh Progressive Web App (PWA) untuk instalasi mandiri dengan animasi splash screen premium.',
+      image: '/images/projects/frugalin.png',
+      tags: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind CSS v4', 'MongoDB', 'Next-Auth', 'Tesseract.js', 'OpenRouter API', 'PWA'],
+      link: 'https://frugalin-aja.vercel.app/',
+      tryMe: true,
+    },
+    {
       title: 'Iqro Quran',
       period: 'Feb 2026 - Mar 2026',
       description: 'Aplikasi ini adalah platform Al-Qur’an berbasis web yang membantu pengguna membaca surah dan juz secara terstruktur, menandai ayat favorit (bookmark), serta memantau progres ibadah harian. Dilengkapi fitur pencarian, pengaturan tampilan bacaan, dan asisten AI untuk menjawab pertanyaan seputar Al-Qur’an, sistem ini dirancang dengan antarmuka modern, responsif, dan nyaman digunakan di berbagai perangkat.',
