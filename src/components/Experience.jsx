@@ -5,6 +5,19 @@ import { motion } from 'framer-motion';
 
 const experiences = [
     {
+        title: 'Web Developer',
+        company: 'PT. Eka Dura Indonesia',
+        type: 'Freelance',
+        date: 'Jun 2026',
+        duration: '1 mo',
+        location: 'Indonesia',
+        locationType: 'Remote',
+        description: 'Membangun aplikasi dashboard HR & GA (Human Resources & General Affairs) full-stack terintegrasi untuk PT Eka Dura Indonesia (anak usaha PT Astra Agro Lestari Tbk yang bergerak di bidang sawit). Dashboard ini mendigitalisasi pemantauan Hari Kerja Normal Efektif (HKNE) karyawan operasional (Panen, Infield, Rawat), absensi, serta pelacakan realisasi anggaran biaya. Dilengkapi pula dengan fitur manajemen aset dan jatuh tempo pajak kendaraan operasional untuk meminimalkan denda serta mendukung efisiensi biaya perusahaan secara real-time.',
+        logo: '/images/logopt/logo-astra-agro.png',
+        media: '/images/projects/DashboardHRGA.jpg',
+        skills: ['Full-Stack Development'],
+    },
+    {
         title: 'Back End Developer',
         company: 'UTERO INDONESIA',
         type: 'Internship',
@@ -48,7 +61,7 @@ const experiences = [
         location: 'Indonesia',
         locationType: 'Remote',
         description: 'Berkolaborasi dengan stakeholder dari PT Sari Aditya Loka untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional dan mendukung pengambilan keputusan strategis yang berbasis data untuk PT Sari Aditya Loka (anak usaha PT Astra Agro Lestari yang bergerak di bidang sawit)',
-        logo: '/images/logopt/sari-aditya-logo.png',
+        logo: '/images/logopt/logo-astra-agro.png',
         skills: ['Front-End Development'],
     }
 ];

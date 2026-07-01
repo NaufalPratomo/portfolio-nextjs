@@ -36,7 +36,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="id">
-      <body className={`${inter.className} bg-gradient-to-br from-white to-sky-200 text-slate-800 min-h-screen w-full overflow-x-hidden relative`}>
+      <body className={`${inter.className} bg-gradient-to-br from-white to-sky-200 text-slate-800 min-h-screen w-full relative`}>
         <SmoothScrollProvider snap={false}>
           <main className="relative">
             {children}

@@ -19,20 +19,13 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
   const cleanupRef = useRef(null);
 
   useEffect(() => {
-    if (!snap) {
-      // Keep native browser scrolling when snap is disabled.
-      // This avoids wheel/trackpad lock issues caused by virtual scroll state.
-      return;
-    }
-
     // Create Lenis instance
     lenisRef.current = new Lenis({
-      duration: 1.0,
+      duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smooth: true,
       smoothTouch: true,
-      touchMultiplier: 1,
-      // lerp or wheelMultiplier can be tuned
+      touchMultiplier: 1.2,
     });
 
     // RAF loop for Lenis

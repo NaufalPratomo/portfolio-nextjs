@@ -104,6 +104,13 @@ const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
 export default function Projects() {
   const realProjects = [
     {
+      title: 'Dashboard HR and GA - (PT Eka Dura Indonesia)',
+      period: 'Jun 2026',
+      description: 'Membangun aplikasi dashboard HR & GA (Human Resources & General Affairs) full-stack terintegrasi untuk PT Eka Dura Indonesia (anak usaha PT Astra Agro Lestari Tbk yang bergerak di bidang sawit). Dashboard ini mendigitalisasi pemantauan Hari Kerja Normal Efektif (HKNE) karyawan operasional (Panen, Infield, Rawat), absensi, serta pelacakan realisasi anggaran biaya. Dilengkapi pula dengan fitur manajemen aset dan jatuh tempo pajak kendaraan operasional untuk meminimalkan denda serta mendukung efisiensi biaya perusahaan secara real-time.',
+      image: '/images/projects/DashboardHRGA.jpg',
+      tags: ['Next.js', 'TypeScript', 'Prisma ORM', 'MySQL'],
+    },
+    {
       title: 'E-Masjid Daarus Sholih Patraland (Masjid Daarus Sholih Patraland)',
       period: 'May 2026',
       description: 'Membangun sistem informasi masjid modern yang mengedepankan transparansi tata kelola keuangan dan kemudahan akses informasi jemaah. Sistem ini mengintegrasikan Dashboard Admin untuk manajemen operasional harian dengan Landing Page publik yang elegan, memastikan setiap data mulai dari laporan keuangan hingga jadwal agenda tersaji secara real-time dan akuntabel.',
@@ -125,7 +132,6 @@ export default function Projects() {
       description: 'Berkolaborasi dengan stakeholder dari PT Sari Aditya Loka untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional dan mendukung pengambilan keputusan strategis yang berbasis data untuk PT Sari Aditya Loka (anak usaha PT Astra Agro Lestari yang bergerak di bidang sawit).',
       image: '/images/projects/costsite.png',
       tags: ['PHP', 'MySQL'],
-      link: 'https://dasboardcost.com/',
     },
     {
       title: 'PALMA ROOTS - (PT Palma Serasih Tbk)',
@@ -133,7 +139,6 @@ export default function Projects() {
       description: 'Membangun sistem manajemen operasional perkebunan berbasis web untuk memusatkan proses pencatatan, monitoring, dan pelaporan dalam satu platform terintegrasi. Sistem ini mencakup manajemen data master (lokasi, karyawan, kelompok kerja), transaksi harian lapangan (absensi, panen, pekerjaan, angkut, taksasi), hingga rekap dan verifikasi laporan untuk kebutuhan operasional dan manajerial. Dengan dashboard dan alur kerja yang terstruktur, PALMA ROOTS membantu tim mempercepat input data, mengurangi kesalahan manual, meningkatkan transparansi progres kerja, serta memudahkan pengambilan keputusan berbasis data.',
       image: '/images/projects/palmaroots.png',
       tags: ['MongoDB', 'Express', 'React', 'Node.js', 'TypeScript', 'Tailwind CSS'],
-      link: 'https://github.com/NaufalPratomo/WebQuest_Project/tree/main/SawiTrack',
     },
     {
       title: 'CARUBRA Virtual Assistant - (PT Utero Kreatif Indonesia)',
@@ -141,7 +146,6 @@ export default function Projects() {
       description: 'Mengembangkan asisten virtual berbasis suara untuk PT Utero Kreatif Indonesia yang memungkinkan pengguna berinteraksi secara natural tanpa mengetik. Sistem memproses suara pengguna (speech-to-text), mengirim konteks ke model AI melalui OpenRouter, lalu mengembalikan jawaban dalam bentuk suara (text-to-speech) yang terintegrasi dengan avatar interaktif. Saya juga menerapkan guardrails agar AI tetap fokus pada informasi perusahaan seperti layanan, portofolio, budaya kerja, dan kontak, sehingga respons lebih relevan dan aman untuk kebutuhan front-facing bisnis. Solusi ini membantu menghadirkan pengalaman digital yang modern, informatif, dan engaging untuk profil perusahaan.',
       image: '/images/projects/carubra.png',
       tags: ['Next.js', 'React', 'TypeScript', 'OpenRouter API', 'Web Speech API (STT)', 'Python Flask', 'gTTS', 'Tailwind CSS', 'VAD (Silero)'],
-      link: 'https://carubra-ai.vercel.app/',
     },
     {
       title: 'AIDA - Advertisement Intelligence & Data Analytics - (PT Utero Kreatif Indonesia)',
@@ -220,7 +224,6 @@ export default function Projects() {
       description: 'Sistem informasi berbasis web untuk manajemen dan pencatatan prestasi mahasiswa di Jurusan Teknologi Informasi. Memfasilitasi mahasiswa dan dosen dalam mendokumentasikan, memvalidasi, dan mempublikasikan pencapaian akademik maupun non-akademik.',
       image: '/images/projects/talenti.png',
       tags: ['Laravel', 'MySQL'],
-      link: 'https://github.com/hikmahabdillah/sim-pencatatan-prestasi-jti',
     },
     {
       title: 'SIBETA',
@@ -228,7 +231,6 @@ export default function Projects() {
       description: 'Sistem Informasi Bebas Tanggungan TA untuk membantu pengelolaan data bebas tanggungan tugas akhir di Politeknik Negeri Malang.',
       image: '/images/projects/sibeta.png',
       tags: ['Laravel', 'MySQL'],
-      link: 'https://github.com/NaufalPratomo/PBL',
     },
     {
       title: 'WeatherAI Classification System',
@@ -236,7 +238,6 @@ export default function Projects() {
       description: 'Mengembangkan aplikasi mobile berbasis Flutter yang mengimplementasikan sistem visi komputer untuk klasifikasi cuaca secara real-time. Aplikasi ini mampu menganalisis gambar langit untuk mengidentifikasi dan mengklasifikasikan kondisi cuaca secara otomatis, memberikan pengguna informasi meteorologi yang cepat dan akurat.',
       image: '/images/projects/weather.png',
       tags: ['Flutter', 'AI', 'Machine Learning'],
-      link: 'https://github.com/weather-classification-kelompok6',
     },
   ];
 
