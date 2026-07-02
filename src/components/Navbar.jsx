@@ -36,50 +36,51 @@ export default function Navbar() {
     }
   }, []);
 
-  // Handle Auto-Hide and Scroll Spy
+  // Handle Auto-Hide and Scroll Spy (scroll-position based)
   useEffect(() => {
-    // 1. Scroll listener for Auto-Hide
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+
+      // 1. Auto-Hide: hide on scroll down, show on scroll up
       if (currentScrollY > lastScrollY.current && currentScrollY > 120) {
-        setVisible(false); // Hide on scroll down
+        setVisible(false);
       } else {
-        setVisible(true); // Show on scroll up
+        setVisible(true);
       }
       lastScrollY.current = currentScrollY;
+
+      // 2. Scroll Spy: the active section is the LAST section
+      //    whose cumulative start position <= currentScrollY
+      const wrappers = Array.from(document.querySelectorAll('.overlap-section'));
+      let cumulative = 0;
+      let activeSectionId = 'home';
+
+      for (let i = 0; i < wrappers.length; i++) {
+        const section = wrappers[i].querySelector('section[id]');
+        if (section && currentScrollY >= cumulative) {
+          activeSectionId = section.id;
+        }
+        cumulative += wrappers[i].offsetHeight;
+      }
+
+      setActiveSection(activeSectionId);
     };
+
+    // Run once on mount to set initial state
+    handleScroll();
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-
-    // 2. IntersectionObserver for Scroll Spy
-    const sections = Array.from(document.querySelectorAll('section[id]'));
-    const observerOptions = {
-      root: null,
-      rootMargin: '-30% 0px -60% 0px', // focused in top-middle area of screen
-      threshold: 0,
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
-      });
-    }, observerOptions);
-
-    sections.forEach((sec) => observer.observe(sec));
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      observer.disconnect();
     };
   }, []);
 
   const handleNavLinkClick = (e, href) => {
     e.preventDefault();
-    const id = href.substring(1); // Remove the '#' character
+    const id = href.substring(1);
+    setActiveSection(id); // Immediately update highlight
     scrollToId(id);
-    setMobileMenuOpen(false); // Close mobile menu after clicking a link
+    setMobileMenuOpen(false);
   };
 
   return (

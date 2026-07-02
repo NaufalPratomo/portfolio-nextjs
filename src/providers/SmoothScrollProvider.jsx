@@ -1,35 +1,10 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef } from 'react';
+import { createContext, useContext, useEffect, useRef, useCallback } from 'react';
 import Lenis from 'lenis';
 
-const NAVBAR_HEIGHT = 64; // Approximate height of your fixed navbar in pixels
-
-// Helper to get static offsetTop of a section relative to the document top,
-// even if the element is styled with position: sticky
-const getStaticScrollPosition = (element) => {
-  if (!element) return 0;
-  
-  const id = element.id;
-  const anchor = id ? document.getElementById('scroll-' + id) : null;
-  
-  // Use the static anchor if available, otherwise fall back to the section container
-  const target = anchor || element.closest('.overlap-section') || element;
-  let top = 0;
-  let current = target;
-  
-  while (current) {
-    top += current.offsetTop || 0;
-    current = current.offsetParent;
-  }
-  
-  return top;
-};
-
-// SmoothScrollProvider with full-page snap scrolling (wheel/touch controlled)
-// Usage: wrap your app with <SmoothScrollProvider snap="full" /> or <SmoothScrollProvider snap={true} />
+// SmoothScrollProvider with full-page snap scrolling
 export const ScrollSnapContext = createContext(null);
-
 export const useScrollSnap = () => useContext(ScrollSnapContext);
 
 export const SmoothScrollProvider = ({ children, snap = true }) => {
@@ -38,9 +13,83 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
   const isSnappingRef = useRef(false);
   const touchStartYRef = useRef(null);
   const cleanupRef = useRef(null);
+  // Cache of section scroll targets: [{ id, scrollTarget }]
+  const sectionCacheRef = useRef([]);
+
+  // Build cache of scroll targets by summing .overlap-section heights
+  const buildSectionCache = useCallback(() => {
+    const wrappers = Array.from(document.querySelectorAll('.overlap-section'));
+    const cache = [];
+    let cumulativeHeight = 0;
+
+    wrappers.forEach((wrapper) => {
+      const section = wrapper.querySelector('section[id]');
+      const id = section ? section.id : null;
+      cache.push({
+        id,
+        scrollTarget: cumulativeHeight,
+        height: wrapper.offsetHeight,
+      });
+      cumulativeHeight += wrapper.offsetHeight;
+    });
+
+    sectionCacheRef.current = cache;
+    return cache;
+  }, []);
+
+  // Get scroll target for a section id
+  const getScrollTarget = useCallback((id) => {
+    // Rebuild cache each time to ensure fresh measurements
+    const cache = buildSectionCache();
+    const entry = cache.find((e) => e.id === id);
+    return entry ? entry.scrollTarget : 0;
+  }, [buildSectionCache]);
+
+  // Find the index of the section closest to the current scroll position
+  const getCurrentIndex = useCallback(() => {
+    const cache = buildSectionCache();
+    const scroll = window.scrollY || 0;
+    let bestIndex = 0;
+    let bestDiff = Infinity;
+
+    cache.forEach((entry, idx) => {
+      const diff = Math.abs(entry.scrollTarget - scroll);
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        bestIndex = idx;
+      }
+    });
+
+    return bestIndex;
+  }, [buildSectionCache]);
+
+  // Perform the actual scroll — uses native scrollTo for reliability
+  const doScrollTo = useCallback((targetScroll, smooth = true) => {
+    const clampedTarget = Math.max(0, targetScroll);
+    isSnappingRef.current = true;
+
+    // Temporarily stop Lenis so it doesn't interfere
+    if (lenisRef.current) {
+      try { lenisRef.current.stop(); } catch (e) { /* ignore */ }
+    }
+
+    // Use native browser scroll for reliable, exact positioning
+    window.scrollTo({
+      top: clampedTarget,
+      behavior: smooth ? 'smooth' : 'instant',
+    });
+
+    // Re-enable Lenis after scroll completes
+    setTimeout(() => {
+      if (lenisRef.current) {
+        try { lenisRef.current.start(); } catch (e) { /* ignore */ }
+      }
+      isSnappingRef.current = false;
+    }, smooth ? 900 : 100);
+  }, []);
 
   useEffect(() => {
-    // Create Lenis instance
+    // Create Lenis instance for smooth inertia scrolling
     lenisRef.current = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -56,58 +105,22 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
     };
     rafRef.current = requestAnimationFrame(loop);
 
+    // Build initial cache after DOM is ready
+    requestAnimationFrame(() => {
+      buildSectionCache();
+    });
+
+    // Rebuild cache on resize
+    const onResize = () => buildSectionCache();
+    window.addEventListener('resize', onResize);
+
     if (snap) {
-      const getSections = () => {
-        const sections = Array.from(document.querySelectorAll('section[id]'));
-        return sections.sort((a, b) => getStaticScrollPosition(a) - getStaticScrollPosition(b));
-      };
-
-      const getCurrentIndex = () => {
-        const sections = getSections();
-        const scroll = window.scrollY || window.pageYOffset || 0;
-        let nearestIndex = 0;
-        let nearestDiff = Infinity;
-        sections.forEach((sec, idx) => {
-          const top = getStaticScrollPosition(sec);
-          const diff = Math.abs(top - scroll);
-          if (diff < nearestDiff) {
-            nearestDiff = diff;
-            nearestIndex = idx;
-          }
-        });
-        return nearestIndex;
-      };
-
       const scrollToIndex = (index) => {
-        const sections = getSections();
-        if (!sections.length) return;
-        const clamped = Math.max(0, Math.min(index, sections.length - 1));
-        const target = sections[clamped];
-        if (!target) return;
-        isSnappingRef.current = true;
-
-        const staticTop = getStaticScrollPosition(target);
-        const targetScroll = Math.max(0, staticTop);
-
-        try {
-          lenisRef.current.scrollTo(targetScroll, { duration: 0.9, easing: (t) => t });
-        } catch (e) {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
-        // release lock after animation completes
-        setTimeout(() => {
-          isSnappingRef.current = false;
-        }, 1000);
+        const cache = buildSectionCache();
+        if (!cache.length) return;
+        const clamped = Math.max(0, Math.min(index, cache.length - 1));
+        doScrollTo(cache[clamped].scrollTarget);
       };
-
-      const scrollToId = (id) => {
-        const sections = getSections();
-        const idx = sections.findIndex((s) => s.id === id);
-        if (idx !== -1) scrollToIndex(idx);
-      };
-
-      const next = () => scrollToIndex(getCurrentIndex() + 1);
-      const prev = () => scrollToIndex(getCurrentIndex() - 1);
 
       let wheelTimeout = null;
       const onWheel = (e) => {
@@ -117,11 +130,10 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
           e.preventDefault();
           return;
         }
+        e.preventDefault();
         const dir = delta > 0 ? 1 : -1;
         const current = getCurrentIndex();
-        const targetIndex = current + dir;
-        e.preventDefault();
-        scrollToIndex(targetIndex);
+        scrollToIndex(current + dir);
         if (wheelTimeout) clearTimeout(wheelTimeout);
         wheelTimeout = setTimeout(() => {
           wheelTimeout = null;
@@ -138,10 +150,10 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
         if (endY == null) return;
         const diff = touchStartYRef.current - endY;
         if (Math.abs(diff) < 30) return;
+        if (isSnappingRef.current) return;
         const dir = diff > 0 ? 1 : -1;
         const current = getCurrentIndex();
-        const targetIndex = current + dir;
-        scrollToIndex(targetIndex);
+        scrollToIndex(current + dir);
       };
 
       window.addEventListener('wheel', onWheel, { passive: false });
@@ -152,6 +164,11 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
         window.removeEventListener('wheel', onWheel);
         window.removeEventListener('touchstart', onTouchStart);
         window.removeEventListener('touchend', onTouchEnd);
+        window.removeEventListener('resize', onResize);
+      };
+    } else {
+      cleanupRef.current = () => {
+        window.removeEventListener('resize', onResize);
       };
     }
 
@@ -160,64 +177,26 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
       if (lenisRef.current) lenisRef.current.destroy();
       if (cleanupRef.current) cleanupRef.current();
     };
-  }, [snap]);
+  }, [snap, buildSectionCache, getCurrentIndex, doScrollTo]);
 
-  // Programmatic API (kept stable across renders)
+  // Public API
   const api = {
     scrollToId: (id) => {
       if (typeof window === 'undefined') return;
-      const sections = Array.from(document.querySelectorAll('section[id]'))
-        .sort((a, b) => getStaticScrollPosition(a) - getStaticScrollPosition(b));
-      const idx = sections.findIndex((s) => s.id === id);
-      if (idx !== -1) {
-        if (!snap || !lenisRef.current) {
-          sections[idx].scrollIntoView({ behavior: 'smooth' });
-          return;
-        }
-
-        const staticTop = getStaticScrollPosition(sections[idx]);
-        const targetScroll = Math.max(0, staticTop);
-
-        try {
-          lenisRef.current.scrollTo(targetScroll, { duration: 0.9, easing: (t) => t });
-        } catch (e) {
-          sections[idx].scrollIntoView({ behavior: 'smooth' });
-        }
-      }
+      const target = getScrollTarget(id);
+      doScrollTo(target);
     },
     next: () => {
-      const sections = Array.from(document.querySelectorAll('section[id]'))
-        .sort((a, b) => getStaticScrollPosition(a) - getStaticScrollPosition(b));
-      const scroll = window.scrollY || window.pageYOffset || 0;
-      let nearestIndex = 0;
-      let nearestDiff = Infinity;
-      sections.forEach((sec, idx) => {
-        const top = getStaticScrollPosition(sec);
-        const diff = Math.abs(top - scroll);
-        if (diff < nearestDiff) {
-          nearestDiff = diff;
-          nearestIndex = idx;
-        }
-      });
-      const target = Math.min(sections.length - 1, nearestIndex + 1);
-      if (sections[target]) api.scrollToId(sections[target].id);
+      const cache = buildSectionCache();
+      const current = getCurrentIndex();
+      const targetIdx = Math.min(cache.length - 1, current + 1);
+      if (cache[targetIdx]) doScrollTo(cache[targetIdx].scrollTarget);
     },
     prev: () => {
-      const sections = Array.from(document.querySelectorAll('section[id]'))
-        .sort((a, b) => getStaticScrollPosition(a) - getStaticScrollPosition(b));
-      const scroll = window.scrollY || window.pageYOffset || 0;
-      let nearestIndex = 0;
-      let nearestDiff = Infinity;
-      sections.forEach((sec, idx) => {
-        const top = getStaticScrollPosition(sec);
-        const diff = Math.abs(top - scroll);
-        if (diff < nearestDiff) {
-          nearestDiff = diff;
-          nearestIndex = idx;
-        }
-      });
-      const target = Math.max(0, nearestIndex - 1);
-      if (sections[target]) api.scrollToId(sections[target].id);
+      const cache = buildSectionCache();
+      const current = getCurrentIndex();
+      const targetIdx = Math.max(0, current - 1);
+      if (cache[targetIdx]) doScrollTo(cache[targetIdx].scrollTarget);
     },
     isSnapping: () => !!isSnappingRef.current,
   };
