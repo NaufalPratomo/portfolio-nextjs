@@ -20,15 +20,15 @@ const generateFloatingElements = (count) => {
 
 export default function Skills() {
   const hardSkills = [
-    { name: 'Laravel', level: 65, color: '#FF2D20' },
-    { name: 'Next.js', level: 70, color: '#000000' },
-    { name: 'Basis Data (MySQL, MongoDB)', level: 65, color: '#4479A1' },
-    { name: 'Editing (Canva, Capcut)', level: 70, color: '#00C4CC' },
-    { name: 'Microsoft Office (Word, Excel, PPT)', level: 70, color: '#D83B01' },
-    { name: 'PHP', level: 65, color: '#777BB4' },
-    { name: 'CSS', level: 70, color: '#1572B6' },
-    { name: 'HTML', level: 70, color: '#E34F26' },
-    { name: 'JavaScript', level: 70, color: '#F7DF1E' },
+    { name: 'Laravel', level: 65 },
+    { name: 'Next.js', level: 70 },
+    { name: 'Basis Data (MySQL, MongoDB)', level: 65 },
+    { name: 'Editing (Canva, Capcut)', level: 70 },
+    { name: 'Microsoft Office (Word, Excel, PPT)', level: 70 },
+    { name: 'PHP', level: 65 },
+    { name: 'CSS', level: 70 },
+    { name: 'HTML', level: 70 },
+    { name: 'JavaScript', level: 70 },
   ];
 
   const softSkills = [
@@ -113,25 +113,24 @@ export default function Skills() {
                     <span className="text-blue-600 font-medium">{skill.level}%</span>
                   </div>
                   <motion.div
-                    className="w-full bg-slate-200/50 rounded-full h-3 overflow-hidden"
-                    whileHover={{ scale: 1.02 }}
+                    className="w-full bg-slate-200/55 rounded-full h-2.5 overflow-hidden"
+                    whileHover={{ scale: 1.01 }}
                   >
                     <motion.div
-                      className="h-full rounded-full"
+                      className="h-full rounded-full bg-gradient-to-r from-blue-500 to-sky-600"
                       style={{
-                        background: `linear-gradient(90deg, ${skill.color}aa, ${skill.color})`,
                         width: '0%'
                       }}
                       animate={isInView ? { width: `${skill.level}%` } : {}}
                       transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
                     >
                       <motion.div
-                        className="h-full w-full bg-gradient-to-r from-white/20 to-transparent"
+                        className="h-full w-full bg-gradient-to-r from-white/10 to-transparent"
                         animate={{
                           x: ['-100%', '100%'],
                         }}
                         transition={{
-                          duration: 1.5,
+                          duration: 2,
                           repeat: Infinity,
                           ease: 'linear',
                         }}

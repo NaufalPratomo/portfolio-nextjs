@@ -77,10 +77,9 @@ export default function Experience() {
                     transition={{ duration: 0.5 }}
                     className="text-center mb-16"
                 >
-                    <h2 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-blue-600 mb-4">
+                    <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
                         Pengalaman Kerja
                     </h2>
-                    <div className="w-24 h-1 bg-gradient-to-r from-sky-500 to-blue-600 mx-auto rounded-full" />
                 </motion.div>
 
                 <div className="max-w-4xl mx-auto space-y-8">

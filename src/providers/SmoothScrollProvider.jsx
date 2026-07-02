@@ -5,6 +5,27 @@ import Lenis from 'lenis';
 
 const NAVBAR_HEIGHT = 64; // Approximate height of your fixed navbar in pixels
 
+// Helper to get static offsetTop of a section relative to the document top,
+// even if the element is styled with position: sticky
+const getStaticScrollPosition = (element) => {
+  if (!element) return 0;
+  
+  const id = element.id;
+  const anchor = id ? document.getElementById('scroll-' + id) : null;
+  
+  // Use the static anchor if available, otherwise fall back to the section container
+  const target = anchor || element.closest('.overlap-section') || element;
+  let top = 0;
+  let current = target;
+  
+  while (current) {
+    top += current.offsetTop || 0;
+    current = current.offsetParent;
+  }
+  
+  return top;
+};
+
 // SmoothScrollProvider with full-page snap scrolling (wheel/touch controlled)
 // Usage: wrap your app with <SmoothScrollProvider snap="full" /> or <SmoothScrollProvider snap={true} />
 export const ScrollSnapContext = createContext(null);
@@ -36,7 +57,10 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
     rafRef.current = requestAnimationFrame(loop);
 
     if (snap) {
-      const getSections = () => Array.from(document.querySelectorAll('section[id]'));
+      const getSections = () => {
+        const sections = Array.from(document.querySelectorAll('section[id]'));
+        return sections.sort((a, b) => getStaticScrollPosition(a) - getStaticScrollPosition(b));
+      };
 
       const getCurrentIndex = () => {
         const sections = getSections();
@@ -44,7 +68,7 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
         let nearestIndex = 0;
         let nearestDiff = Infinity;
         sections.forEach((sec, idx) => {
-          const top = sec.getBoundingClientRect().top + window.scrollY;
+          const top = getStaticScrollPosition(sec);
           const diff = Math.abs(top - scroll);
           if (diff < nearestDiff) {
             nearestDiff = diff;
@@ -61,8 +85,12 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
         const target = sections[clamped];
         if (!target) return;
         isSnappingRef.current = true;
+
+        const staticTop = getStaticScrollPosition(target);
+        const targetScroll = Math.max(0, staticTop);
+
         try {
-          lenisRef.current.scrollTo(target, { duration: 0.9, easing: (t) => t, offset: -NAVBAR_HEIGHT });
+          lenisRef.current.scrollTo(targetScroll, { duration: 0.9, easing: (t) => t });
         } catch (e) {
           target.scrollIntoView({ behavior: 'smooth' });
         }
@@ -125,10 +153,6 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
         window.removeEventListener('touchstart', onTouchStart);
         window.removeEventListener('touchend', onTouchEnd);
       };
-
-      // expose programmatic API via context value (set below)
-      // We'll set the context value after effect runs by referencing functions via refs
-      // (value will be created below using these closures)
     }
 
     return () => {
@@ -142,7 +166,8 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
   const api = {
     scrollToId: (id) => {
       if (typeof window === 'undefined') return;
-      const sections = Array.from(document.querySelectorAll('section[id]'));
+      const sections = Array.from(document.querySelectorAll('section[id]'))
+        .sort((a, b) => getStaticScrollPosition(a) - getStaticScrollPosition(b));
       const idx = sections.findIndex((s) => s.id === id);
       if (idx !== -1) {
         if (!snap || !lenisRef.current) {
@@ -150,20 +175,24 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
           return;
         }
 
+        const staticTop = getStaticScrollPosition(sections[idx]);
+        const targetScroll = Math.max(0, staticTop);
+
         try {
-          lenisRef.current.scrollTo(sections[idx], { duration: 0.9, easing: (t) => t, offset: -NAVBAR_HEIGHT });
+          lenisRef.current.scrollTo(targetScroll, { duration: 0.9, easing: (t) => t });
         } catch (e) {
           sections[idx].scrollIntoView({ behavior: 'smooth' });
         }
       }
     },
     next: () => {
-      const sections = Array.from(document.querySelectorAll('section[id]'));
+      const sections = Array.from(document.querySelectorAll('section[id]'))
+        .sort((a, b) => getStaticScrollPosition(a) - getStaticScrollPosition(b));
       const scroll = window.scrollY || window.pageYOffset || 0;
       let nearestIndex = 0;
       let nearestDiff = Infinity;
       sections.forEach((sec, idx) => {
-        const top = sec.getBoundingClientRect().top + window.scrollY;
+        const top = getStaticScrollPosition(sec);
         const diff = Math.abs(top - scroll);
         if (diff < nearestDiff) {
           nearestDiff = diff;
@@ -174,12 +203,13 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
       if (sections[target]) api.scrollToId(sections[target].id);
     },
     prev: () => {
-      const sections = Array.from(document.querySelectorAll('section[id]'));
+      const sections = Array.from(document.querySelectorAll('section[id]'))
+        .sort((a, b) => getStaticScrollPosition(a) - getStaticScrollPosition(b));
       const scroll = window.scrollY || window.pageYOffset || 0;
       let nearestIndex = 0;
       let nearestDiff = Infinity;
       sections.forEach((sec, idx) => {
-        const top = sec.getBoundingClientRect().top + window.scrollY;
+        const top = getStaticScrollPosition(sec);
         const diff = Math.abs(top - scroll);
         if (diff < nearestDiff) {
           nearestDiff = diff;

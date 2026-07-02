@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState, useMemo } from 'react';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform, useMotionValue, AnimatePresence } from 'framer-motion';
 import { useParallax } from '@/hooks/useParallax';
 import { useScrollSnap } from '@/providers/SmoothScrollProvider';
 
@@ -60,20 +60,52 @@ export default function Hero() {
   };
 
   return (
-    <section id="home" className="relative min-h-[100svh] flex items-start lg:items-center justify-center overflow-x-hidden pt-24 md:pt-28 lg:pt-24 pb-12">
+    <section id="home" className="relative min-h-[100svh] flex items-start lg:items-center justify-center overflow-x-hidden pt-24 md:pt-28 lg:pt-24 pb-12 dark:bg-slate-950 transition-colors duration-300">
       {/* Parallax Background Layers */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-b from-blue-100 to-transparent"
+        className="absolute inset-0 bg-gradient-to-b from-blue-50 to-transparent dark:from-slate-900/40 dark:to-transparent"
         style={{ y: shouldReduceMotion ? 0 : backgroundY }}
       />
       {!shouldReduceMotion && (
         <motion.div
-          className="absolute inset-0 animated-gradient opacity-10"
+          className="absolute inset-0 animated-gradient opacity-[0.06] dark:opacity-[0.03]"
           style={{ y: useTransform(scrollY, [0, 1000], ['0%', '30%']) }}
         />
       )}
 
-      {/* Floating Elements */}
+      {/* Background Animated Mesh Blobs */}
+      {!shouldReduceMotion && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <motion.div
+            className="absolute top-1/4 left-1/4 w-[280px] h-[280px] bg-sky-400/20 dark:bg-sky-500/10 rounded-full filter blur-[70px] md:blur-[100px]"
+            animate={{
+              x: [0, 60, -30, 0],
+              y: [0, -50, 40, 0],
+              scale: [1, 1.15, 0.9, 1],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          <motion.div
+            className="absolute top-1/3 right-1/4 w-[320px] h-[320px] bg-blue-500/20 dark:bg-blue-600/10 rounded-full filter blur-[75px] md:blur-[110px]"
+            animate={{
+              x: [0, -80, 50, 0],
+              y: [0, 60, -40, 0],
+              scale: [1, 0.95, 1.1, 1],
+            }}
+            transition={{
+              duration: 18,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        </div>
+      )}
+
+      {/* Floating Circles */}
       {!shouldReduceMotion && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none hidden md:block">
           {floatingElements.map((position, i) => (
@@ -104,6 +136,7 @@ export default function Hero() {
         style={{ y: parallaxY }}
         className="relative z-10 text-center max-w-4xl mx-auto px-4"
       >
+        {/* Profile Picture */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -118,19 +151,7 @@ export default function Hero() {
               height={128}
               priority
               sizes="(max-width: 768px) 96px, 128px"
-              className="mx-auto rounded-full object-cover shadow-2xl shadow-sky-500/50 w-24 h-24 md:w-32 md:h-32"
-            />
-            <motion.div
-              className="absolute -inset-4 rounded-full bg-gradient-to-r from-sky-500/20 to-blue-600/20 -z-10"
-              animate={{
-                scale: [1, 1.05, 1],
-                opacity: [0.5, 0.8, 0.5],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
+              className="mx-auto rounded-full object-cover shadow-xl w-24 h-24 md:w-32 md:h-32 border border-slate-200/50 dark:border-slate-800/50"
             />
           </div>
         </motion.div>
@@ -139,7 +160,7 @@ export default function Hero() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight font-bold text-slate-900 mb-4"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight font-bold text-slate-900 dark:text-white mb-4"
         >
           Muhammad Naufal Pratomo
         </motion.h1>
@@ -148,22 +169,25 @@ export default function Hero() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-xl md:text-2xl text-blue-600 mb-8"
+          className="text-xl md:text-2xl font-medium text-sky-600 dark:text-sky-400 mb-8"
         >
           Software Engineering Student
         </motion.p>
 
-        <div className="hero-greeting min-h-[3rem] md:min-h-[3.5rem] text-slate-600 text-lg mb-8 max-w-2xl mx-auto overflow-hidden">
-          <motion.span
-            key={index}
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -20, opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="block text-2xl md:text-3xl font-semibold"
-          >
-            {greetings[index]}
-          </motion.span>
+        {/* Dynamic Multilingual Greeting */}
+        <div className="hero-greeting min-h-[3rem] md:min-h-[3.5rem] mb-8 max-w-2xl mx-auto overflow-hidden flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={index}
+              initial={{ y: 15, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -15, opacity: 0 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="block text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-500 dark:from-blue-400 dark:to-sky-400"
+            >
+              {greetings[index]}
+            </motion.span>
+          </AnimatePresence>
         </div>
 
         <motion.div
@@ -175,7 +199,7 @@ export default function Hero() {
           <Link
             href="#projects"
             onClick={(e) => handleScrollTo(e, 'projects')}
-            className="group relative px-8 py-3 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-full font-semibold transition-all hover:shadow-lg hover:shadow-sky-500/50 overflow-hidden"
+            className="group relative px-8 py-3 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-full font-semibold transition-all hover:shadow-md overflow-hidden"
           >
             <span className="relative z-10">Lihat Portfolio</span>
             <motion.div
@@ -188,7 +212,7 @@ export default function Hero() {
           <Link
             href="#contact"
             onClick={(e) => handleScrollTo(e, 'contact')}
-            className="group px-8 py-3 border-2 border-sky-500 text-sky-600 rounded-full font-semibold hover:bg-sky-500 hover:text-white transition-all"
+            className="group px-8 py-3 border-2 border-sky-500 dark:border-sky-400 text-sky-600 dark:text-sky-400 rounded-full font-semibold hover:bg-sky-500 dark:hover:bg-sky-400 hover:text-white dark:hover:text-slate-950 transition-all"
           >
             Hubungi Saya
           </Link>
@@ -205,7 +229,7 @@ export default function Hero() {
             ease: "easeInOut",
           }}
         >
-          <svg className="mx-auto text-sky-600" width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="mx-auto text-sky-600 dark:text-sky-400" width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
           </svg>
         </motion.div>
