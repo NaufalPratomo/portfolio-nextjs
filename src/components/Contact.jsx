@@ -48,38 +48,18 @@ export default function Contact() {
 
   return (
     <section id="contact" className="relative min-h-screen flex items-center px-4 py-20 overflow-hidden">
-      {/* Gradient Mesh Background */}
-      <motion.div
+      {/* Gradient Mesh Background — static to avoid infinite animation overhead on mobile */}
+      <div
         className="absolute inset-0"
         style={{
           background: 'linear-gradient(45deg, rgba(96, 165, 250, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)',
-          filter: 'blur(100px)',
-        }}
-        animate={{
-          background: [
-            'linear-gradient(45deg, rgba(96, 165, 250, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)',
-            'linear-gradient(45deg, rgba(59, 130, 246, 0.1) 0%, rgba(96, 165, 250, 0.1) 100%)',
-          ],
-        }}
-        transition={{
-          duration: 5,
-          repeat: Infinity,
-          repeatType: "reverse",
         }}
       />
 
-      <motion.div
+      <div
         className="absolute inset-0"
         style={{
           background: 'radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.15), transparent 80%)',
-        }}
-        animate={{
-          scale: [1, 1.2, 1],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
         }}
       />
 

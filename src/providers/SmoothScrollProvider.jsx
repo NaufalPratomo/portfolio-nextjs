@@ -3,6 +3,20 @@
 import { createContext, useContext, useEffect, useRef, useCallback } from 'react';
 import Lenis from 'lenis';
 
+// Throttle helper — limits how often a function can execute
+function throttle(fn, delay) {
+  let lastCall = 0;
+  let cachedResult;
+  return (...args) => {
+    const now = Date.now();
+    if (now - lastCall >= delay) {
+      lastCall = now;
+      cachedResult = fn(...args);
+    }
+    return cachedResult;
+  };
+}
+
 // SmoothScrollProvider with full-page snap scrolling
 export const ScrollSnapContext = createContext(null);
 export const useScrollSnap = () => useContext(ScrollSnapContext);
@@ -90,20 +104,29 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
 
   useEffect(() => {
     // Create Lenis instance for smooth inertia scrolling
+    // smoothTouch MUST be false — enabling it hijacks native mobile scroll,
+    // runs a continuous RAF loop, and causes memory exhaustion + crash
     lenisRef.current = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smooth: true,
-      smoothTouch: true,
+      smoothTouch: false,
       touchMultiplier: 1.2,
     });
 
-    // RAF loop for Lenis
+    // RAF loop for Lenis — pauses when page is hidden to save resources
+    let isPageVisible = true;
     const loop = (time) => {
-      if (lenisRef.current) lenisRef.current.raf(time);
+      if (isPageVisible && lenisRef.current) lenisRef.current.raf(time);
       rafRef.current = requestAnimationFrame(loop);
     };
     rafRef.current = requestAnimationFrame(loop);
+
+    // Pause/resume RAF when tab visibility changes
+    const onVisibilityChange = () => {
+      isPageVisible = !document.hidden;
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     // Build initial cache after DOM is ready
     requestAnimationFrame(() => {
@@ -176,6 +199,7 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       if (lenisRef.current) lenisRef.current.destroy();
       if (cleanupRef.current) cleanupRef.current();
+      document.removeEventListener('visibilitychange', onVisibilityChange);
     };
   }, [snap, buildSectionCache, getCurrentIndex, doScrollTo]);
 

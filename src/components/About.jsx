@@ -53,7 +53,7 @@ export default function About() {
   const { ref: parallaxRef, y: parallaxY } = useParallax({ speed: 0.1 });
 
   // Generate geometric patterns once
-  const geometricPatterns = useMemo(() => generateGeometricPatterns(10), []);
+  const geometricPatterns = useMemo(() => generateGeometricPatterns(5), []);
 
   // Geometric pattern animation
   const patternTranslateY = useTransform(scrollY, [0, 1000], ['0%', '20%']);
@@ -64,7 +64,7 @@ export default function About() {
       {/* Geometric Patterns Background */}
       {!shouldReduceMotion && (
         <motion.div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none hidden md:block"
           style={{ y: patternTranslateY, opacity: patternOpacity }}
         >
           {geometricPatterns.map((pattern, i) => (

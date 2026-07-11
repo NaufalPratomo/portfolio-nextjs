@@ -76,7 +76,7 @@ export default function Achievements() {
                                 onHoverEnd={() => setHoveredIndex(null)}
                                 whileHover={{ scale: 1.02 }}
                             >
-                                <div className="bg-white/60 md:backdrop-blur-lg backdrop-blur-sm rounded-2xl p-6 border border-slate-200 shadow-lg transition-all duration-300 group-hover:shadow-xl h-full flex flex-col">
+                                <div className="bg-white/60 md:backdrop-blur-lg rounded-2xl p-6 border border-slate-200 shadow-lg transition-all duration-300 group-hover:shadow-xl h-full flex flex-col">
 
                                     {/* Header */}
                                     <div className="flex justify-between items-start mb-4">

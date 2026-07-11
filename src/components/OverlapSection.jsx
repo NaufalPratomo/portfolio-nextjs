@@ -17,16 +17,24 @@ export default function OverlapSection({ children, className, zIndex, style }) {
       }
     };
 
-    handleResize();
-    window.addEventListener('resize', handleResize);
+    // Debounced version to avoid layout thrashing from rapid resize events
+    let resizeTimer;
+    const debouncedResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(handleResize, 150);
+    };
+
+    handleResize(); // Initial measurement (synchronous)
+    window.addEventListener('resize', debouncedResize);
     
-    const observer = new ResizeObserver(handleResize);
+    const observer = new ResizeObserver(debouncedResize);
     if (containerRef.current) {
       observer.observe(containerRef.current);
     }
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimer);
+      window.removeEventListener('resize', debouncedResize);
       observer.disconnect();
     };
   }, []);

@@ -45,7 +45,7 @@ export default function Skills() {
   const { scrollYProgress } = useScroll();
 
   // Generate floating elements once
-  const floatingElements = useMemo(() => generateFloatingElements(15), []);
+  const floatingElements = useMemo(() => generateFloatingElements(6), []);
 
   // Parallax effect for floating elements
   const floatingY = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
@@ -123,19 +123,7 @@ export default function Skills() {
                       }}
                       animate={isInView ? { width: `${skill.level}%` } : {}}
                       transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
-                    >
-                      <motion.div
-                        className="h-full w-full bg-gradient-to-r from-white/10 to-transparent"
-                        animate={{
-                          x: ['-100%', '100%'],
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          ease: 'linear',
-                        }}
-                      />
-                    </motion.div>
+                    />
                   </motion.div>
                 </motion.div>
               ))}

@@ -75,7 +75,7 @@ export default function Hero() {
 
       {/* Background Animated Mesh Blobs */}
       {!shouldReduceMotion && (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 hidden md:block">
           <motion.div
             className="absolute top-1/4 left-1/4 w-[280px] h-[280px] bg-sky-400/20 dark:bg-sky-500/10 rounded-full filter blur-[70px] md:blur-[100px]"
             animate={{
