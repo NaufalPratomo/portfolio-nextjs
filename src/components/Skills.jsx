@@ -18,28 +18,47 @@ const generateFloatingElements = (count) => {
   return elements;
 };
 
-export default function Skills() {
-  const hardSkills = [
-    { name: 'Laravel', level: 65 },
-    { name: 'Next.js', level: 70 },
-    { name: 'Basis Data (MySQL, MongoDB)', level: 65 },
-    { name: 'Editing (Canva, Capcut)', level: 70 },
-    { name: 'Microsoft Office (Word, Excel, PPT)', level: 70 },
-    { name: 'PHP', level: 65 },
-    { name: 'CSS', level: 70 },
-    { name: 'HTML', level: 70 },
-    { name: 'JavaScript', level: 70 },
-  ];
+const initialHardSkills = [
+  { name: 'Laravel', level: 65 },
+  { name: 'Next.js', level: 70 },
+  { name: 'Basis Data (MySQL, MongoDB)', level: 65 },
+  { name: 'Editing (Canva, Capcut)', level: 70 },
+  { name: 'Microsoft Office (Word, Excel, PPT)', level: 70 },
+  { name: 'PHP', level: 65 },
+  { name: 'CSS', level: 70 },
+  { name: 'HTML', level: 70 },
+  { name: 'JavaScript', level: 70 },
+];
 
-  const softSkills = [
-    'Leadership',
-    'Teamwork',
-    'Critical Thinking',
-    'Analytical Thinking',
-    'Communication',
-    'Problem Solving',
-    'Time Management',
-  ];
+const initialSoftSkills = [
+  'Leadership',
+  'Teamwork',
+  'Critical Thinking',
+  'Analytical Thinking',
+  'Communication',
+  'Problem Solving',
+  'Time Management',
+];
+
+export default function Skills() {
+  const [hardSkills, setHardSkills] = useState(initialHardSkills);
+  const [softSkills, setSoftSkills] = useState(initialSoftSkills);
+
+  useEffect(() => {
+    fetch('/api/skills')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data) {
+          if (Array.isArray(data.data.hardSkills) && data.data.hardSkills.length > 0) {
+            setHardSkills(data.data.hardSkills);
+          }
+          if (Array.isArray(data.data.softSkills) && data.data.softSkills.length > 0) {
+            setSoftSkills(data.data.softSkills.map(s => s.name || s));
+          }
+        }
+      })
+      .catch((err) => console.error('Failed to fetch skills', err));
+  }, []);
 
   const [sectionRef, isInView] = useIntersectionObserver({ threshold: 0.3 });
   const { scrollYProgress } = useScroll();

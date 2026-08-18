@@ -3,29 +3,42 @@
 import Image from 'next/image';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+
+const initialAchievements = [
+    {
+        title: 'Lomba Web Development Nasional - Technofest',
+        description: 'Participation in the Technofest competition.',
+        image: '/images/lomba/technofest.png',
+        date: '2026'
+    },
+    {
+        title: 'Explor[AI]tion',
+        description: 'Participation in the Explor[AI]tion competition.',
+        image: '/images/lomba/Explor[AI]tion.png',
+        date: '2025'
+    },
+    {
+        title: '4C National Competition',
+        description: 'Participation in the 4C National Competition.',
+        image: '/images/lomba/4C.png',
+        date: '2024'
+    }
+];
 
 export default function Achievements() {
-    const achievements = [
-        {
-            title: 'Lomba Web Development Nasional - Technofest',
-            description: 'Participation in the Technofest competition.',
-            image: '/images/lomba/technofest.png',
-            date: '2026'
-        },
-        {
-            title: 'Explor[AI]tion',
-            description: 'Participation in the Explor[AI]tion competition.',
-            image: '/images/lomba/Explor[AI]tion.png',
-            date: '2025' // Placeholder
-        },
-        {
-            title: '4C National Competition',
-            description: 'Participation in the 4C National Competition.',
-            image: '/images/lomba/4C.png',
-            date: '2024' // Placeholder
-        }
-    ];
+    const [achievements, setAchievements] = useState(initialAchievements);
+
+    useEffect(() => {
+        fetch('/api/achievements')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+                    setAchievements(data.data);
+                }
+            })
+            .catch(err => console.error('Failed to fetch achievements', err));
+    }, []);
 
     const [hoveredIndex, setHoveredIndex] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);

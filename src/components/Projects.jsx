@@ -101,8 +101,7 @@ const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
   </motion.div>
 );
 
-export default function Projects() {
-  const realProjects = [
+const initialRealProjects = [
     {
       title: 'Dashboard HR and GA - PT XYZ',
       period: 'Jun 2026',
@@ -163,7 +162,7 @@ export default function Projects() {
     }
   ];
 
-  const privateProjects = [
+  const initialPrivateProjects = [
     {
       title: 'Frugalin.aja',
       period: 'May 2026',
@@ -240,6 +239,24 @@ export default function Projects() {
       tags: ['Flutter', 'AI', 'Machine Learning'],
     },
   ];
+
+export default function Projects() {
+  const [realProjects, setRealProjects] = useState(initialRealProjects);
+  const [privateProjects, setPrivateProjects] = useState(initialPrivateProjects);
+
+  useEffect(() => {
+    fetch('/api/projects')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          const clientList = data.data.filter((p) => p.category === 'client');
+          const privateList = data.data.filter((p) => p.category === 'private');
+          if (clientList.length > 0) setRealProjects(clientList);
+          if (privateList.length > 0) setPrivateProjects(privateList);
+        }
+      })
+      .catch((err) => console.error('Failed to fetch projects', err));
+  }, []);
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [enableInteractiveCursor, setEnableInteractiveCursor] = useState(false);

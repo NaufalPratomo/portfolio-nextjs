@@ -3,7 +3,7 @@ import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
-const experiences = [
+const initialExperiences = [
     {
         title: 'Back End Developer',
         company: 'PT Indolakto',
@@ -78,6 +78,19 @@ const experiences = [
 ];
 
 export default function Experience() {
+    const [experiences, setExperiences] = React.useState(initialExperiences);
+
+    React.useEffect(() => {
+        fetch('/api/experiences')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+                    setExperiences(data.data);
+                }
+            })
+            .catch(err => console.error('Error fetching experiences', err));
+    }, []);
+
     return (
         <section id="experience" className="py-20 relative overflow-hidden bg-slate-50 dark:bg-slate-900/50 transition-colors duration-300">
             <div className="container mx-auto px-4 relative z-10">
