@@ -1,4 +1,9 @@
 import { v2 as cloudinary } from 'cloudinary';
+import dns from 'dns';
+
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

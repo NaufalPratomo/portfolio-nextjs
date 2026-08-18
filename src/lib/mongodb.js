@@ -1,8 +1,14 @@
 import { MongoClient } from 'mongodb';
+import dns from 'dns';
+
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
 
 const options = {
   serverSelectionTimeoutMS: 5000,
 };
+
 
 let client;
 let clientPromise;
