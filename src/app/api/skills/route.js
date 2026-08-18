@@ -70,12 +70,16 @@ export async function PUT(request) {
   try {
     const { db } = await connectToDatabase();
     const { _id, ...updateData } = await request.json();
+    if (!_id) return NextResponse.json({ success: false, error: 'ID is required' }, { status: 400 });
+
+    const filter = ObjectId.isValid(_id) ? { _id: new ObjectId(_id) } : { _id: _id };
     await db.collection('skills').updateOne(
-      { _id: new ObjectId(_id) },
+      filter,
       { $set: updateData }
     );
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error('Skills PUT error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
@@ -85,10 +89,16 @@ export async function DELETE(request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
+    if (!id) return NextResponse.json({ success: false, error: 'ID is required' }, { status: 400 });
+
     const { db } = await connectToDatabase();
-    await db.collection('skills').deleteOne({ _id: new ObjectId(id) });
+    const filter = ObjectId.isValid(id) ? { _id: new ObjectId(id) } : { _id: id };
+
+    await db.collection('skills').deleteOne(filter);
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error('Skills DELETE error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+

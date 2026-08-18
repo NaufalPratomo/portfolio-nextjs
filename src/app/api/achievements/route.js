@@ -69,17 +69,24 @@ export async function PUT(request) {
   try {
     const { db } = await connectToDatabase();
     const { _id, oldCloudinaryPublicId, ...updateData } = await request.json();
+    if (!_id) return NextResponse.json({ success: false, error: 'ID is required' }, { status: 400 });
 
     if (oldCloudinaryPublicId && updateData.cloudinaryPublicId && oldCloudinaryPublicId !== updateData.cloudinaryPublicId) {
-      await deleteCloudinaryMedia(oldCloudinaryPublicId);
+      try {
+        await deleteCloudinaryMedia(oldCloudinaryPublicId);
+      } catch (mediaError) {
+        console.error('Cloudinary delete old media error:', mediaError);
+      }
     }
 
+    const filter = ObjectId.isValid(_id) ? { _id: new ObjectId(_id) } : { _id: _id };
     await db.collection('achievements').updateOne(
-      { _id: new ObjectId(_id) },
+      filter,
       { $set: updateData }
     );
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error('Achievements PUT error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
@@ -89,16 +96,25 @@ export async function DELETE(request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    const { db } = await connectToDatabase();
+    if (!id) return NextResponse.json({ success: false, error: 'ID is required' }, { status: 400 });
 
-    const item = await db.collection('achievements').findOne({ _id: new ObjectId(id) });
+    const { db } = await connectToDatabase();
+    const filter = ObjectId.isValid(id) ? { _id: new ObjectId(id) } : { _id: id };
+
+    const item = await db.collection('achievements').findOne(filter);
     if (item?.cloudinaryPublicId) {
-      await deleteCloudinaryMedia(item.cloudinaryPublicId);
+      try {
+        await deleteCloudinaryMedia(item.cloudinaryPublicId);
+      } catch (mediaError) {
+        console.error('Cloudinary delete media error:', mediaError);
+      }
     }
 
-    await db.collection('achievements').deleteOne({ _id: new ObjectId(id) });
+    await db.collection('achievements').deleteOne(filter);
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error('Achievements DELETE error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
