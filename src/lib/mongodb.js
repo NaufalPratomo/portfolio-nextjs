@@ -1,6 +1,8 @@
 import { MongoClient } from 'mongodb';
 
-const options = {};
+const options = {
+  serverSelectionTimeoutMS: 5000,
+};
 
 let client;
 let clientPromise;
