@@ -80,7 +80,7 @@ export async function POST(request) {
   if (!checkAdminAuth()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const { db } = await connectToDatabase();
-    const body = await request.json();
+    const { _id, ...body } = await request.json();
     const result = await db.collection('experiences').insertOne({
       ...body,
       createdAt: new Date(),
@@ -96,7 +96,7 @@ export async function PUT(request) {
   try {
     const { db } = await connectToDatabase();
     const { _id, oldCloudinaryPublicId, ...updateData } = await request.json();
-    if (!_id) return NextResponse.json({ success: false, error: 'ID is required' }, { status: 400 });
+    if (_id === undefined || _id === null) return NextResponse.json({ success: false, error: 'ID is required' }, { status: 400 });
 
     if (oldCloudinaryPublicId && updateData.cloudinaryPublicId && oldCloudinaryPublicId !== updateData.cloudinaryPublicId) {
       try {
@@ -123,10 +123,11 @@ export async function DELETE(request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    if (!id) return NextResponse.json({ success: false, error: 'ID is required' }, { status: 400 });
+    if (id === null) return NextResponse.json({ success: false, error: 'ID parameter is missing' }, { status: 400 });
 
     const { db } = await connectToDatabase();
     const filter = ObjectId.isValid(id) ? { _id: new ObjectId(id) } : { _id: id };
+
 
     const item = await db.collection('experiences').findOne(filter);
     if (item?.cloudinaryPublicId) {

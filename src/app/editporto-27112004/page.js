@@ -179,13 +179,14 @@ export default function AdminDashboard() {
       ...expForm,
       skills: typeof expForm.skills === 'string' ? expForm.skills.split(',').map((s) => s.trim()).filter(Boolean) : expForm.skills,
     };
+    const { _id, ...cleanPayload } = payload;
 
     const method = editingId ? 'PUT' : 'POST';
     try {
       const res = await fetch('/api/experiences', {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(editingId ? payload : cleanPayload),
       });
       const data = await res.json();
       if (data.success) {
@@ -218,7 +219,7 @@ export default function AdminDashboard() {
     if (!confirm('Apakah Anda yakin ingin menghapus pengalaman ini? Media Cloudinary juga akan dihapus.')) return;
     setLoading(true);
     try {
-      const res = await fetch(`/api/experiences?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/experiences?id=${id || ''}`, { method: 'DELETE' });
       const data = await res.json();
       if (data.success) {
         showMessage('Pengalaman berhasil dihapus!');
@@ -239,13 +240,14 @@ export default function AdminDashboard() {
       ...projForm,
       tags: typeof projForm.tags === 'string' ? projForm.tags.split(',').map((t) => t.trim()).filter(Boolean) : projForm.tags,
     };
+    const { _id, ...cleanPayload } = payload;
 
     const method = editingId ? 'PUT' : 'POST';
     try {
       const res = await fetch('/api/projects', {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(editingId ? payload : cleanPayload),
       });
       const data = await res.json();
       if (data.success) {
@@ -276,7 +278,7 @@ export default function AdminDashboard() {
     if (!confirm('Apakah Anda yakin ingin menghapus proyek ini? Gambar Cloudinary juga akan terhapus.')) return;
     setLoading(true);
     try {
-      const res = await fetch(`/api/projects?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/projects?id=${id || ''}`, { method: 'DELETE' });
       const data = await res.json();
       if (data.success) {
         showMessage('Proyek berhasil dihapus!');
@@ -293,12 +295,13 @@ export default function AdminDashboard() {
   const saveSkill = async (e) => {
     e.preventDefault();
     setLoading(true);
+    const { _id, ...cleanPayload } = skillForm;
     const method = editingId ? 'PUT' : 'POST';
     try {
       const res = await fetch('/api/skills', {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(skillForm),
+        body: JSON.stringify(editingId ? skillForm : cleanPayload),
       });
       const data = await res.json();
       if (data.success) {
@@ -318,7 +321,7 @@ export default function AdminDashboard() {
     if (!confirm('Hapus skill ini?')) return;
     setLoading(true);
     try {
-      const res = await fetch(`/api/skills?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/skills?id=${id || ''}`, { method: 'DELETE' });
       const data = await res.json();
       if (data.success) {
         showMessage('Skill berhasil dihapus!');
@@ -335,12 +338,13 @@ export default function AdminDashboard() {
   const saveAchievement = async (e) => {
     e.preventDefault();
     setLoading(true);
+    const { _id, ...cleanPayload } = achForm;
     const method = editingId ? 'PUT' : 'POST';
     try {
       const res = await fetch('/api/achievements', {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(achForm),
+        body: JSON.stringify(editingId ? achForm : cleanPayload),
       });
       const data = await res.json();
       if (data.success) {
@@ -356,11 +360,12 @@ export default function AdminDashboard() {
     }
   };
 
+
   const deleteAchievement = async (id) => {
     if (!confirm('Hapus prestasi/lomba ini? Gambar Cloudinary juga akan dihapus.')) return;
     setLoading(true);
     try {
-      const res = await fetch(`/api/achievements?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/achievements?id=${id || ''}`, { method: 'DELETE' });
       const data = await res.json();
       if (data.success) {
         showMessage('Prestasi berhasil dihapus!');
@@ -372,6 +377,7 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   };
+
 
   // Render Login Modal if not authenticated
   if (!isAuthenticated) {

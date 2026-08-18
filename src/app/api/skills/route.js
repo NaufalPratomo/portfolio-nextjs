@@ -54,7 +54,7 @@ export async function POST(request) {
   if (!checkAdminAuth()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const { db } = await connectToDatabase();
-    const body = await request.json();
+    const { _id, ...body } = await request.json();
     const result = await db.collection('skills').insertOne({
       ...body,
       createdAt: new Date(),
@@ -70,7 +70,7 @@ export async function PUT(request) {
   try {
     const { db } = await connectToDatabase();
     const { _id, ...updateData } = await request.json();
-    if (!_id) return NextResponse.json({ success: false, error: 'ID is required' }, { status: 400 });
+    if (_id === undefined || _id === null) return NextResponse.json({ success: false, error: 'ID is required' }, { status: 400 });
 
     const filter = ObjectId.isValid(_id) ? { _id: new ObjectId(_id) } : { _id: _id };
     await db.collection('skills').updateOne(
@@ -89,7 +89,7 @@ export async function DELETE(request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    if (!id) return NextResponse.json({ success: false, error: 'ID is required' }, { status: 400 });
+    if (id === null) return NextResponse.json({ success: false, error: 'ID parameter is missing' }, { status: 400 });
 
     const { db } = await connectToDatabase();
     const filter = ObjectId.isValid(id) ? { _id: new ObjectId(id) } : { _id: id };
@@ -101,4 +101,5 @@ export async function DELETE(request) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
 
