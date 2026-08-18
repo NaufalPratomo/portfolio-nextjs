@@ -26,6 +26,17 @@ const initialAchievements = [
     }
 ];
 
+const getImageSrc = (src) => {
+    if (!src) return '/images/lomba/technofest.png';
+    if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('/')) {
+        return src;
+    }
+    if (src.startsWith('z0/')) {
+        return `https://res.cloudinary.com/dmy6ugxz0/${src.replace(/^z0\//, '')}`;
+    }
+    return `https://res.cloudinary.com/${src}`;
+};
+
 export default function Achievements() {
     const [achievements, setAchievements] = useState(initialAchievements);
 
@@ -39,6 +50,7 @@ export default function Achievements() {
             })
             .catch(err => console.error('Failed to fetch achievements', err));
     }, []);
+
 
     const [hoveredIndex, setHoveredIndex] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
@@ -109,11 +121,12 @@ export default function Achievements() {
                                         onClick={() => setSelectedImage(item.image)}
                                     >
                                         <Image
-                                            src={item.image}
+                                            src={getImageSrc(item.image)}
                                             alt={item.title}
                                             fill
                                             sizes="(max-width: 768px) 100vw, 50vw"
                                             className="object-cover object-center transition-transform duration-700 ease-out"
+                                            unoptimized
                                         />
                                         <motion.div
                                             className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -161,16 +174,18 @@ export default function Achievements() {
                                 </svg>
                             </button>
                             <Image
-                                src={selectedImage}
+                                src={getImageSrc(selectedImage)}
                                 alt="Certificate Full View"
                                 fill
                                 className="object-contain"
                                 quality={100}
+                                unoptimized
                             />
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
+
         </>
     );
 }
