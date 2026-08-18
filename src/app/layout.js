@@ -4,7 +4,10 @@ import { SmoothScrollProvider } from '@/providers/SmoothScrollProvider';
 import { Analytics } from "@vercel/analytics/react";
 const inter = Inter({ subsets: ['latin'] });
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
 export const metadata = {
+  metadataBase: new URL(baseUrl),
   title: 'Muhammad Naufal Pratomo - Portfolio',
   description: 'Portfolio website of Muhammad Naufal Pratomo, Web Developer',
   icons: {

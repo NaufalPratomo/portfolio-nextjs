@@ -5,15 +5,26 @@ import { motion } from 'framer-motion';
 
 const experiences = [
     {
+        title: 'Back End Developer',
+        company: 'PT Indolakto',
+        type: 'Internship',
+        date: 'Jul 2026 - Present',
+        duration: '2 mos',
+        location: 'Pasuruan, East Java, Indonesia',
+        locationType: 'On-site',
+        logo: '/images/logopt/logo-indolakto.png',
+        skills: ['Back-End Web Development', 'MQTT', 'IoT', 'REST API'],
+    },
+    {
         title: 'Web Developer',
-        company: 'PT. Eka Dura Indonesia',
+        company: 'PT. XYZ',
         type: 'Freelance',
         date: 'Jun 2026',
         duration: '1 mo',
         location: 'Indonesia',
         locationType: 'Remote',
-        description: 'Membangun aplikasi dashboard HR & GA (Human Resources & General Affairs) full-stack terintegrasi untuk PT Eka Dura Indonesia (anak usaha PT Astra Agro Lestari Tbk yang bergerak di bidang sawit). Dashboard ini mendigitalisasi pemantauan Hari Kerja Normal Efektif (HKNE) karyawan operasional (Panen, Infield, Rawat), absensi, serta pelacakan realisasi anggaran biaya. Dilengkapi pula dengan fitur manajemen aset dan jatuh tempo pajak kendaraan operasional untuk meminimalkan denda serta mendukung efisiensi biaya perusahaan secara real-time.',
-        logo: '/images/logopt/logo-astra-agro.png',
+        description: 'Membangun aplikasi dashboard HR & GA (Human Resources & General Affairs) full-stack terintegrasi untuk PT XYZ (perusahaan agribisnis kelapa sawit nasional). Dashboard ini mendigitalisasi pemantauan Hari Kerja Normal Efektif (HKNE) karyawan operasional (Panen, Infield, Rawat), absensi, serta pelacakan realisasi anggaran biaya. Dilengkapi fitur manajemen aset dan jatuh tempo pajak kendaraan operasional untuk meminimalkan denda serta mendukung efisiensi biaya secara real-time.',
+        initials: 'XYZ',
         media: '/images/projects/DashboardHRGA.jpg',
         skills: ['Full-Stack Development'],
     },
@@ -21,8 +32,8 @@ const experiences = [
         title: 'Back End Developer',
         company: 'UTERO INDONESIA',
         type: 'Internship',
-        date: 'Jan 2026 - Present',
-        duration: '4 mos',
+        date: 'Jan 2026 - Jun 2026',
+        duration: '6 mos',
         location: 'Kota Malang, East Java, Indonesia',
         locationType: 'On-site',
         logo: '/images/logopt/utero-logo.png',
@@ -54,14 +65,14 @@ const experiences = [
     },
     {
         title: 'Frontend Web Developer',
-        company: 'PT Sari Aditya Loka',
+        company: 'PT. XYZ',
         type: 'Freelance',
         date: 'Jul 2025 - Aug 2025',
         duration: '2 mos',
         location: 'Indonesia',
         locationType: 'Remote',
-        description: 'Berkolaborasi dengan stakeholder dari PT Sari Aditya Loka untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional dan mendukung pengambilan keputusan strategis yang berbasis data untuk PT Sari Aditya Loka (anak usaha PT Astra Agro Lestari yang bergerak di bidang sawit)',
-        logo: '/images/logopt/logo-astra-agro.png',
+        description: 'Berkolaborasi dengan stakeholder dari PT XYZ untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional dan mendukung pengambilan keputusan strategis berbasis data untuk perusahaan agribisnis/kelapa sawit nasional.',
+        initials: 'XYZ',
         skills: ['Front-End Development'],
     }
 ];
@@ -98,24 +109,22 @@ export default function Experience() {
                             <div className="flex flex-col md:flex-row gap-6 relative z-10">
                                 {/* Logo Section */}
                                 <div className="flex-shrink-0">
-                                    <div className="w-16 h-16 md:w-20 md:h-20 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-600 shadow-sm group-hover:scale-105 transition-transform duration-300">
-                                        {/* Placeholder for actual image - using initials as fallback if image fails or is placeholder */}
-                                        <div className="relative w-full h-full">
-                                            {/* In a real scenario, you'd handle image error to show initials. 
-                             For now, we assume the user will replace valid paths. 
-                             We can add a text fallback layered behind/in-place. */}
-                                            <div className="absolute inset-0 flex items-center justify-center text-slate-400 font-bold text-2xl">
-                                                {exp.company.charAt(0)}
+                                    <div className="w-16 h-16 md:w-20 md:h-20 bg-slate-100 dark:bg-slate-700/80 rounded-xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-600 shadow-sm group-hover:scale-105 transition-transform duration-300">
+                                        {exp.initials ? (
+                                            <div className="w-full h-full flex items-center justify-center bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-extrabold text-xl md:text-2xl tracking-wider select-none">
+                                                {exp.initials}
                                             </div>
-                                            <Image
-                                                src={exp.logo}
-                                                alt={exp.company}
-                                                fill
-                                                sizes="80px"
-                                                className="object-cover"
-                                            // Fallback logic could go here, but omitted for simplicity
-                                            />
-                                        </div>
+                                        ) : (
+                                            <div className="relative w-full h-full">
+                                                <Image
+                                                    src={exp.logo}
+                                                    alt={exp.company}
+                                                    fill
+                                                    sizes="80px"
+                                                    className="object-cover"
+                                                />
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 

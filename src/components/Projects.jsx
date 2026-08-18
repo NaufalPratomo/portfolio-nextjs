@@ -104,9 +104,9 @@ const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
 export default function Projects() {
   const realProjects = [
     {
-      title: 'Dashboard HR and GA - (PT Eka Dura Indonesia)',
+      title: 'Dashboard HR and GA - PT XYZ',
       period: 'Jun 2026',
-      description: 'Membangun aplikasi dashboard HR & GA (Human Resources & General Affairs) full-stack terintegrasi untuk PT Eka Dura Indonesia (anak usaha PT Astra Agro Lestari Tbk yang bergerak di bidang sawit). Dashboard ini mendigitalisasi pemantauan Hari Kerja Normal Efektif (HKNE) karyawan operasional (Panen, Infield, Rawat), absensi, serta pelacakan realisasi anggaran biaya. Dilengkapi pula dengan fitur manajemen aset dan jatuh tempo pajak kendaraan operasional untuk meminimalkan denda serta mendukung efisiensi biaya perusahaan secara real-time.',
+      description: 'Membangun aplikasi dashboard HR & GA (Human Resources & General Affairs) full-stack terintegrasi untuk PT XYZ (perusahaan agribisnis kelapa sawit nasional). Dashboard ini mendigitalisasi pemantauan Hari Kerja Normal Efektif (HKNE) karyawan operasional (Panen, Infield, Rawat), absensi, serta pelacakan realisasi anggaran biaya. Dilengkapi fitur manajemen aset dan jatuh tempo pajak kendaraan operasional untuk meminimalkan denda serta mendukung efisiensi biaya secara real-time.',
       image: '/images/projects/DashboardHRGA.jpg',
       tags: ['Next.js', 'TypeScript', 'Prisma ORM', 'MySQL'],
     },
@@ -127,9 +127,9 @@ export default function Projects() {
       link: 'https://djoe-orchid.vercel.app/',
     },
     {
-      title: 'Dashboard Daily Cost Production Site - (PT Sari Aditya Loka)',
+      title: 'Dashboard Daily Cost Production Site - (PT XYZ)',
       period: 'Jul 2025 - Agustus 2025',
-      description: 'Berkolaborasi dengan stakeholder dari PT Sari Aditya Loka untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional dan mendukung pengambilan keputusan strategis yang berbasis data untuk PT Sari Aditya Loka (anak usaha PT Astra Agro Lestari yang bergerak di bidang sawit).',
+      description: 'Berkolaborasi dengan stakeholder dari PT XYZ untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional dan mendukung pengambilan keputusan strategis berbasis data untuk perusahaan agribisnis/kelapa sawit nasional.',
       image: '/images/projects/costsite.png',
       tags: ['PHP', 'MySQL'],
     },
