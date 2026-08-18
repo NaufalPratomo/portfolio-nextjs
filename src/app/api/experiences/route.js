@@ -4,6 +4,8 @@ import { checkAdminAuth } from '@/lib/auth';
 import { deleteCloudinaryMedia } from '@/lib/cloudinary';
 import { ObjectId } from 'mongodb';
 
+export const dynamic = 'force-dynamic';
+
 const initialExperiences = [
   {
     title: 'Back End Developer',

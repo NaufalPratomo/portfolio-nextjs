@@ -3,6 +3,8 @@ import { connectToDatabase } from '@/lib/mongodb';
 import { checkAdminAuth } from '@/lib/auth';
 import { ObjectId } from 'mongodb';
 
+export const dynamic = 'force-dynamic';
+
 const initialSkills = {
   hardSkills: [
     { name: 'Laravel', level: 65, order: 1 },
