@@ -13,7 +13,7 @@ const experiences = [
         location: 'Pasuruan, East Java, Indonesia',
         locationType: 'On-site',
         logo: '/images/logopt/logo-indolakto.png',
-        skills: ['Back-End Web Development', 'MQTT', 'IoT', 'REST API'],
+        skills: ['Back-End Web Development', 'Mqtt', 'Back-end Operations', 'Server Side Programming'],
     },
     {
         title: 'Web Developer',
