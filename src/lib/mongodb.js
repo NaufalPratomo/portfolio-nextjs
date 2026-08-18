@@ -11,17 +11,20 @@ function getClientPromise() {
     throw new Error('Please add your Mongo URI (MONGODB_URI) to environment variables / .env.local');
   }
 
-  if (clientPromise) return clientPromise;
-
   if (process.env.NODE_ENV === 'development') {
     if (!global._mongoClientPromise) {
       client = new MongoClient(uri, options);
       global._mongoClientPromise = client.connect();
     }
-    clientPromise = global._mongoClientPromise;
-  } else {
+    return global._mongoClientPromise;
+  }
+
+  if (!clientPromise) {
     client = new MongoClient(uri, options);
-    clientPromise = client.connect();
+    clientPromise = client.connect().catch((err) => {
+      clientPromise = null;
+      throw err;
+    });
   }
   return clientPromise;
 }
