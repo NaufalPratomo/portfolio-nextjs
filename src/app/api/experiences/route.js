@@ -29,6 +29,7 @@ const initialExperiences = [
     locationType: 'Remote',
     description: 'Membangun aplikasi dashboard HR & GA (Human Resources & General Affairs) full-stack terintegrasi untuk PT XYZ (perusahaan agribisnis kelapa sawit nasional). Dashboard ini mendigitalisasi pemantauan Hari Kerja Normal Efektif (HKNE) karyawan operasional (Panen, Infield, Rawat), absensi, serta pelacakan realisasi anggaran biaya. Dilengkapi fitur manajemen aset dan jatuh tempo pajak kendaraan operasional untuk meminimalkan denda serta mendukung efisiensi biaya secara real-time.',
     initials: 'XYZ',
+    media: '/images/projects/DashboardHRGA.jpg',
     logo: '/images/projects/DashboardHRGA.jpg',
     skills: ['Full-Stack Development'],
     order: 2,
@@ -54,8 +55,35 @@ const initialExperiences = [
     location: 'Kota Malang, East Java, Indonesia',
     locationType: 'Hybrid',
     logo: '/images/logopt/webquest-logo.png',
-    skills: ['Project Management'],
+    skills: ['Full-Stack Development and Project Management'],
     order: 4,
+  },
+  {
+    title: 'Fullstack Developer',
+    company: 'PT. Palma Serasih Tbk.',
+    type: 'Freelance',
+    date: 'Oct 2025 - Feb 2026',
+    duration: '5 mos',
+    location: 'Jakarta, Indonesia',
+    locationType: 'Remote',
+    description: 'Membangun sistem manajemen operasional perkebunan berbasis web untuk memusatkan proses pencatatan, monitoring, dan pelaporan dalam satu platform terintegrasi. Sistem ini mencakup manajemen data master (lokasi, karyawan, kelompok kerja), transaksi harian lapangan (absensi, panen, pekerjaan, angkut, taksasi), hingga rekap dan verifikasi laporan untuk kebutuhan operasional dan manajerial. Dengan dashboard dan alur kerja yang terstruktur, PALMA ROOTS membantu tim mempercepat input data, mengurangi kesalahan manual, meningkatkan transparansi progres kerja, serta memudahkan pengambilan keputusan berbasis data.',
+    logo: '/images/logopt/palma-logo.png',
+    media: '/images/projects/palmaroots.png',
+    skills: ['Full-Stack Development and Project Management'],
+    order: 5,
+  },
+  {
+    title: 'Frontend Web Developer',
+    company: 'PT. XYZ',
+    type: 'Freelance',
+    date: 'Jul 2025 - Aug 2025',
+    duration: '2 mos',
+    location: 'Indonesia',
+    locationType: 'Remote',
+    description: 'Berkolaborasi dengan stakeholder dari PT XYZ untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional dan mendukung pengambilan keputusan strategis berbasis data untuk perusahaan agribisnis/kelapa sawit nasional.',
+    initials: 'XYZ',
+    skills: ['Front-End Development'],
+    order: 6,
   }
 ];
 
@@ -68,6 +96,14 @@ export async function GET() {
     if (data.length === 0) {
       await collection.insertMany(initialExperiences);
       data = await collection.find({}).sort({ order: 1 }).toArray();
+    } else {
+      const missingItems = initialExperiences.filter(
+        (initItem) => !data.some((dbItem) => dbItem.title === initItem.title && dbItem.company === initItem.company)
+      );
+      if (missingItems.length > 0) {
+        await collection.insertMany(missingItems);
+        data = await collection.find({}).sort({ order: 1 }).toArray();
+      }
     }
 
     return NextResponse.json({ success: true, data });
