@@ -3,10 +3,29 @@ import { connectToDatabase } from '@/lib/mongodb';
 import { checkAdminAuth } from '@/lib/auth';
 import { deleteCloudinaryMedia } from '@/lib/cloudinary';
 import { ObjectId } from 'mongodb';
+import { sortProjectsByEndDate } from '@/lib/dateUtils';
 
 export const dynamic = 'force-dynamic';
 
 const initialProjects = [
+  {
+    category: 'client',
+    title: 'Enterprise Operations Dashboard - (PT Doa Suryo Agong)',
+    period: 'Mar 2026 - Present',
+    description: 'Membangun platform dashboard enterprise terintegrasi untuk mendukung operasional lintas divisi (Finance, HR, Produksi, Logistik, Sales, Management, dan Office) dalam satu ekosistem. Arsitektur backend dirancang secara hybrid, menggabungkan akses data langsung berbasis policy untuk CRUD ringan dan API server untuk business logic kompleks seperti approval workflow, payroll, reimburse, budget, serta agregasi metrik lintas modul. Solusi ini meningkatkan kecepatan proses kerja, akurasi data, dan kualitas pengambilan keputusan berbasis data real-time. Saya berfokus pada pengembangan backend end-to-end: merancang dan membangun API modular, menerapkan otorisasi berbasis role/access level, mengamankan data dengan Supabase Auth dan RLS, menyusun validasi payload serta service layer, mengembangkan workflow approval dan automasi perhitungan bisnis, serta melakukan hardening endpoint dan perbaikan bug kritikal agar sistem stabil di production.',
+    image: '/images/projects/suryo_agong.png',
+    tags: ['Next.js', 'TypeScript', 'Supabase', 'PostgreSQL', 'API Routes', 'RLS', 'Node.js'],
+    order: 1,
+  },
+  {
+    category: 'client',
+    title: 'AIDA - Advertisement Intelligence & Data Analytics - (PT Utero Kreatif Indonesia)',
+    period: 'Januari 2026 - Present',
+    description: 'AIDA adalah sistem monitoring dan analitik billboard berbasis AI untuk deteksi serta perhitungan kendaraan secara real-time. Dalam proyek ini, saya tidak membangun sistem dari nol, tetapi berfokus pada improvement end-to-end: penyempurnaan tampilan dashboard agar lebih jelas dan usable, perbaikan logika proses data agar lebih stabil, serta retraining model YOLO untuk meningkatkan akurasi deteksi. Hasilnya, sistem memberikan insight trafik yang lebih presisi dan lebih siap digunakan untuk kebutuhan operasional serta pengambilan keputusan.',
+    image: '/images/projects/aida.png',
+    tags: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'Drizzle ORM', 'MySQL', 'Python', 'YOLO', 'OpenCV', 'MQTT'],
+    order: 2,
+  },
   {
     category: 'client',
     title: 'Dashboard HR and GA - PT XYZ',
@@ -14,7 +33,7 @@ const initialProjects = [
     description: 'Membangun aplikasi dashboard HR & GA (Human Resources & General Affairs) full-stack terintegrasi untuk PT XYZ (perusahaan agribisnis kelapa sawit nasional). Dashboard ini mendigitalisasi pemantauan Hari Kerja Normal Efektif (HKNE) karyawan operasional (Panen, Infield, Rawat), absensi, serta pelacakan realisasi anggaran biaya. Dilengkapi fitur manajemen aset dan jatuh tempo pajak kendaraan operasional untuk meminimalkan denda serta mendukung efisiensi biaya secara real-time.',
     image: '/images/projects/DashboardHRGA.jpg',
     tags: ['Next.js', 'TypeScript', 'Prisma ORM', 'MySQL'],
-    order: 1,
+    order: 3,
   },
   {
     category: 'client',
@@ -24,7 +43,7 @@ const initialProjects = [
     image: '/images/projects/emasjidPatra.png',
     tags: ['Next.js', 'TypeScript', 'MongoDB', 'Tailwind CSS', 'Cloudinary', 'Framer Motion'],
     link: 'https://emasjid-daarus-sholih-patraland.vercel.app/',
-    order: 2,
+    order: 4,
   },
   {
     category: 'client',
@@ -34,24 +53,6 @@ const initialProjects = [
     image: '/images/projects/djoesOrchid.png',
     tags: ['Next.js 14', 'TypeScript', 'MongoDB', 'Tailwind CSS', 'HTML5-QRCode'],
     link: 'https://djoe-orchid.vercel.app/',
-    order: 3,
-  },
-  {
-    category: 'client',
-    title: 'Dashboard Daily Cost Production Site - (PT XYZ)',
-    period: 'Jul 2025 - Agustus 2025',
-    description: 'Berkolaborasi dengan stakeholder dari PT XYZ untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional dan mendukung pengambilan keputusan strategis berbasis data untuk perusahaan agribisnis/kelapa sawit nasional.',
-    image: '/images/projects/costsite.png',
-    tags: ['PHP', 'MySQL'],
-    order: 4,
-  },
-  {
-    category: 'client',
-    title: 'PALMA ROOTS - (PT Palma Serasih Tbk)',
-    period: 'Oct 2025 - Feb 2026',
-    description: 'Membangun sistem manajemen operasional perkebunan berbasis web untuk memusatkan proses pencatatan, monitoring, dan pelaporan dalam satu platform terintegrasi. Sistem ini mencakup manajemen data master (lokasi, karyawan, kelompok kerja), transaksi harian lapangan (absensi, panen, pekerjaan, angkut, taksasi), hingga rekap dan verifikasi laporan untuk kebutuhan operasional dan manajerial. Dengan dashboard dan alur kerja yang terstruktur, PALMA ROOTS membantu tim mempercepat input data, mengurangi kesalahan manual, meningkatkan transparansi progres kerja, serta memudahkan pengambilan keputusan berbasis data.',
-    image: '/images/projects/palmaroots.png',
-    tags: ['MongoDB', 'Express', 'React', 'Node.js', 'TypeScript', 'Tailwind CSS'],
     order: 5,
   },
   {
@@ -65,20 +66,20 @@ const initialProjects = [
   },
   {
     category: 'client',
-    title: 'AIDA - Advertisement Intelligence & Data Analytics - (PT Utero Kreatif Indonesia)',
-    period: 'Januari 2026 - Present',
-    description: 'AIDA adalah sistem monitoring dan analitik billboard berbasis AI untuk deteksi serta perhitungan kendaraan secara real-time. Dalam proyek ini, saya tidak membangun sistem dari nol, tetapi berfokus pada improvement end-to-end: penyempurnaan tampilan dashboard agar lebih jelas dan usable, perbaikan logika proses data agar lebih stabil, serta retraining model YOLO untuk meningkatkan akurasi deteksi. Hasilnya, sistem memberikan insight trafik yang lebih presisi dan lebih siap digunakan untuk kebutuhan operasional serta pengambilan keputusan.',
-    image: '/images/projects/aida.png',
-    tags: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'Drizzle ORM', 'MySQL', 'Python', 'YOLO', 'OpenCV', 'MQTT'],
+    title: 'PALMA ROOTS - (PT Palma Serasih Tbk)',
+    period: 'Oct 2025 - Feb 2026',
+    description: 'Membangun sistem manajemen operasional perkebunan berbasis web untuk memusatkan proses pencatatan, monitoring, dan pelaporan dalam satu platform terintegrasi. Sistem ini mencakup manajemen data master (lokasi, karyawan, kelompok kerja), transaksi harian lapangan (absensi, panen, pekerjaan, angkut, taksasi), hingga rekap dan verifikasi laporan untuk kebutuhan operasional dan manajerial. Dengan dashboard dan alur kerja yang terstruktur, PALMA ROOTS membantu tim mempercepat input data, mengurangi kesalahan manual, meningkatkan transparansi progres kerja, serta memudahkan pengambilan keputusan berbasis data.',
+    image: '/images/projects/palmaroots.png',
+    tags: ['MongoDB', 'Express', 'React', 'Node.js', 'TypeScript', 'Tailwind CSS'],
     order: 7,
   },
   {
     category: 'client',
-    title: 'Enterprise Operations Dashboard - (PT Doa Suryo Agong)',
-    period: 'Mar 2026 - Present',
-    description: 'Membangun platform dashboard enterprise terintegrasi untuk mendukung operasional lintas divisi (Finance, HR, Produksi, Logistik, Sales, Management, dan Office) dalam satu ekosistem. Arsitektur backend dirancang secara hybrid, menggabungkan akses data langsung berbasis policy untuk CRUD ringan dan API server untuk business logic kompleks seperti approval workflow, payroll, reimburse, budget, serta agregasi metrik lintas modul. Solusi ini meningkatkan kecepatan proses kerja, akurasi data, dan kualitas pengambilan keputusan berbasis data real-time. Saya berfokus pada pengembangan backend end-to-end: merancang dan membangun API modular, menerapkan otorisasi berbasis role/access level, mengamankan data dengan Supabase Auth dan RLS, menyusun validasi payload serta service layer, mengembangkan workflow approval dan automasi perhitungan bisnis, serta melakukan hardening endpoint dan perbaikan bug kritikal agar sistem stabil di production.',
-    image: '/images/projects/suryo_agong.png',
-    tags: ['Next.js', 'TypeScript', 'Supabase', 'PostgreSQL', 'API Routes', 'RLS', 'Node.js'],
+    title: 'Dashboard Daily Cost Production Site - (PT XYZ)',
+    period: 'Jul 2025 - Agustus 2025',
+    description: 'Berkolaborasi dengan stakeholder dari PT XYZ untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional dan mendukung pengambilan keputusan strategis berbasis data untuk perusahaan agribisnis/kelapa sawit nasional.',
+    image: '/images/projects/costsite.png',
+    tags: ['PHP', 'MySQL'],
     order: 8,
   },
   {
@@ -127,17 +128,6 @@ const initialProjects = [
   },
   {
     category: 'private',
-    title: 'Deadline Reminder',
-    period: 'Nov 2025 - Dec 2025',
-    description: 'Aplikasi manajemen produktivitas cerdas untuk mengelola tugas dan tenggat waktu. Fitur unggulan meliputi sistem pengingat otomatis via email, manajemen prioritas dengan tracking real-time, dan autentikasi aman. Dibangun menggunakan Next.js dan MongoDB dengan antarmuka yang estetis dan responsif.',
-    image: '/images/projects/deadlinereminderapp.png',
-    tags: ['Next.js', 'MongoDB', 'TailwindCSS'],
-    link: 'https://deadline-reminder-app.vercel.app/',
-    tryMe: true,
-    order: 13,
-  },
-  {
-    category: 'private',
     title: 'Attendify',
     period: 'Jan 2026',
     description: 'Aplikasi pelacak waktu (time tracker) berbasis web yang dirancang untuk profesional yang mengutamakan fokus. Dilengkapi fitur check-in/check-out real-time, dashboard statistik produktivitas, dan logbook aktivitas harian. Dibangun dengan Next.js 16, React 19, dan Tailwind CSS dengan desain dark mode yang elegan dan responsif.',
@@ -145,25 +135,18 @@ const initialProjects = [
     tags: ['Next.js 16', 'React 19', 'Tailwind CSS'],
     link: 'https://attendify-three-sigma.vercel.app/',
     tryMe: true,
+    order: 13,
+  },
+  {
+    category: 'private',
+    title: 'Deadline Reminder',
+    period: 'Nov 2025 - Dec 2025',
+    description: 'Aplikasi manajemen produktivitas cerdas untuk mengelola tugas dan tenggat waktu. Fitur unggulan meliputi sistem pengingat otomatis via email, manajemen prioritas dengan tracking real-time, dan autentikasi aman. Dibangun menggunakan Next.js dan MongoDB dengan antarmuka yang estetis dan responsif.',
+    image: '/images/projects/deadlinereminderapp.png',
+    tags: ['Next.js', 'MongoDB', 'TailwindCSS'],
+    link: 'https://deadline-reminder-app.vercel.app/',
+    tryMe: true,
     order: 14,
-  },
-  {
-    category: 'private',
-    title: 'TALENTI',
-    period: 'May 2025 - Oct 2025',
-    description: 'Sistem informasi berbasis web untuk manajemen dan pencatatan prestasi mahasiswa di Jurusan Teknologi Informasi. Memfasilitasi mahasiswa dan dosen dalam mendokumentasikan, memvalidasi, dan mempublikasikan pencapaian akademik maupun non-akademik.',
-    image: '/images/projects/talenti.png',
-    tags: ['Laravel', 'MySQL'],
-    order: 15,
-  },
-  {
-    category: 'private',
-    title: 'SIBETA',
-    period: 'Dec 2024 - Jan 2025',
-    description: 'Sistem Informasi Bebas Tanggungan TA untuk membantu pengelolaan data bebas tanggungan tugas akhir di Politeknik Negeri Malang.',
-    image: '/images/projects/sibeta.png',
-    tags: ['Laravel', 'MySQL'],
-    order: 16,
   },
   {
     category: 'private',
@@ -172,6 +155,24 @@ const initialProjects = [
     description: 'Mengembangkan aplikasi mobile berbasis Flutter yang mengimplementasikan sistem visi komputer untuk klasifikasi cuaca secara real-time. Aplikasi ini mampu menganalisis gambar langit untuk mengidentifikasi dan mengklasifikasikan kondisi cuaca secara otomatis, memberikan pengguna informasi meteorologi yang cepat dan akurat.',
     image: '/images/projects/weather.png',
     tags: ['Flutter', 'AI', 'Machine Learning'],
+    order: 15,
+  },
+  {
+    category: 'private',
+    title: 'TALENTI',
+    period: 'May 2025 - Oct 2025',
+    description: 'Sistem informasi berbasis web untuk manajemen dan pencatatan prestasi mahasiswa di Jurusan Teknologi Informasi. Memfasilitasi mahasiswa dan dosen dalam mendokumentasikan, memvalidasi, dan mempublikasikan pencapaian akademik maupun non-akademik.',
+    image: '/images/projects/talenti.png',
+    tags: ['Laravel', 'MySQL'],
+    order: 16,
+  },
+  {
+    category: 'private',
+    title: 'SIBETA',
+    period: 'Dec 2024 - Jan 2025',
+    description: 'Sistem Informasi Bebas Tanggungan TA untuk membantu pengelolaan data bebas tanggungan tugas akhir di Politeknik Negeri Malang.',
+    image: '/images/projects/sibeta.png',
+    tags: ['Laravel', 'MySQL'],
     order: 17,
   }
 ];
@@ -195,7 +196,7 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json({ success: true, data: sortProjectsByEndDate(data) });
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

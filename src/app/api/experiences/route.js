@@ -3,6 +3,7 @@ import { connectToDatabase } from '@/lib/mongodb';
 import { checkAdminAuth } from '@/lib/auth';
 import { deleteCloudinaryMedia } from '@/lib/cloudinary';
 import { ObjectId } from 'mongodb';
+import { sortExperiencesByDate } from '@/lib/dateUtils';
 
 export const dynamic = 'force-dynamic';
 
@@ -106,7 +107,7 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json({ success: true, data: sortExperiencesByDate(data) });
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

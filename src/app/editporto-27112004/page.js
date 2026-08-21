@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { getExperienceDuration, parseExperienceDateToForm, buildExperienceDateStr } from '@/lib/dateUtils';
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -32,6 +33,31 @@ export default function AdminDashboard() {
     cloudinaryPublicId: '',
     skills: '',
   });
+
+  const [expStartDate, setExpStartDate] = useState('');
+  const [expEndDate, setExpEndDate] = useState('');
+  const [expIsPresent, setExpIsPresent] = useState(false);
+
+  const handleStartDateChange = (newStart) => {
+    setExpStartDate(newStart);
+    const newDate = buildExperienceDateStr(newStart, expEndDate, expIsPresent);
+    const newDuration = getExperienceDuration(newDate);
+    setExpForm((prev) => ({ ...prev, date: newDate, duration: newDuration }));
+  };
+
+  const handleEndDateChange = (newEnd) => {
+    setExpEndDate(newEnd);
+    const newDate = buildExperienceDateStr(expStartDate, newEnd, false);
+    const newDuration = getExperienceDuration(newDate);
+    setExpForm((prev) => ({ ...prev, date: newDate, duration: newDuration }));
+  };
+
+  const handlePresentChange = (checked) => {
+    setExpIsPresent(checked);
+    const newDate = buildExperienceDateStr(expStartDate, expEndDate, checked);
+    const newDuration = getExperienceDuration(newDate);
+    setExpForm((prev) => ({ ...prev, date: newDate, duration: newDuration }));
+  };
 
   // Modal / Form state for Project
   const [projForm, setProjForm] = useState({
@@ -205,6 +231,9 @@ export default function AdminDashboard() {
           cloudinaryPublicId: '',
           skills: '',
         });
+        setExpStartDate('');
+        setExpEndDate('');
+        setExpIsPresent(false);
         setEditingId(null);
         fetchAllData();
       }
@@ -562,22 +591,68 @@ export default function AdminDashboard() {
                   </select>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
-                  <input
-                    type="text"
-                    placeholder="Tanggal (mis: Jul 2026 - Present)"
-                    value={expForm.date}
-                    onChange={(e) => setExpForm({ ...expForm, date: e.target.value })}
-                    className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white outline-none"
-                    required
-                  />
-                  <input
-                    type="text"
-                    placeholder="Durasi (mis: 2 mos)"
-                    value={expForm.duration}
-                    onChange={(e) => setExpForm({ ...expForm, duration: e.target.value })}
-                    className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white outline-none"
-                  />
+                {/* Date Picker Section */}
+                <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-2xl space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-sky-400">Rentang Waktu / Periode</label>
+                    <label className="flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-lg hover:border-sky-500/50 transition-colors select-none">
+                      <input
+                        type="checkbox"
+                        checked={expIsPresent}
+                        onChange={(e) => handlePresentChange(e.target.checked)}
+                        className="rounded bg-slate-950 border-slate-700 text-sky-500 focus:ring-0 w-3.5 h-3.5 cursor-pointer"
+                      />
+                      <span>Masih Bekerja di Sini (Present)</span>
+                    </label>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div>
+                      <span className="block text-[11px] font-medium text-slate-400 mb-1">Mulai</span>
+                      <input
+                        type="month"
+                        value={expStartDate}
+                        onChange={(e) => handleStartDateChange(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-sky-500 [color-scheme:dark]"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <span className="block text-[11px] font-medium text-slate-400 mb-1">Selesai</span>
+                      {expIsPresent ? (
+                        <div className="w-full bg-slate-900/50 border border-slate-800/80 rounded-xl px-3 py-2 text-xs text-sky-400 font-semibold flex items-center justify-between h-[34px]">
+                          <span>Present (Sekarang)</span>
+                          <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+                          </span>
+                        </div>
+                      ) : (
+                        <input
+                          type="month"
+                          value={expEndDate}
+                          onChange={(e) => handleEndDateChange(e.target.value)}
+                          className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-sky-500 [color-scheme:dark]"
+                          required={!expIsPresent}
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Live Date and Dynamic Duration Preview */}
+                  {expForm.date && (
+                    <div className="flex items-center justify-between bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-xl text-xs">
+                      <div className="flex items-center gap-1.5 text-slate-300">
+                        <span className="text-slate-400 font-medium">Format:</span>
+                        <span className="font-semibold text-white">{expForm.date}</span>
+                      </div>
+                      <div className="text-sky-400 font-semibold flex items-center gap-1">
+                        <span>⏳</span>
+                        <span>{getExperienceDuration(expForm.date, expForm.duration) || '1 mo'}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <input
@@ -641,6 +716,9 @@ export default function AdminDashboard() {
                           cloudinaryPublicId: '',
                           skills: '',
                         });
+                        setExpStartDate('');
+                        setExpEndDate('');
+                        setExpIsPresent(false);
                       }}
                       className="px-4 py-2.5 bg-slate-800 text-slate-300 text-sm font-semibold rounded-xl"
                     >
@@ -664,7 +742,7 @@ export default function AdminDashboard() {
                     )}
                     <div>
                       <h3 className="font-bold text-white text-base">{exp.title}</h3>
-                      <p className="text-xs text-sky-400 font-medium">{exp.company} • <span className="text-slate-400">{exp.date}</span></p>
+                      <p className="text-xs text-sky-400 font-medium">{exp.company} • <span className="text-slate-400">{exp.date} {getExperienceDuration(exp.date, exp.duration) ? `· ${getExperienceDuration(exp.date, exp.duration)}` : ''}</span></p>
                     </div>
                   </div>
 
@@ -673,6 +751,10 @@ export default function AdminDashboard() {
                       onClick={() => {
                         setEditingId(exp._id);
                         setExpForm(exp);
+                        const parsed = parseExperienceDateToForm(exp.date);
+                        setExpStartDate(parsed.startMonth);
+                        setExpEndDate(parsed.endMonth);
+                        setExpIsPresent(parsed.isPresent);
                       }}
                       className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-sky-400 text-xs font-semibold rounded-lg"
                     >

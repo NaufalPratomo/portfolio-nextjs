@@ -2,6 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { getExperienceDuration, sortExperiencesByDate } from '@/lib/dateUtils';
 
 const initialExperiences = [
     {
@@ -78,14 +79,14 @@ const initialExperiences = [
 ];
 
 export default function Experience() {
-    const [experiences, setExperiences] = React.useState(initialExperiences);
+    const [experiences, setExperiences] = React.useState(sortExperiencesByDate(initialExperiences));
 
     React.useEffect(() => {
         fetch('/api/experiences')
             .then(res => res.json())
             .then(data => {
                 if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-                    setExperiences(data.data);
+                    setExperiences(sortExperiencesByDate(data.data));
                 }
             })
             .catch(err => console.error('Error fetching experiences', err));
@@ -159,7 +160,7 @@ export default function Experience() {
                                             </div>
                                         </div>
                                         <div className="text-sm text-slate-500 dark:text-slate-400 mt-1 md:mt-0 font-medium whitespace-nowrap bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full inline-block md:block w-fit">
-                                            {exp.date} {exp.duration && `· ${exp.duration}`}
+                                            {exp.date} {getExperienceDuration(exp.date, exp.duration) ? `· ${getExperienceDuration(exp.date, exp.duration)}` : ''}
                                         </div>
                                     </div>
 

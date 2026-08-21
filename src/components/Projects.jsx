@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { motion, useReducedMotion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { useState, useRef, useEffect } from 'react';
+import { sortProjectsByEndDate } from '@/lib/dateUtils';
+
 const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
   <motion.div
     key={project.title}
@@ -103,6 +105,20 @@ const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
 
 const initialRealProjects = [
     {
+      title: 'Enterprise Operations Dashboard - (PT Doa Suryo Agong)',
+      period: 'Mar 2026 - Present',
+      description: 'Membangun platform dashboard enterprise terintegrasi untuk mendukung operasional lintas divisi (Finance, HR, Produksi, Logistik, Sales, Management, dan Office) dalam satu ekosistem. Arsitektur backend dirancang secara hybrid, menggabungkan akses data langsung berbasis policy untuk CRUD ringan dan API server untuk business logic kompleks seperti approval workflow, payroll, reimburse, budget, serta agregasi metrik lintas modul. Solusi ini meningkatkan kecepatan proses kerja, akurasi data, dan kualitas pengambilan keputusan berbasis data real-time. Saya berfokus pada pengembangan backend end-to-end: merancang dan membangun API modular, menerapkan otorisasi berbasis role/access level, mengamankan data dengan Supabase Auth dan RLS, menyusun validasi payload serta service layer, mengembangkan workflow approval dan automasi perhitungan bisnis, serta melakukan hardening endpoint dan perbaikan bug kritikal agar sistem stabil di production.',
+      image: '/images/projects/suryo_agong.png',
+      tags: ['Next.js', 'TypeScript', 'Supabase', 'PostgreSQL', 'API Routes', 'RLS', 'Node.js'],
+    },
+    {
+      title: 'AIDA - Advertisement Intelligence & Data Analytics - (PT Utero Kreatif Indonesia)',
+      period: 'Januari 2026 - Present',
+      description: 'AIDA adalah sistem monitoring dan analitik billboard berbasis AI untuk deteksi serta perhitungan kendaraan secara real-time. Dalam proyek ini, saya tidak membangun sistem dari nol, tetapi berfokus pada improvement end-to-end: penyempurnaan tampilan dashboard agar lebih jelas dan usable, perbaikan logika proses data agar lebih stabil, serta retraining model YOLO untuk meningkatkan akurasi deteksi. Hasilnya, sistem memberikan insight trafik yang lebih presisi dan lebih siap digunakan untuk kebutuhan operasional serta pengambilan keputusan.',
+      image: '/images/projects/aida.png',
+      tags: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'Drizzle ORM', 'MySQL', 'Python', 'YOLO', 'OpenCV', 'MQTT'],
+    },
+    {
       title: 'Dashboard HR and GA - PT XYZ',
       period: 'Jun 2026',
       description: 'Membangun aplikasi dashboard HR & GA (Human Resources & General Affairs) full-stack terintegrasi untuk PT XYZ (perusahaan agribisnis kelapa sawit nasional). Dashboard ini mendigitalisasi pemantauan Hari Kerja Normal Efektif (HKNE) karyawan operasional (Panen, Infield, Rawat), absensi, serta pelacakan realisasi anggaran biaya. Dilengkapi fitur manajemen aset dan jatuh tempo pajak kendaraan operasional untuk meminimalkan denda serta mendukung efisiensi biaya secara real-time.',
@@ -126,11 +142,11 @@ const initialRealProjects = [
       link: 'https://djoe-orchid.vercel.app/',
     },
     {
-      title: 'Dashboard Daily Cost Production Site - (PT XYZ)',
-      period: 'Jul 2025 - Agustus 2025',
-      description: 'Berkolaborasi dengan stakeholder dari PT XYZ untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional dan mendukung pengambilan keputusan strategis berbasis data untuk perusahaan agribisnis/kelapa sawit nasional.',
-      image: '/images/projects/costsite.png',
-      tags: ['PHP', 'MySQL'],
+      title: 'CARUBRA Virtual Assistant - (PT Utero Kreatif Indonesia)',
+      period: 'Jan 2026 - Mar 2026',
+      description: 'Mengembangkan asisten virtual berbasis suara untuk PT Utero Kreatif Indonesia yang memungkinkan pengguna berinteraksi secara natural tanpa mengetik. Sistem memproses suara pengguna (speech-to-text), mengirim konteks ke model AI melalui OpenRouter, lalu mengembalikan jawaban dalam bentuk suara (text-to-speech) yang terintegrasi dengan avatar interaktif. Saya juga menerapkan guardrails agar AI tetap fokus pada informasi perusahaan seperti layanan, portofolio, budaya kerja, dan kontak, sehingga respons lebih relevan dan aman untuk kebutuhan front-facing bisnis. Solusi ini membantu menghadirkan pengalaman digital yang modern, informatif, dan engaging untuk profil perusahaan.',
+      image: '/images/projects/carubra.png',
+      tags: ['Next.js', 'React', 'TypeScript', 'OpenRouter API', 'Web Speech API (STT)', 'Python Flask', 'gTTS', 'Tailwind CSS', 'VAD (Silero)'],
     },
     {
       title: 'PALMA ROOTS - (PT Palma Serasih Tbk)',
@@ -140,25 +156,11 @@ const initialRealProjects = [
       tags: ['MongoDB', 'Express', 'React', 'Node.js', 'TypeScript', 'Tailwind CSS'],
     },
     {
-      title: 'CARUBRA Virtual Assistant - (PT Utero Kreatif Indonesia)',
-      period: 'Jan 2026 - Mar 2026',
-      description: 'Mengembangkan asisten virtual berbasis suara untuk PT Utero Kreatif Indonesia yang memungkinkan pengguna berinteraksi secara natural tanpa mengetik. Sistem memproses suara pengguna (speech-to-text), mengirim konteks ke model AI melalui OpenRouter, lalu mengembalikan jawaban dalam bentuk suara (text-to-speech) yang terintegrasi dengan avatar interaktif. Saya juga menerapkan guardrails agar AI tetap fokus pada informasi perusahaan seperti layanan, portofolio, budaya kerja, dan kontak, sehingga respons lebih relevan dan aman untuk kebutuhan front-facing bisnis. Solusi ini membantu menghadirkan pengalaman digital yang modern, informatif, dan engaging untuk profil perusahaan.',
-      image: '/images/projects/carubra.png',
-      tags: ['Next.js', 'React', 'TypeScript', 'OpenRouter API', 'Web Speech API (STT)', 'Python Flask', 'gTTS', 'Tailwind CSS', 'VAD (Silero)'],
-    },
-    {
-      title: 'AIDA - Advertisement Intelligence & Data Analytics - (PT Utero Kreatif Indonesia)',
-      period: 'Januari 2026 - Present',
-      description: 'AIDA adalah sistem monitoring dan analitik billboard berbasis AI untuk deteksi serta perhitungan kendaraan secara real-time. Dalam proyek ini, saya tidak membangun sistem dari nol, tetapi berfokus pada improvement end-to-end: penyempurnaan tampilan dashboard agar lebih jelas dan usable, perbaikan logika proses data agar lebih stabil, serta retraining model YOLO untuk meningkatkan akurasi deteksi. Hasilnya, sistem memberikan insight trafik yang lebih presisi dan lebih siap digunakan untuk kebutuhan operasional serta pengambilan keputusan.',
-      image: '/images/projects/aida.png',
-      tags: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'Drizzle ORM', 'MySQL', 'Python', 'YOLO', 'OpenCV', 'MQTT'],
-    },
-    {
-      title: 'Enterprise Operations Dashboard - (PT Doa Suryo Agong)',
-      period: 'Mar 2026 - Present',
-      description: 'Membangun platform dashboard enterprise terintegrasi untuk mendukung operasional lintas divisi (Finance, HR, Produksi, Logistik, Sales, Management, dan Office) dalam satu ekosistem. Arsitektur backend dirancang secara hybrid, menggabungkan akses data langsung berbasis policy untuk CRUD ringan dan API server untuk business logic kompleks seperti approval workflow, payroll, reimburse, budget, serta agregasi metrik lintas modul. Solusi ini meningkatkan kecepatan proses kerja, akurasi data, dan kualitas pengambilan keputusan berbasis data real-time. Saya berfokus pada pengembangan backend end-to-end: merancang dan membangun API modular, menerapkan otorisasi berbasis role/access level, mengamankan data dengan Supabase Auth dan RLS, menyusun validasi payload serta service layer, mengembangkan workflow approval dan automasi perhitungan bisnis, serta melakukan hardening endpoint dan perbaikan bug kritikal agar sistem stabil di production.',
-      image: '/images/projects/suryo_agong.png',
-      tags: ['Next.js', 'TypeScript', 'Supabase', 'PostgreSQL', 'API Routes', 'RLS', 'Node.js'],
+      title: 'Dashboard Daily Cost Production Site - (PT XYZ)',
+      period: 'Jul 2025 - Agustus 2025',
+      description: 'Berkolaborasi dengan stakeholder dari PT XYZ untuk memahami kebutuhan bisnis dan Key Performance Indicators (KPI) yang perlu dimonitor. Dashboard ini bertujuan untuk meningkatkan efisiensi operasional dan mendukung pengambilan keputusan strategis berbasis data untuk perusahaan agribisnis/kelapa sawit nasional.',
+      image: '/images/projects/costsite.png',
+      tags: ['PHP', 'MySQL'],
     }
   ];
 
@@ -200,6 +202,15 @@ const initialRealProjects = [
       tryMe: true,
     },
     {
+      title: 'Attendify',
+      period: 'Jan 2026',
+      description: 'Aplikasi pelacak waktu (time tracker) berbasis web yang dirancang untuk profesional yang mengutamakan fokus. Dilengkapi fitur check-in/check-out real-time, dashboard statistik produktivitas, dan logbook aktivitas harian. Dibangun dengan Next.js 16, React 19, dan Tailwind CSS dengan desain dark mode yang elegan dan responsif.',
+      image: '/images/projects/attendify.png',
+      tags: ['Next.js 16', 'React 19', 'Tailwind CSS'],
+      link: 'https://attendify-three-sigma.vercel.app/',
+      tryMe: true,
+    },
+    {
       title: 'Deadline Reminder',
       period: 'Nov 2025 - Dec 2025',
       description: 'Aplikasi manajemen produktivitas cerdas untuk mengelola tugas dan tenggat waktu. Fitur unggulan meliputi sistem pengingat otomatis via email, manajemen prioritas dengan tracking real-time, dan autentikasi aman. Dibangun menggunakan Next.js dan MongoDB dengan antarmuka yang estetis dan responsif.',
@@ -209,13 +220,11 @@ const initialRealProjects = [
       tryMe: true,
     },
     {
-      title: 'Attendify',
-      period: 'Jan 2026',
-      description: 'Aplikasi pelacak waktu (time tracker) berbasis web yang dirancang untuk profesional yang mengutamakan fokus. Dilengkapi fitur check-in/check-out real-time, dashboard statistik produktivitas, dan logbook aktivitas harian. Dibangun dengan Next.js 16, React 19, dan Tailwind CSS dengan desain dark mode yang elegan dan responsif.',
-      image: '/images/projects/attendify.png',
-      tags: ['Next.js 16', 'React 19', 'Tailwind CSS'],
-      link: 'https://attendify-three-sigma.vercel.app/',
-      tryMe: true,
+      title: 'WeatherAI Classification System',
+      period: 'Oct 2025 - Dec 2025',
+      description: 'Mengembangkan aplikasi mobile berbasis Flutter yang mengimplementasikan sistem visi komputer untuk klasifikasi cuaca secara real-time. Aplikasi ini mampu menganalisis gambar langit untuk mengidentifikasi dan mengklasifikasikan kondisi cuaca secara otomatis, memberikan pengguna informasi meteorologi yang cepat dan akurat.',
+      image: '/images/projects/weather.png',
+      tags: ['Flutter', 'AI', 'Machine Learning'],
     },
     {
       title: 'TALENTI',
@@ -230,14 +239,7 @@ const initialRealProjects = [
       description: 'Sistem Informasi Bebas Tanggungan TA untuk membantu pengelolaan data bebas tanggungan tugas akhir di Politeknik Negeri Malang.',
       image: '/images/projects/sibeta.png',
       tags: ['Laravel', 'MySQL'],
-    },
-    {
-      title: 'WeatherAI Classification System',
-      period: 'Oct 2025 - Dec 2025',
-      description: 'Mengembangkan aplikasi mobile berbasis Flutter yang mengimplementasikan sistem visi komputer untuk klasifikasi cuaca secara real-time. Aplikasi ini mampu menganalisis gambar langit untuk mengidentifikasi dan mengklasifikasikan kondisi cuaca secara otomatis, memberikan pengguna informasi meteorologi yang cepat dan akurat.',
-      image: '/images/projects/weather.png',
-      tags: ['Flutter', 'AI', 'Machine Learning'],
-    },
+    }
   ];
 
 export default function Projects() {
@@ -251,8 +253,8 @@ export default function Projects() {
         if (data.success && Array.isArray(data.data) && data.data.length > 0) {
           const clientList = data.data.filter((p) => p.category === 'client');
           const privateList = data.data.filter((p) => p.category === 'private');
-          if (clientList.length > 0) setRealProjects(clientList);
-          if (privateList.length > 0) setPrivateProjects(privateList);
+          if (clientList.length > 0) setRealProjects(sortProjectsByEndDate(clientList));
+          if (privateList.length > 0) setPrivateProjects(sortProjectsByEndDate(privateList));
         }
       })
       .catch((err) => console.error('Failed to fetch projects', err));
