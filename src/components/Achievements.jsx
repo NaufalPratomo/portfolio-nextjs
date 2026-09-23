@@ -1,9 +1,9 @@
 "use client";
 
 import Image from 'next/image';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const initialAchievements = [
     {
@@ -55,90 +55,97 @@ export default function Achievements() {
     const [hoveredIndex, setHoveredIndex] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [sectionRef, isInView] = useIntersectionObserver({ threshold: 0.1 });
-    const timelineRef = useRef(null);
-    const { scrollYProgress } = useScroll({
-        target: timelineRef,
-        offset: ["start end", "end start"]
-    });
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') setSelectedImage(null);
+        };
+        if (selectedImage) {
+            window.addEventListener('keydown', handleKeyDown);
+            const originalOverflow = document.body.style.overflow;
+            document.body.style.overflow = 'hidden';
+            document.documentElement.classList.add('modal-open');
+            return () => {
+                window.removeEventListener('keydown', handleKeyDown);
+                document.body.style.overflow = originalOverflow;
+                document.documentElement.classList.remove('modal-open');
+            };
+        }
+    }, [selectedImage]);
 
     return (
         <>
             <section
                 id="achievements"
-                className="relative min-h-[50vh] flex items-center px-4 py-12 md:py-20 overflow-hidden"
-                ref={timelineRef}
+                className="relative min-h-[50vh] flex items-center px-4 py-12 md:py-20 overflow-hidden bg-slate-50 dark:bg-slate-900/50 transition-colors duration-300"
             >
-                {/* Background Elements */}
-                <motion.div
-                    className="absolute inset-0 bg-gradient-to-b from-transparent to-blue-50/50"
-                    style={{
-                        opacity: useTransform(scrollYProgress, [0, 0.5], [0, 0.5]),
-                    }}
-                />
-
                 <div className="max-w-6xl mx-auto w-full relative z-10">
                     <motion.h2
-                        className="text-3xl md:text-5xl font-bold text-slate-900 mb-8 md:mb-12 text-center"
+                        className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white mb-8 md:mb-12 text-center"
                         initial={{ opacity: 0, y: 20 }}
                         animate={isInView ? { opacity: 1, y: 0 } : {}}
                         transition={{ duration: 0.6 }}
                     >
-                        Lomba & Achievements
+                        Penghargaan & Kompetisi
                     </motion.h2>
 
                     <div
                         ref={sectionRef}
-                        className="grid md:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8"
+                        className="grid md:grid-cols-2 gap-6 md:gap-8"
                     >
                         {achievements.map((item, index) => (
                             <motion.div
                                 key={item.title}
-                                className="relative group"
-                                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                                className="relative group h-full"
+                                initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
                                 animate={isInView ? { opacity: 1, x: 0 } : {}}
-                                transition={{ duration: 0.6, delay: index * 0.2 }}
+                                transition={{ duration: 0.5, delay: index * 0.15 }}
                                 onHoverStart={() => setHoveredIndex(index)}
                                 onHoverEnd={() => setHoveredIndex(null)}
-                                whileHover={{ scale: 1.02 }}
                             >
-                                <div className="bg-white/60 md:backdrop-blur-lg rounded-2xl p-6 border border-slate-200 shadow-lg transition-all duration-300 group-hover:shadow-xl h-full flex flex-col">
+                                <div className="bg-white/90 dark:bg-slate-900/85 backdrop-blur-md rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm transition-all duration-300 group-hover:shadow-md h-full flex flex-col">
 
                                     {/* Header */}
-                                    <div className="flex justify-between items-start mb-4">
-                                        <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                                    <div className="flex justify-between items-start mb-4 gap-3">
+                                        <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-sky-400 transition-colors">
                                             {item.title}
                                         </h3>
-                                        <span className="text-sm font-medium px-3 py-1 bg-blue-100/50 text-blue-600 rounded-full">
+                                        <span className="text-xs font-semibold px-2.5 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60 rounded-lg whitespace-nowrap">
                                             {item.date}
                                         </span>
                                     </div>
 
-                                    {/* Image */}
-                                    <motion.div
-                                        className="relative overflow-hidden rounded-xl mb-4 border border-slate-200 h-64 w-full cursor-pointer"
-                                        whileHover={{ scale: 1.05 }}
-                                        transition={{ duration: 0.3 }}
+                                    {/* Certificate Image Preview */}
+                                    <div
+                                        className="relative overflow-hidden rounded-xl mb-4 border border-slate-200/80 dark:border-slate-800 h-64 w-full cursor-pointer bg-slate-100 dark:bg-slate-800"
                                         onClick={() => setSelectedImage(item.image)}
+                                        role="button"
+                                        tabIndex={0}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
+                                                setSelectedImage(item.image);
+                                            }
+                                        }}
+                                        aria-label={`Buka sertifikat ${item.title}`}
                                     >
                                         <Image
                                             src={getImageSrc(item.image)}
                                             alt={item.title}
                                             fill
                                             sizes="(max-width: 768px) 100vw, 50vw"
-                                            className="object-cover object-center transition-transform duration-700 ease-out"
+                                            className="object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
                                             unoptimized
                                         />
-                                        <motion.div
-                                            className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                        >
-                                            <span className="text-white bg-black/50 px-4 py-2 rounded-full backdrop-blur-sm text-sm font-medium">
-                                                View Certificate
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent flex items-end justify-center pb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <span className="text-white bg-black/60 px-3.5 py-1.5 rounded-lg text-xs font-medium backdrop-blur-sm">
+                                                Lihat Sertifikat
                                             </span>
-                                        </motion.div>
-                                    </motion.div>
+                                        </div>
+                                    </div>
 
                                     {/* Description */}
-                                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mt-auto">
+                                    <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mt-auto">
                                         {item.description}
                                     </p>
                                 </div>
@@ -148,7 +155,7 @@ export default function Achievements() {
                 </div>
             </section>
 
-            {/* Lightbox Modal */}
+            {/* Lightbox Modal with Escape key accessibility (R-26, R-32) */}
             <AnimatePresence>
                 {selectedImage && (
                     <motion.div
@@ -156,18 +163,25 @@ export default function Achievements() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setSelectedImage(null)}
-                        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+                        onWheel={(e) => e.stopPropagation()}
+                        role="dialog"
+                        aria-modal="true"
+                        data-lenis-prevent
+                        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 modal-scroll-lock overscroll-contain"
                     >
                         <motion.div
-                            initial={{ scale: 0.8, opacity: 0 }}
+                            initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.8, opacity: 0 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="relative max-w-5xl max-h-[90vh] w-full h-full rounded-2xl overflow-hidden shadow-2xl bg-transparent"
+                            onWheel={(e) => e.stopPropagation()}
+                            data-lenis-prevent
+                            className="relative max-w-5xl max-h-[90vh] w-full h-full rounded-2xl overflow-hidden shadow-2xl bg-transparent overscroll-contain"
                         >
                             <button
                                 onClick={() => setSelectedImage(null)}
-                                className="absolute top-4 right-4 z-50 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors backdrop-blur-md"
+                                aria-label="Tutup sertifikat"
+                                className="absolute top-4 right-4 z-50 min-w-[44px] min-h-[44px] flex items-center justify-center bg-black/60 hover:bg-black/80 text-white rounded-xl transition-colors backdrop-blur-md focus-visible:ring-2 focus-visible:ring-white"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -175,7 +189,7 @@ export default function Achievements() {
                             </button>
                             <Image
                                 src={getImageSrc(selectedImage)}
-                                alt="Certificate Full View"
+                                alt="Pratinjau Sertifikat"
                                 fill
                                 className="object-contain"
                                 quality={100}

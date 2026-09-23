@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useRef, useCallback } from 'react';
 
-// Throttle helper — limits how often a function can execute
+// Throttle helper: limits function execution frequency
 function throttle(fn, delay) {
   let lastCall = 0;
   let cachedResult;
@@ -16,7 +16,6 @@ function throttle(fn, delay) {
   };
 }
 
-// SmoothScrollProvider with full-page snap scrolling
 export const ScrollSnapContext = createContext(null);
 export const useScrollSnap = () => useContext(ScrollSnapContext);
 
@@ -26,10 +25,8 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
   const isSnappingRef = useRef(false);
   const touchStartYRef = useRef(null);
   const cleanupRef = useRef(null);
-  // Cache of section scroll targets: [{ id, scrollTarget }]
   const sectionCacheRef = useRef([]);
 
-  // Build cache of scroll targets by summing .overlap-section heights
   const buildSectionCache = useCallback(() => {
     const wrappers = Array.from(document.querySelectorAll('.overlap-section'));
     const cache = [];
@@ -50,15 +47,12 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
     return cache;
   }, []);
 
-  // Get scroll target for a section id
   const getScrollTarget = useCallback((id) => {
-    // Rebuild cache each time to ensure fresh measurements
     const cache = buildSectionCache();
     const entry = cache.find((e) => e.id === id);
     return entry ? entry.scrollTarget : 0;
   }, [buildSectionCache]);
 
-  // Find the index of the section closest to the current scroll position
   const getCurrentIndex = useCallback(() => {
     const cache = buildSectionCache();
     const scroll = window.scrollY || 0;
@@ -76,23 +70,20 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
     return bestIndex;
   }, [buildSectionCache]);
 
-  // Perform the actual scroll — uses native scrollTo for reliability
+  // Use native scrollTo for reliable, exact positioning
   const doScrollTo = useCallback((targetScroll, smooth = true) => {
     const clampedTarget = Math.max(0, targetScroll);
     isSnappingRef.current = true;
 
-    // Temporarily stop Lenis so it doesn't interfere
     if (lenisRef.current) {
       try { lenisRef.current.stop(); } catch (e) { /* ignore */ }
     }
 
-    // Use native browser scroll for reliable, exact positioning
     window.scrollTo({
       top: clampedTarget,
       behavior: smooth ? 'smooth' : 'instant',
     });
 
-    // Re-enable Lenis after scroll completes
     setTimeout(() => {
       if (lenisRef.current) {
         try { lenisRef.current.start(); } catch (e) { /* ignore */ }
@@ -102,7 +93,6 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
   }, []);
 
   useEffect(() => {
-    // Create Lenis instance for smooth inertia scrolling
     import('lenis').then(({ default: Lenis }) => {
       lenisRef.current = new Lenis({
         duration: 1.2,
@@ -113,7 +103,7 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
       });
     });
 
-    // RAF loop for Lenis — pauses when page is hidden to save resources
+    // RAF loop pauses when tab is hidden to conserve resources
     let isPageVisible = true;
     const loop = (time) => {
       if (isPageVisible && lenisRef.current) lenisRef.current.raf(time);
@@ -145,7 +135,23 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
       };
 
       let wheelTimeout = null;
+      const isEventInsideModal = (e) => {
+        if (!e) return false;
+        if (typeof document !== 'undefined') {
+          if (document.body.style.overflow === 'hidden' || document.documentElement.classList.contains('modal-open')) {
+            return true;
+          }
+        }
+        const target = e.target;
+        if (target && target.closest) {
+          return !!target.closest('[data-lenis-prevent], [role="dialog"], .modal-scroll-lock, .modal-backdrop');
+        }
+        return false;
+      };
+
       const onWheel = (e) => {
+        if (isEventInsideModal(e)) return;
+
         const delta = e.deltaY;
         if (Math.abs(delta) < 5) return;
         if (isSnappingRef.current) {
@@ -163,11 +169,16 @@ export const SmoothScrollProvider = ({ children, snap = true }) => {
       };
 
       const onTouchStart = (e) => {
+        if (isEventInsideModal(e)) {
+          touchStartYRef.current = null;
+          return;
+        }
         touchStartYRef.current = e.touches?.[0]?.clientY ?? null;
       };
 
       const onTouchEnd = (e) => {
         if (touchStartYRef.current == null) return;
+        if (isEventInsideModal(e)) return;
         const endY = e.changedTouches?.[0]?.clientY ?? null;
         if (endY == null) return;
         const diff = touchStartYRef.current - endY;

@@ -28,85 +28,46 @@ export default function About() {
       ),
       title: 'Pendidikan',
       subtitle: 'D4 Teknik Informatika',
-      highlight: 'IPK: 3.76/4.00',
+      highlight: 'IPK: 3.76 / 4.00',
     },
     {
       icon: (
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
       ),
       title: 'Spesialisasi',
-      highlight: 'Web Development',
+      subtitle: 'Arsitektur & API',
+      highlight: 'Full-Stack Web Development',
     },
     {
       icon: (
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
       ),
       title: 'Pengalaman',
-      subtitle: 'project',
-      highlight: 'Kolaborasi Tim',
+      subtitle: 'Proyek Industri & Magang',
+      highlight: 'Kolaborasi Tim Terbukti',
     },
   ];
 
-  const [sectionRef, isInView] = useIntersectionObserver({ threshold: 0.3 });
-  const shouldReduceMotion = useReducedMotion();
-  const { scrollY } = useScroll();
+  const [sectionRef, isInView] = useIntersectionObserver({ threshold: 0.25 });
   const { ref: parallaxRef, y: parallaxY } = useParallax({ speed: 0.1 });
 
-  // Generate geometric patterns once
-  const geometricPatterns = useMemo(() => generateGeometricPatterns(5), []);
-
-  // Geometric pattern animation
-  const patternTranslateY = useTransform(scrollY, [0, 1000], ['0%', '20%']);
-  const patternOpacity = useTransform(scrollY, [0, 300], [0.1, 0.05]);
-
   return (
-    <section id="about" className="relative min-h-screen flex items-center px-4 py-20 overflow-hidden">
-      {/* Geometric Patterns Background */}
-      {!shouldReduceMotion && (
-        <motion.div
-          className="absolute inset-0 pointer-events-none hidden md:block"
-          style={{ y: patternTranslateY, opacity: patternOpacity }}
-        >
-          {geometricPatterns.map((pattern, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-20 h-20 bg-sky-500/5"
-              style={{
-                left: pattern.left,
-                top: pattern.top,
-                rotate: pattern.rotate,
-                scale: pattern.scale,
-              }}
-              initial={false}
-              animate={{
-                rotate: [0, 360],
-                scale: [1, 1.2, 1],
-              }}
-              transition={{
-                duration: pattern.duration,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            />
-          ))}
-        </motion.div>
-      )}
-
+    <section id="about" className="relative min-h-screen flex items-center px-4 py-20 overflow-hidden bg-white dark:bg-slate-950 transition-colors duration-300">
       <motion.div
         ref={sectionRef}
-        className="relative max-w-4xl mx-auto z-10"
-        initial={{ opacity: 0, y: 50 }}
+        className="relative max-w-4xl mx-auto z-10 w-full"
+        initial={{ opacity: 0, y: 30 }}
         animate={{
           opacity: isInView ? 1 : 0,
-          y: isInView ? 0 : 50
+          y: isInView ? 0 : 30
         }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
         <motion.h2
-          className="text-4xl md:text-5xl font-bold text-slate-900 mb-8 text-center"
-          initial={{ opacity: 0, y: 20 }}
+          className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white mb-8 text-center"
+          initial={{ opacity: 0, y: 16 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
         >
           Tentang Saya
         </motion.h2>
@@ -114,64 +75,52 @@ export default function About() {
         <motion.div
           ref={parallaxRef}
           style={{ y: parallaxY }}
-          className="relative bg-white/60 backdrop-blur-lg rounded-2xl p-8 border border-slate-200 shadow-lg"
+          className="relative bg-white/80 dark:bg-slate-900/70 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm"
         >
           <motion.p
-            className="text-slate-700 text-lg leading-relaxed mb-6"
-            initial={{ opacity: 0, x: -20 }}
+            className="text-slate-700 dark:text-slate-200 text-base md:text-lg leading-relaxed mb-5"
+            initial={{ opacity: 0, x: -16 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Mahasiswa D4 Teknik Informatika di Politeknik Negeri Malang dengan spesialisasi dalam pengembangan web full-stack.
-            Memiliki pengalaman praktis membangun aplikasi web yang skalabel dan user-friendly menggunakan teknologi modern seperti React, Next.js, dan Laravel.
+            Mahasiswa D4 Teknik Informatika di Politeknik Negeri Malang dengan spesialisasi pengembangan web full-stack. Memiliki pengalaman praktis membangun aplikasi berskala produksi yang andal menggunakan ekosistem Next.js, React, Node.js, dan Laravel.
           </motion.p>
 
           <motion.p
-            className="text-slate-700 text-lg leading-relaxed mb-6"
-            initial={{ opacity: 0, x: -20 }}
+            className="text-slate-600 dark:text-slate-300 text-base md:text-lg leading-relaxed mb-8"
+            initial={{ opacity: 0, x: -16 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
           >
-            Aktif mencari peluang untuk berkontribusi dalam tim pengembang perangkat lunak, dengan fokus pada penulisan kode yang bersih,
-            efisien, dan solusi inovatif untuk masalah nyata.
+            Terbiasa menangani integrasi database, optimasi query, protokol komunikasi realtime (MQTT / REST API), serta arsitektur antarmuka yang responsif dan berpusat pada kenyamanan pengguna.
           </motion.p>
 
           <motion.div
-            className="grid md:grid-cols-3 gap-6 mt-8"
+            className="grid sm:grid-cols-3 gap-5"
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
           >
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
-                className="relative text-center p-6 bg-sky-100/50 rounded-xl border border-sky-200 hover:shadow-lg transition-shadow duration-300"
-                initial={{ opacity: 0, scale: 0.9 }}
+                className="relative text-center p-5 bg-slate-50/80 dark:bg-slate-800/80 rounded-xl border border-slate-200/70 dark:border-slate-700/60 hover:border-blue-500/40 dark:hover:border-sky-500/40 transition-colors shadow-sm dark:shadow-none"
+                initial={{ opacity: 0, y: 15 }}
                 animate={isInView ? {
                   opacity: 1,
-                  scale: 1,
+                  y: 0,
                   transition: {
                     duration: 0.4,
-                    delay: 0.6 + index * 0.1,
+                    delay: 0.4 + index * 0.1,
                   }
                 } : {}}
-                whileHover={{
-                  scale: 1.02,
-                  transition: { duration: 0.2 }
-                }}
               >
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-xl opacity-0"
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-
-                <svg className="mx-auto mb-3 text-sky-600" width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="mx-auto mb-3 text-blue-600 dark:text-sky-400" width="36" height="36" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   {stat.icon}
                 </svg>
-                <h3 className="text-slate-800 font-semibold text-xl mb-2">{stat.title}</h3>
-                {stat.subtitle && <p className="text-slate-600">{stat.subtitle}</p>}
-                <p className="text-blue-600 font-medium">{stat.highlight}</p>
+                <h3 className="text-slate-900 dark:text-white font-semibold text-lg mb-1">{stat.title}</h3>
+                {stat.subtitle && <p className="text-slate-600 dark:text-slate-300 text-xs md:text-sm mb-1">{stat.subtitle}</p>}
+                <p className="text-blue-600 dark:text-sky-400 font-medium text-xs md:text-sm">{stat.highlight}</p>
               </motion.div>
             ))}
           </motion.div>

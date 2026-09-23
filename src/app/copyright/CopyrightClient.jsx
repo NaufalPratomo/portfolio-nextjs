@@ -56,17 +56,52 @@ export default function CopyrightClient() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeModalItem, setActiveModalItem] = useState(null);
   const [modalPage, setModalPage] = useState('cert'); // 'cert' | 'attachment'
+  const [theme, setTheme] = useState('light');
 
   useEffect(() => {
+    try {
+      const isDark = document.documentElement.classList.contains('dark');
+      setTheme(isDark ? 'dark' : 'light');
+    } catch (e) {}
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    try {
+      localStorage.setItem('theme', next);
+    } catch (e) {}
+    if (next === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
+
+  useEffect(() => {
+    let isMounted = true;
     fetch('/api/copyrights')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
-        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+        if (isMounted && data && data.success && Array.isArray(data.data) && data.data.length > 0) {
           setItems(data.data);
         }
       })
-      .catch((err) => console.error('Failed to load copyrights', err))
-      .finally(() => setLoading(false));
+      .catch((err) => {
+        // Silently preserve initialCopyrights fallback if API unreachable
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const categories = ['Semua', ...Array.from(new Set(items.map((item) => item.type).filter(Boolean)))];
@@ -82,6 +117,23 @@ export default function CopyrightClient() {
     return matchesCategory && matchesSearch;
   });
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setActiveModalItem(null);
+    };
+    if (activeModalItem) {
+      window.addEventListener('keydown', handleKeyDown);
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      document.documentElement.classList.add('modal-open');
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+        document.body.style.overflow = originalOverflow;
+        document.documentElement.classList.remove('modal-open');
+      };
+    }
+  }, [activeModalItem]);
+
   const openModal = (item, page = 'cert') => {
     setActiveModalItem(item);
     setModalPage(page);
@@ -94,7 +146,7 @@ export default function CopyrightClient() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link
             href="/#copyright"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group focus-visible:rounded-md"
           >
             <span className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
               <svg className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,32 +156,41 @@ export default function CopyrightClient() {
             <span>Kembali ke Beranda</span>
           </Link>
 
-          <Link href="/" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-500 dark:from-blue-400 dark:to-sky-300">
-            Naufal Pratomo
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-500 dark:from-blue-400 dark:to-sky-300 focus-visible:rounded-md">
+              Naufal Pratomo
+            </Link>
+
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={theme === 'dark' ? 'Ganti ke mode terang' : 'Ganti ke mode gelap'}
+              title={theme === 'dark' ? 'Ganti ke mode terang' : 'Ganti ke mode gelap'}
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center p-2 rounded-xl hover:bg-slate-200/60 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-200 transition-colors focus-visible:rounded-xl"
+            >
+              {theme === 'dark' ? (
+                <svg className="w-5 h-5 text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="4" />
+                  <path strokeLinecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 text-slate-700 dark:text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
       {/* Main Content Container */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10 md:py-16">
         {/* Page Hero Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100/70 dark:bg-blue-950/70 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 text-xs md:text-sm font-semibold mb-4 shadow-sm"
-          >
-            <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-            Kementerian Hukum dan HAM Republik Indonesia
-          </motion.div>
-
+        <div className="text-center max-w-3xl mx-auto mb-10 md:mb-14">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.6 }}
             className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight"
           >
             Hak Kekayaan Intelektual (HKI)
@@ -275,18 +336,18 @@ export default function CopyrightClient() {
                     {/* Right: Detailed Metadata & Information (7 cols) */}
                     <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
                       <div>
-                        {/* Top Category and Registration Badges */}
-                        <div className="flex flex-wrap items-center gap-2 mb-3">
-                          <span className="px-3.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                        {/* Top Meta */}
+                        <div className="flex flex-wrap items-center gap-3 mb-3 text-xs">
+                          <span className="px-2.5 py-1 rounded-md font-medium bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-sky-300 border border-blue-200/60 dark:border-blue-800/60">
                             {item.type || 'Program Komputer'}
                           </span>
                           {item.registrationNumber && (
-                            <span className="px-3 py-1 rounded-full text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
-                              No. Pencatatan: <strong>{item.registrationNumber}</strong>
+                            <span className="text-slate-500 dark:text-slate-400 font-mono">
+                              No. <strong className="text-slate-700 dark:text-slate-200 font-semibold">{item.registrationNumber}</strong>
                             </span>
                           )}
                           {item.applicationNumber && (
-                            <span className="px-3 py-1 rounded-full text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                            <span className="text-slate-500 dark:text-slate-400 font-mono">
                               Permohonan: {item.applicationNumber}
                             </span>
                           )}
@@ -327,29 +388,21 @@ export default function CopyrightClient() {
                         {/* Creators */}
                         {creatorsList.length > 0 && (
                           <div className="pt-1">
-                            <span className="text-slate-400 font-medium block mb-2">Daftar Pencipta Ciptaan:</span>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
+                            <span className="text-slate-400 font-medium block mb-1.5">Daftar Pencipta:</span>
+                            <div className="leading-relaxed text-slate-600 dark:text-slate-300 text-xs sm:text-sm">
                               {creatorsList.map((creator, cIdx) => {
                                 const isUser = creator.toLowerCase().includes('naufal');
                                 return (
-                                  <div
-                                    key={cIdx}
-                                    className={`flex items-center gap-2 p-2 rounded-xl text-xs ${
-                                      isUser
-                                        ? 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950/80 dark:text-emerald-200 ring-1 ring-emerald-500/50 font-bold'
-                                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60'
-                                    }`}
-                                  >
-                                    <span className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px] shrink-0 font-bold">
-                                      {cIdx + 1}
-                                    </span>
-                                    <span className="truncate">{creator}</span>
-                                    {isUser && (
-                                      <svg className="w-4 h-4 ml-auto text-emerald-600 dark:text-emerald-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                      </svg>
+                                  <span key={cIdx}>
+                                    {isUser ? (
+                                      <strong className="text-blue-600 dark:text-sky-400 font-semibold">
+                                        {creator}
+                                      </strong>
+                                    ) : (
+                                      creator
                                     )}
-                                  </div>
+                                    {cIdx < creatorsList.length - 1 ? ', ' : ''}
+                                  </span>
                                 );
                               })}
                             </div>
@@ -401,17 +454,23 @@ export default function CopyrightClient() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setActiveModalItem(null)}
-            className="fixed inset-0 z-[120] flex items-center justify-center bg-black/90 backdrop-blur-md p-3 sm:p-6"
+            onWheel={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            data-lenis-prevent
+            className="fixed inset-0 z-[120] flex items-center justify-center bg-black/90 backdrop-blur-md p-3 sm:p-6 modal-scroll-lock overscroll-contain"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-5xl max-h-[94vh] w-full h-full flex flex-col rounded-2xl overflow-hidden bg-slate-900 border border-slate-700 shadow-2xl"
+              onWheel={(e) => e.stopPropagation()}
+              data-lenis-prevent
+              className="relative max-w-5xl max-h-[94vh] w-full flex flex-col rounded-2xl overflow-hidden bg-slate-900 border border-slate-700 shadow-2xl overscroll-contain"
             >
               {/* Top Bar */}
-              <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-slate-950/90 border-b border-slate-800 text-white z-10">
+              <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-slate-950/90 border-b border-slate-800 text-white z-10 shrink-0">
                 <div className="flex items-center gap-2 truncate pr-4">
                   <span className="font-bold text-sm sm:text-base truncate">
                     {activeModalItem.title}
@@ -467,7 +526,8 @@ export default function CopyrightClient() {
                   <button
                     type="button"
                     onClick={() => setActiveModalItem(null)}
-                    className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-white rounded-lg transition-colors"
+                    aria-label="Tutup pratinjau sertifikat"
+                    className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-white rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-blue-500"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -476,27 +536,29 @@ export default function CopyrightClient() {
                 </div>
               </div>
 
-              {/* Canvas / Iframe Body */}
-              <div className="relative flex-1 w-full bg-slate-950 flex items-center justify-center overflow-hidden">
+              {/* Canvas / Iframe Body - Scrollable content isolated from main page */}
+              <div
+                className="relative flex-1 w-full bg-slate-950 overflow-y-auto overflow-x-hidden p-3 sm:p-5 overscroll-contain"
+                data-lenis-prevent
+                onWheel={(e) => e.stopPropagation()}
+              >
                 {isPdfFile(activeModalItem.certificateImage) ? (
                   <iframe
                     src={`${activeModalItem.certificateImage}#toolbar=1&navpanes=1`}
-                    className="w-full h-full border-0 bg-white"
+                    className="w-full min-h-[75vh] border-0 bg-white rounded-lg shadow"
                     title={activeModalItem.title}
                   />
                 ) : (
-                  <div className="relative w-full h-full min-h-[400px] p-2 sm:p-4">
-                    <Image
+                  <div className="w-full flex justify-center py-2">
+                    <img
                       src={getImageSrc(
                         modalPage === 'attachment' && activeModalItem.attachmentImage
                           ? activeModalItem.attachmentImage
                           : activeModalItem.certificateImage
                       )}
                       alt={`${activeModalItem.title} - ${modalPage === 'attachment' ? 'Lampiran Pencipta' : 'Sertifikat'}`}
-                      fill
-                      className="object-contain"
-                      quality={100}
-                      unoptimized
+                      className="max-w-full w-auto h-auto rounded-lg shadow-2xl object-contain mx-auto"
+                      loading="eager"
                     />
                   </div>
                 )}

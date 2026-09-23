@@ -5,8 +5,14 @@ if (dns.setDefaultResultOrder) {
   dns.setDefaultResultOrder('ipv4first');
 }
 
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4']);
+} catch (e) {
+  // Setting DNS servers may fail in restricted sandboxes, safely ignore
+}
+
 const options = {
-  serverSelectionTimeoutMS: 5000,
+  serverSelectionTimeoutMS: 8000,
 };
 
 
@@ -22,7 +28,10 @@ function getClientPromise() {
   if (process.env.NODE_ENV === 'development') {
     if (!global._mongoClientPromise) {
       client = new MongoClient(uri, options);
-      global._mongoClientPromise = client.connect();
+      global._mongoClientPromise = client.connect().catch((err) => {
+        global._mongoClientPromise = null;
+        throw err;
+      });
     }
     return global._mongoClientPromise;
   }

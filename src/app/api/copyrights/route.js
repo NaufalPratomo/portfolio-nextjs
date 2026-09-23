@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic';
 
 export const initialCopyrights = [
   {
+    _id: 'default-aida',
     title: 'AIDA V2: Sistem Reklame Cerdas Terintegrasi',
     type: 'Program Komputer',
     registrationNumber: '001417127',
@@ -37,19 +38,27 @@ export const initialCopyrights = [
 
 export async function GET() {
   try {
-    const { db } = await connectToDatabase();
-    const collection = db.collection('copyrights');
-    let data = await collection.find({}).sort({ order: 1, createdAt: -1 }).toArray();
+    const fetchDb = async () => {
+      const { db } = await connectToDatabase();
+      const collection = db.collection('copyrights');
+      let data = await collection.find({}).sort({ order: 1, createdAt: -1 }).toArray();
 
-    if (data.length === 0) {
-      await collection.insertMany(initialCopyrights);
-      data = await collection.find({}).sort({ order: 1, createdAt: -1 }).toArray();
-    }
+      if (data.length === 0) {
+        await collection.insertMany(initialCopyrights.map((item) => ({ ...item })));
+        data = await collection.find({}).sort({ order: 1, createdAt: -1 }).toArray();
+      }
+      return data;
+    };
 
+    const timeout = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('MongoDB connection timeout')), 4000)
+    );
+
+    const data = await Promise.race([fetchDb(), timeout]);
     return NextResponse.json({ success: true, data });
   } catch (error) {
-    console.error('Copyrights GET error:', error);
-    // If DB is unreachable, return initialCopyrights fallback
+    console.error('Copyrights GET error (using fallback):', error.message || error);
+    // If DB is unreachable or times out, return initialCopyrights fallback
     return NextResponse.json({ success: true, data: initialCopyrights, fallback: true });
   }
 }

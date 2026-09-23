@@ -109,7 +109,8 @@ export async function GET() {
 
     return NextResponse.json({ success: true, data: sortExperiencesByDate(data) });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('Experiences GET error (using fallback):', error);
+    return NextResponse.json({ success: true, data: sortExperiencesByDate(initialExperiences), fallback: true });
   }
 }
 

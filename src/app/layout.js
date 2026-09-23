@@ -38,8 +38,27 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="id">
-      <body className={`${inter.className} bg-gradient-to-br from-white to-sky-200 text-slate-800 min-h-screen w-full relative`}>
+    <html lang="id" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('theme');
+                  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (saved === 'dark' || (!saved && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className={`${inter.className} bg-gradient-to-br from-white to-sky-200 dark:from-slate-950 dark:to-slate-900 text-slate-800 dark:text-slate-100 min-h-screen w-full relative`}>
         <SmoothScrollProvider snap={false}>
           <main className="relative">
             {children}

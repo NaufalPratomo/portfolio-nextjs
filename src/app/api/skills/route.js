@@ -46,7 +46,8 @@ export async function GET() {
 
     return NextResponse.json({ success: true, data: { hardSkills: hard, softSkills: soft } });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('Skills GET error (using fallback):', error);
+    return NextResponse.json({ success: true, data: initialSkills, fallback: true });
   }
 }
 

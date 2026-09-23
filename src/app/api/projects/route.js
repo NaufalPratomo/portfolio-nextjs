@@ -198,7 +198,8 @@ export async function GET() {
 
     return NextResponse.json({ success: true, data: sortProjectsByEndDate(data) });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('Projects GET error (using fallback):', error);
+    return NextResponse.json({ success: true, data: sortProjectsByEndDate(initialProjects), fallback: true });
   }
 }
 

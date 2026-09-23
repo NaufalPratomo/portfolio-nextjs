@@ -47,114 +47,80 @@ export default function Contact() {
   }, [isInView, controls, hasAnimated]);
 
   return (
-    <section id="contact" className="relative min-h-screen flex items-center px-4 py-20 overflow-hidden">
-      {/* Gradient Mesh Background — static to avoid infinite animation overhead on mobile */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: 'linear-gradient(45deg, rgba(96, 165, 250, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)',
-        }}
-      />
-
-      <div
-        className="absolute inset-0"
-        style={{
-          background: 'radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.15), transparent 80%)',
-        }}
-      />
-
+    <section id="contact" className="relative min-h-screen flex items-center px-4 py-20 overflow-hidden bg-gradient-to-tr from-sky-50/70 to-blue-100/70 dark:from-slate-950 dark:to-slate-900 transition-colors duration-300">
       <div ref={sectionRef} className="max-w-4xl mx-auto w-full text-center relative z-10">
         <motion.h2
-          className="text-4xl md:text-5xl font-bold text-slate-900 mb-8"
-          initial={{ opacity: 0, y: 20 }}
+          className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white mb-4"
+          initial={{ opacity: 0, y: 16 }}
           animate={controls}
           variants={{
             visible: { opacity: 1, y: 0 },
           }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
         >
-          Siap Berkolaborasi?
+          Mari Terhubung & Berdiskusi
         </motion.h2>
 
         <motion.p
-          className="text-slate-600 text-lg mb-12"
-          initial={{ opacity: 0, y: 20 }}
+          className="text-slate-600 dark:text-slate-300 text-base md:text-lg max-w-xl mx-auto mb-12"
+          initial={{ opacity: 0, y: 16 }}
           animate={controls}
           variants={{
             visible: { opacity: 1, y: 0 },
           }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
         >
-          Saya selalu terbuka untuk mendiskusikan project baru, ide kreatif, atau peluang menjadi bagian dari visi Anda.
+          Tertarik mendiskusikan peluang kerja sama, rekrutmen, atau eksplorasi teknis seputar rekayasa perangkat lunak? Silakan hubungi saya langsung.
         </motion.p>
 
         <motion.div
-          className="grid md:grid-cols-3 gap-6"
+          className="grid sm:grid-cols-3 gap-6"
           variants={{
             hidden: { opacity: 0 },
             visible: {
               opacity: 1,
               transition: {
-                delayChildren: 0.3,
-                staggerChildren: 0.2
+                delayChildren: 0.2,
+                staggerChildren: 0.15
               }
             }
           }}
           initial="hidden"
           animate={controls}
         >
-          {contacts.map((contact, index) => (
+          {contacts.map((contact) => (
             <motion.div
               key={contact.title}
               variants={{
-                hidden: { y: 20, opacity: 0 },
+                hidden: { y: 16, opacity: 0 },
                 visible: { y: 0, opacity: 1 }
               }}
-              whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
             >
               <Link
                 href={contact.href}
                 target={contact.href.startsWith('http') ? '_blank' : undefined}
                 rel={contact.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className="block bg-white/60 backdrop-blur-lg rounded-2xl p-8 border border-slate-200 shadow-lg group relative overflow-hidden"
+                className="block bg-white/90 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-blue-500/50 dark:hover:border-blue-500/50 transition-all focus-visible:rounded-2xl"
               >
-                {/* Ripple effect on hover */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-sky-400/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  whileHover={{
-                    scale: 1.2,
-                    transition: { duration: 0.3 }
-                  }}
-                />
-
-                <motion.div
-                  className="relative z-10"
-                  initial={false}
-                  whileHover={{ y: -5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <motion.svg
-                    className="mx-auto mb-4 text-sky-600"
-                    width="40"
-                    height="40"
+                <div className="relative z-10">
+                  <svg
+                    className="mx-auto mb-4 text-blue-600 dark:text-sky-400"
+                    width="36"
+                    height="36"
                     fill={contact.fill ? 'currentColor' : 'none'}
                     stroke={contact.fill ? 'none' : 'currentColor'}
                     viewBox="0 0 24 24"
-                    whileHover={{ scale: 1.2, rotate: 360 }}
-                    transition={{ type: "spring", stiffness: 300 }}
                   >
                     {contact.icon}
-                  </motion.svg>
+                  </svg>
 
-                  <motion.h3
-                    className="text-slate-800 font-semibold mb-2"
-                    whileHover={{ scale: 1.1 }}
-                  >
+                  <h3 className="text-slate-900 dark:text-white font-semibold text-lg mb-1">
                     {contact.title}
-                  </motion.h3>
+                  </h3>
 
-                  <p className="text-slate-600 text-sm">{contact.value}</p>
-                </motion.div>
+                  <p className="text-slate-600 dark:text-slate-300 text-sm break-all font-medium">{contact.value}</p>
+                </div>
               </Link>
             </motion.div>
           ))}

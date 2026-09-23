@@ -43,10 +43,9 @@ export async function GET() {
 
     return NextResponse.json({ success: true, data });
   } catch (error) {
-    console.error('Achievements GET error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('Achievements GET error (using fallback):', error);
+    return NextResponse.json({ success: true, data: initialAchievements, fallback: true });
   }
-
 }
 
 export async function POST(request) {

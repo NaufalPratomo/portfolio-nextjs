@@ -102,7 +102,7 @@ export default function Experience() {
                     transition={{ duration: 0.5 }}
                     className="text-center mb-16"
                 >
-                    <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white mb-4">
                         Pengalaman Kerja
                     </h2>
                 </motion.div>
@@ -115,13 +115,10 @@ export default function Experience() {
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-shadow border border-slate-100 dark:border-slate-700 group relative overflow-hidden"
+                            className="bg-white dark:bg-slate-800/90 rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow border border-slate-200/80 dark:border-slate-700/80 group relative overflow-hidden"
                         >
-                            {/* Background gradient effect on hover */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-sky-500/5 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
                             <div className="flex flex-col md:flex-row gap-6 relative z-10">
-                                {/* Logo Section */}
+                                {/* Company Logo / Initials */}
                                 <div className="flex-shrink-0">
                                     <div className="w-16 h-16 md:w-20 md:h-20 bg-slate-100 dark:bg-slate-700/80 rounded-xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-600 shadow-sm group-hover:scale-105 transition-transform duration-300">
                                         {exp.initials ? (
@@ -142,56 +139,55 @@ export default function Experience() {
                                     </div>
                                 </div>
 
-                                {/* Content Section */}
+                                {/* Experience Detail */}
                                 <div className="flex-grow">
                                     <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-2">
                                         <div>
                                             <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-sky-400 transition-colors">
                                                 {exp.title}
                                             </h3>
-                                            <div className="text-lg font-medium text-slate-700 dark:text-slate-300">
+                                            <div className="text-base md:text-lg font-medium text-slate-700 dark:text-slate-300">
                                                 {exp.company}
                                                 {exp.type && (
                                                     <>
                                                         <span className="mx-2 text-slate-400">•</span>
-                                                        <span className="text-slate-600 dark:text-slate-400 text-base font-normal">{exp.type}</span>
+                                                        <span className="text-slate-500 dark:text-slate-400 text-sm md:text-base font-normal">{exp.type}</span>
                                                     </>
                                                 )}
                                             </div>
                                         </div>
-                                        <div className="text-sm text-slate-500 dark:text-slate-400 mt-1 md:mt-0 font-medium whitespace-nowrap bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full inline-block md:block w-fit">
+                                        <div className="text-xs md:text-sm text-slate-600 dark:text-slate-300 mt-1 md:mt-0 font-medium whitespace-nowrap bg-slate-100 dark:bg-slate-700/80 px-3 py-1 rounded-lg inline-block md:block w-fit">
                                             {exp.date} {getExperienceDuration(exp.date, exp.duration) ? `· ${getExperienceDuration(exp.date, exp.duration)}` : ''}
                                         </div>
                                     </div>
 
                                     <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-sm text-slate-600 dark:text-slate-400 mb-4">
-                                        <span className="flex items-center gap-1">
-                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <span className="flex items-center gap-1.5">
+                                            <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                             </svg>
                                             {exp.location}
                                         </span>
-                                        <span className="flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded text-xs font-semibold uppercase tracking-wide">
+                                        <span className="inline-flex items-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-xs font-semibold uppercase tracking-wide">
                                             {exp.locationType}
                                         </span>
                                     </div>
 
                                     {exp.description && (
-                                        <p className="text-slate-600 dark:text-slate-300 mb-4 leading-relaxed transition-all">
+                                        <p className="text-slate-600 dark:text-slate-300 mb-4 text-sm md:text-base leading-relaxed">
                                             {exp.description}
                                         </p>
                                     )}
 
-                                    {/* Skills */}
                                     {exp.skills && (
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <div className="flex items-start gap-2 mb-4">
+                                            <svg className="w-5 h-5 text-slate-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                                             </svg>
-                                            <div className="flex flex-wrap gap-2">
+                                            <div className="flex flex-wrap gap-1.5">
                                                 {exp.skills.map((skill, i) => (
-                                                    <span key={i} className="text-sm font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">
+                                                    <span key={i} className="text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-700/60 border border-slate-200/60 dark:border-slate-600/60 px-2.5 py-1 rounded-md">
                                                         {skill}
                                                     </span>
                                                 ))}
@@ -199,23 +195,18 @@ export default function Experience() {
                                         </div>
                                     )}
 
-                                    {/* Media Attachment */}
                                     {exp.media && (
-                                        <div className="mt-4 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden w-full max-w-xs hover:shadow-md transition-shadow cursor-pointer">
-                                            <div className="relative h-32 w-full bg-slate-100 dark:bg-slate-900">
-                                                {/* Placeholder for media */}
-                                                <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-xs text-center p-2">
-                                                    Image preview<br />(Add {exp.media} to public folder)
-                                                </div>
+                                        <div className="mt-4 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden w-full max-w-xs hover:shadow-md transition-shadow">
+                                            <div className="relative h-36 w-full bg-slate-100 dark:bg-slate-900">
                                                 <Image
                                                     src={exp.media}
-                                                    alt="Attachment"
+                                                    alt={`Dokumentasi ${exp.title}`}
                                                     fill
                                                     sizes="(max-width: 768px) 100vw, 320px"
                                                     className="object-cover"
                                                 />
                                             </div>
-                                            <div className="p-2 bg-slate-50 dark:bg-slate-800 text-xs text-slate-500 font-medium truncate">
+                                            <div className="p-2.5 bg-slate-50 dark:bg-slate-800/80 text-xs text-slate-600 dark:text-slate-400 font-medium truncate">
                                                 {exp.media.split('/').pop()}
                                             </div>
                                         </div>

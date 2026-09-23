@@ -10,96 +10,80 @@ import { sortProjectsByEndDate } from '@/lib/dateUtils';
 const ProjectCard = ({ project, index, hoveredIndex, setHoveredIndex }) => (
   <motion.div
     key={project.title}
-    className="relative group"
+    className="relative group h-full"
     initial={{ opacity: 1, x: 0 }}
     animate={{ opacity: 1, x: 0 }}
     onHoverStart={() => setHoveredIndex(index)}
     onHoverEnd={() => setHoveredIndex(null)}
-    whileHover={{ scale: 1.02 }}
   >
-    <div className="bg-white/60 md:backdrop-blur-lg rounded-2xl p-6 border border-slate-200 shadow-lg transition-all duration-300 group-hover:shadow-xl h-full flex flex-col">
+    <div className="bg-white/90 dark:bg-slate-900/85 backdrop-blur-md rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm transition-all duration-300 group-hover:shadow-md h-full flex flex-col">
       {/* Project Header */}
-      <div className="flex justify-between items-start mb-4">
-        <h3 className="text-xl font-bold text-slate-900">{project.title}</h3>
-        <div className="flex items-center gap-3">
+      <div className="flex justify-between items-start mb-3 gap-3">
+        <h4 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white leading-snug">{project.title}</h4>
+        <div className="flex items-center gap-2 flex-shrink-0">
           {project.tryMe && project.link && (
-            <div className="transition-transform duration-200 hover:scale-105 active:scale-95">
-              <Link
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-sky-500 to-blue-600 text-white text-xs font-bold rounded-full shadow-md hover:shadow-lg transition-all"
-              >
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-                </span>
-                Try Me
-              </Link>
-            </div>
+            <Link
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors focus-visible:rounded-lg"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+              </span>
+              Demo
+            </Link>
           )}
           {project.link && (
-            <div className="transition-transform duration-200 hover:scale-110 hover:rotate-45 active:scale-95">
-              <Link
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sky-600 hover:text-blue-600 transition-colors"
-              >
-                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </Link>
-            </div>
+            <Link
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Buka tautan proyek ${project.title}`}
+              className="min-w-[40px] min-h-[40px] flex items-center justify-center text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-visible:rounded-lg"
+            >
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </Link>
           )}
         </div>
       </div>
 
       {/* Project Image */}
-      <div className="relative h-44 w-full overflow-hidden rounded-xl mb-4 border border-slate-200">
+      <div className="relative h-44 w-full overflow-hidden rounded-xl mb-4 border border-slate-200/80 dark:border-slate-800 bg-slate-100 dark:bg-slate-800">
         <Image
           src={project.image}
           alt={`Cuplikan ${project.title}`}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
 
       {/* Project Period */}
-      <p className="text-sm text-sky-700 mb-4">
+      <p className="text-xs md:text-sm font-medium text-blue-600 dark:text-sky-400 mb-2">
         {project.period}
       </p>
 
       {/* Project Description */}
-      <p className="text-slate-600 mb-4 text-sm leading-relaxed flex-grow">
+      <p className="text-slate-600 dark:text-slate-300 mb-4 text-sm leading-relaxed flex-grow">
         {project.description}
       </p>
 
       {/* Project Tags */}
-      <div className="flex flex-wrap gap-2 mt-auto">
+      <div className="flex flex-wrap gap-1.5 mt-auto pt-2">
         {project.tags.map((tag) => (
           <span
             key={tag}
-            className="px-3 py-1 bg-sky-200/70 text-sky-800 rounded-full text-xs font-medium transition-transform duration-200 hover:scale-105"
+            className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60 rounded-md text-xs font-medium"
           >
             {tag}
           </span>
         ))}
       </div>
     </div>
-
-    {/* Interactive Hover Effect */}
-    {hoveredIndex === index && (
-      <motion.div
-        className="absolute -inset-4 bg-gradient-to-r from-blue-500/10 to-sky-500/10 rounded-3xl -z-10"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-      />
-    )}
   </motion.div>
 );
 
@@ -269,6 +253,7 @@ export default function Projects() {
     target: timelineRef,
     offset: ["start end", "end start"]
   });
+  const bgOpacity = useTransform(scrollYProgress, [0, 0.5], [0, 0.5]);
 
   // Interactive cursor optimized with useMotionValue
   const mouseX = useMotionValue(0);
@@ -322,29 +307,29 @@ export default function Projects() {
       <motion.div
         className="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-transparent"
         style={{
-          opacity: useTransform(scrollYProgress, [0, 0.5], [0, 0.5]),
+          opacity: bgOpacity,
         }}
       />
 
       <div className="max-w-6xl mx-auto w-full relative z-10" ref={sectionRef}>
         <motion.h2
-          className="text-3xl md:text-5xl font-bold text-slate-900 mb-12 md:mb-16 text-center"
+          className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white mb-12 md:mb-16 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          Portofolio Project
+          Portofolio Proyek
         </motion.h2>
 
         {/* Real Projects Section */}
         <div className="mb-16">
           <motion.h3
-            className="text-2xl font-bold text-slate-800 mb-8 pl-4 border-l-4 border-sky-600"
+            className="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-100 mb-8 pl-4 border-l-4 border-blue-600"
             initial={{ opacity: 0, x: -20 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            Real Projects
+            Proyek Industri & Produksi
           </motion.h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {realProjects.map((project, index) => (
@@ -362,12 +347,12 @@ export default function Projects() {
         {/* Private Projects Section */}
         <div>
           <motion.h3
-            className="text-2xl font-bold text-slate-800 mb-8 pl-4 border-l-4 border-blue-600"
+            className="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-100 mb-8 pl-4 border-l-4 border-sky-600"
             initial={{ opacity: 0, x: -20 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            Private Projects
+            Proyek Eksplorasi & Mandiri
           </motion.h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {privateProjects.map((project, index) => (
