@@ -5,6 +5,7 @@ import Experience from '@/components/Experience';
 import Skills from '@/components/Skills';
 import Projects from '@/components/Projects';
 import Achievements from '@/components/Achievements';
+import CopyrightSection from '@/components/CopyrightSection';
 import Contact from '@/components/Contact';
 import '../app/globals.css';
 import ScrollObserver from '@/components/ScrollObserver';
@@ -32,9 +33,12 @@ export default function Home() {
           <Achievements />
         </OverlapSection>
         <OverlapSection className="bg-white dark:bg-slate-950" zIndex={60}>
+          <CopyrightSection />
+        </OverlapSection>
+        <OverlapSection className="bg-slate-50 dark:bg-slate-900" zIndex={70}>
           <Projects />
         </OverlapSection>
-        <OverlapSection className="bg-gradient-to-tr from-sky-50 to-blue-100 dark:from-slate-950 dark:to-slate-900" zIndex={70}>
+        <OverlapSection className="bg-gradient-to-tr from-sky-50 to-blue-100 dark:from-slate-950 dark:to-slate-900" zIndex={80}>
           <Contact />
         </OverlapSection>
       </div>
