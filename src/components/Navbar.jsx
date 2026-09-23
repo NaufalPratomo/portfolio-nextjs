@@ -18,6 +18,7 @@ export default function Navbar() {
     { href: '#experience', label: 'experience' },
     { href: '#skills', label: 'skills' },
     { href: '#achievements', label: 'lomba' },
+    { href: '#copyright', label: 'hak cipta' },
     { href: '#projects', label: 'projects' },
     { href: '#contact', label: 'contact' },
   ];
@@ -77,6 +78,10 @@ export default function Navbar() {
 
   const handleNavLinkClick = (e, href) => {
     e.preventDefault();
+    if (typeof window !== 'undefined' && window.location.pathname !== '/') {
+      window.location.href = `/${href}`;
+      return;
+    }
     const id = href.substring(1);
     setActiveSection(id); // Immediately update highlight
     scrollToId(id);
