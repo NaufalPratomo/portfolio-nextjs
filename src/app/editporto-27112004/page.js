@@ -17,6 +17,7 @@ export default function AdminDashboard() {
   const [projects, setProjects] = useState([]);
   const [skills, setSkills] = useState({ hardSkills: [], softSkills: [] });
   const [achievements, setAchievements] = useState([]);
+  const [copyrights, setCopyrights] = useState([]);
 
   // Modal / Form state for Experience
   const [expForm, setExpForm] = useState({
@@ -91,6 +92,25 @@ export default function AdminDashboard() {
     cloudinaryPublicId: '',
   });
 
+  // Modal / Form state for Copyright
+  const [copyrightForm, setCopyrightForm] = useState({
+    _id: '',
+    title: '',
+    type: 'Program Komputer',
+    registrationNumber: '',
+    applicationNumber: '',
+    date: '',
+    holder: 'Politeknik Negeri Malang',
+    creators: '',
+    description: '',
+    certificateImage: '',
+    attachmentImage: '',
+    cloudinaryPublicId: '',
+    attachmentCloudinaryPublicId: '',
+    featured: true,
+    order: 1,
+  });
+
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
@@ -141,17 +161,19 @@ export default function AdminDashboard() {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const [resExp, resProj, resSkill, resAch] = await Promise.all([
+      const [resExp, resProj, resSkill, resAch, resCopy] = await Promise.all([
         fetch('/api/experiences').then((r) => r.json()),
         fetch('/api/projects').then((r) => r.json()),
         fetch('/api/skills').then((r) => r.json()),
         fetch('/api/achievements').then((r) => r.json()),
+        fetch('/api/copyrights').then((r) => r.json()),
       ]);
 
       if (resExp.success) setExperiences(resExp.data);
       if (resProj.success) setProjects(resProj.data);
       if (resSkill.success) setSkills(resSkill.data);
       if (resAch.success) setAchievements(resAch.data);
+      if (resCopy?.success) setCopyrights(resCopy.data);
     } catch (err) {
       console.error('Failed to fetch data', err);
     } finally {
@@ -407,6 +429,113 @@ export default function AdminDashboard() {
     }
   };
 
+  // Copyright handlers
+  const handleAttachmentUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.url) {
+        setCopyrightForm((prev) => ({
+          ...prev,
+          attachmentImage: data.url,
+          attachmentCloudinaryPublicId: data.public_id,
+          oldAttachmentCloudinaryPublicId: prev.attachmentCloudinaryPublicId || '',
+        }));
+        showMessage('Lampiran berhasil diunggah ke Cloudinary!');
+      } else {
+        alert('Gagal mengunggah lampiran: ' + (data.error || 'Unknown error'));
+      }
+    } catch (err) {
+      alert('Terjadi kesalahan saat unggah lampiran');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const saveCopyright = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const creatorsArray = typeof copyrightForm.creators === 'string'
+      ? copyrightForm.creators
+          .split(/[\n,]+/)
+          .map((c) => c.trim())
+          .filter(Boolean)
+      : copyrightForm.creators;
+
+    const payload = {
+      ...copyrightForm,
+      creators: creatorsArray,
+      order: Number(copyrightForm.order) || 1,
+    };
+    const { _id, ...cleanPayload } = payload;
+    const method = editingId ? 'PUT' : 'POST';
+
+    try {
+      const res = await fetch('/api/copyrights', {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingId ? payload : cleanPayload),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showMessage(editingId ? 'Hak Cipta diperbarui!' : 'Hak Cipta ditambahkan!');
+        setCopyrightForm({
+          _id: '',
+          title: '',
+          type: 'Program Komputer',
+          registrationNumber: '',
+          applicationNumber: '',
+          date: '',
+          holder: 'Politeknik Negeri Malang',
+          creators: '',
+          description: '',
+          certificateImage: '',
+          attachmentImage: '',
+          cloudinaryPublicId: '',
+          attachmentCloudinaryPublicId: '',
+          featured: true,
+          order: 1,
+        });
+        setEditingId(null);
+        fetchAllData();
+      } else {
+        alert('Gagal menyimpan hak cipta: ' + (data.error || 'Error'));
+      }
+    } catch (err) {
+      alert('Gagal menyimpan hak cipta');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteCopyright = async (id) => {
+    if (!confirm('Hapus data hak cipta ini? File sertifikat di Cloudinary juga akan dihapus.')) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/copyrights?id=${id || ''}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        showMessage('Hak Cipta berhasil dihapus!');
+        fetchAllData();
+      }
+    } catch (err) {
+      alert('Gagal menghapus hak cipta');
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   // Render Login Modal if not authenticated
   if (!isAuthenticated) {
@@ -524,6 +653,15 @@ export default function AdminDashboard() {
               icon: (
                 <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4m6 17v-5h-2v5m-4 0h8m-4-13a4 4 0 100-8 4 4 0 000 8z" />
+                </svg>
+              ),
+            },
+            {
+              id: 'copyrights',
+              label: 'Hak Cipta (HKI)',
+              icon: (
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               ),
             },
@@ -1115,6 +1253,258 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 5: COPYRIGHTS (HKI) */}
+        {activeTab === 'copyrights' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Form */}
+            <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 p-6 rounded-3xl space-y-4">
+              <h2 className="text-xl font-bold text-white">{editingId ? 'Edit Hak Cipta' : 'Tambah Hak Cipta (HKI)'}</h2>
+              <form onSubmit={saveCopyright} className="space-y-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">Judul Ciptaan</label>
+                  <input
+                    type="text"
+                    placeholder="Judul Ciptaan (mis: AIDA V2: Sistem Reklame...)"
+                    value={copyrightForm.title}
+                    onChange={(e) => setCopyrightForm({ ...copyrightForm, title: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-1">Jenis Ciptaan</label>
+                    <input
+                      type="text"
+                      placeholder="mis: Program Komputer"
+                      value={copyrightForm.type}
+                      onChange={(e) => setCopyrightForm({ ...copyrightForm, type: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-1">Urutan (Order)</label>
+                    <input
+                      type="number"
+                      value={copyrightForm.order}
+                      onChange={(e) => setCopyrightForm({ ...copyrightForm, order: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-1">No. Pencatatan</label>
+                    <input
+                      type="text"
+                      placeholder="mis: 001417127"
+                      value={copyrightForm.registrationNumber}
+                      onChange={(e) => setCopyrightForm({ ...copyrightForm, registrationNumber: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-1">No. Permohonan</label>
+                    <input
+                      type="text"
+                      placeholder="mis: EC002026143438"
+                      value={copyrightForm.applicationNumber}
+                      onChange={(e) => setCopyrightForm({ ...copyrightForm, applicationNumber: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-1">Tanggal Pengumuman</label>
+                    <input
+                      type="text"
+                      placeholder="mis: 14 Agustus 2026"
+                      value={copyrightForm.date}
+                      onChange={(e) => setCopyrightForm({ ...copyrightForm, date: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-1">Pemegang Hak Cipta</label>
+                    <input
+                      type="text"
+                      placeholder="mis: Politeknik Negeri Malang"
+                      value={copyrightForm.holder}
+                      onChange={(e) => setCopyrightForm({ ...copyrightForm, holder: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">Daftar Pencipta (Pisahkan dengan koma atau enter)</label>
+                  <textarea
+                    placeholder="Nama 1, Nama 2, Muhammad Naufal Pratomo..."
+                    value={copyrightForm.creators}
+                    onChange={(e) => setCopyrightForm({ ...copyrightForm, creators: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-white outline-none h-20"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">Deskripsi Singkat</label>
+                  <textarea
+                    placeholder="Deskripsi ciptaan..."
+                    value={copyrightForm.description}
+                    onChange={(e) => setCopyrightForm({ ...copyrightForm, description: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-white outline-none h-16"
+                  />
+                </div>
+
+                {/* Upload Surat Pencatatan Ciptaan Utama */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">Sertifikat Utama (Hal. 1)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e, (updater) => {
+                      setCopyrightForm((prev) => {
+                        const updated = typeof updater === 'function' ? updater(prev) : updater;
+                        return {
+                          ...prev,
+                          certificateImage: updated.image || updated.certificateImage,
+                          cloudinaryPublicId: updated.cloudinaryPublicId,
+                          oldCloudinaryPublicId: updated.oldCloudinaryPublicId,
+                        };
+                      });
+                    })}
+                    className="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-sky-400"
+                  />
+                  {copyrightForm.certificateImage && (
+                    <img src={copyrightForm.certificateImage} alt="Preview Sertifikat" className="h-20 w-full object-cover mt-2 rounded-xl border border-slate-800" />
+                  )}
+                </div>
+
+                {/* Upload Lampiran Pencipta */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">Lampiran Pencipta (Hal. 2 - Opsional)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAttachmentUpload}
+                    className="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-sky-400"
+                  />
+                  {copyrightForm.attachmentImage && (
+                    <img src={copyrightForm.attachmentImage} alt="Preview Lampiran" className="h-20 w-full object-cover mt-2 rounded-xl border border-slate-800" />
+                  )}
+                </div>
+
+                {/* Checkbox Featured */}
+                <div className="flex items-center gap-2 pt-1">
+                  <input
+                    type="checkbox"
+                    id="copyFeatured"
+                    checked={copyrightForm.featured !== false}
+                    onChange={(e) => setCopyrightForm({ ...copyrightForm, featured: e.target.checked })}
+                    className="w-4 h-4 rounded text-sky-600 bg-slate-950 border-slate-800 focus:ring-sky-500"
+                  />
+                  <label htmlFor="copyFeatured" className="text-xs text-slate-300 font-medium cursor-pointer">
+                    Tampilkan sebagai sorotan di Beranda
+                  </label>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="submit"
+                    disabled={loading || uploading}
+                    className="flex-1 py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-bold text-sm rounded-xl transition-all shadow-md disabled:opacity-50"
+                  >
+                    {editingId ? 'Update Hak Cipta' : 'Simpan Hak Cipta'}
+                  </button>
+                  {editingId && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingId(null);
+                        setCopyrightForm({
+                          _id: '',
+                          title: '',
+                          type: 'Program Komputer',
+                          registrationNumber: '',
+                          applicationNumber: '',
+                          date: '',
+                          holder: 'Politeknik Negeri Malang',
+                          creators: '',
+                          description: '',
+                          certificateImage: '',
+                          attachmentImage: '',
+                          cloudinaryPublicId: '',
+                          attachmentCloudinaryPublicId: '',
+                          featured: true,
+                          order: 1,
+                        });
+                      }}
+                      className="px-4 py-2.5 bg-slate-800 text-slate-300 text-sm font-semibold rounded-xl"
+                    >
+                      Batal
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
+
+            {/* List */}
+            <div className="lg:col-span-2 space-y-3">
+              <h2 className="text-xl font-bold text-white mb-4">Daftar Hak Cipta & HKI ({copyrights.length})</h2>
+              {copyrights.map((item) => {
+                const creatorsText = Array.isArray(item.creators) ? item.creators.join(', ') : item.creators;
+                return (
+                  <div key={item._id} className="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      {item.certificateImage && (
+                        <img src={item.certificateImage} alt={item.title} className="h-14 w-20 object-cover rounded-lg border border-slate-800 bg-slate-950 shrink-0" />
+                      )}
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800 font-medium">
+                            {item.type}
+                          </span>
+                          {item.registrationNumber && (
+                            <span className="text-[11px] text-slate-400 font-mono">No. {item.registrationNumber}</span>
+                          )}
+                        </div>
+                        <h3 className="font-bold text-white text-sm mt-1">{item.title}</h3>
+                        <p className="text-xs text-slate-400 mt-0.5 truncate max-w-md">{creatorsText}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                      <button
+                        onClick={() => {
+                          setEditingId(item._id);
+                          setCopyrightForm({
+                            ...item,
+                            creators: Array.isArray(item.creators) ? item.creators.join(', ') : item.creators || '',
+                          });
+                        }}
+                        className="px-3 py-1.5 bg-slate-800 text-sky-400 text-xs font-semibold rounded-lg hover:bg-slate-700 transition-colors"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteCopyright(item._id)}
+                        className="px-3 py-1.5 bg-rose-500/10 text-rose-400 text-xs font-semibold rounded-lg hover:bg-rose-500/20 transition-colors"
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
