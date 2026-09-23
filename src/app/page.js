@@ -7,7 +7,6 @@ import Projects from '@/components/Projects';
 import Achievements from '@/components/Achievements';
 import CopyrightSection from '@/components/CopyrightSection';
 import Contact from '@/components/Contact';
-import '../app/globals.css';
 import ScrollObserver from '@/components/ScrollObserver';
 import OverlapSection from '@/components/OverlapSection';
 

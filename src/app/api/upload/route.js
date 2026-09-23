@@ -21,10 +21,14 @@ export async function POST(request) {
     const buffer = Buffer.from(arrayBuffer);
 
     const folderName = process.env.CLOUDINARY_FOLDER || 'portfolio_uploads';
+    const isPdf = file.name?.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf';
 
     const uploadResult = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream(
-        { folder: folderName },
+        { 
+          folder: folderName,
+          resource_type: 'auto',
+        },
         (error, result) => {
           if (error) reject(error);
           else resolve(result);
@@ -32,10 +36,12 @@ export async function POST(request) {
       ).end(buffer);
     });
 
-
     return NextResponse.json({
       url: uploadResult.secure_url,
       public_id: uploadResult.public_id,
+      format: uploadResult.format,
+      pages: uploadResult.pages || (isPdf ? 2 : 1),
+      isPdf: isPdf || uploadResult.format === 'pdf',
     });
   } catch (error) {
     console.error('Upload error:', error);

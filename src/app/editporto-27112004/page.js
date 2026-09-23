@@ -1365,12 +1365,15 @@ export default function AdminDashboard() {
                   />
                 </div>
 
-                {/* Upload Surat Pencatatan Ciptaan Utama */}
+                {/* Upload Surat Pencatatan Ciptaan Utama (PDF / Gambar) */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">Sertifikat Utama (Hal. 1)</label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-semibold text-slate-400">Berkas Sertifikat Ciptaan (PDF / Gambar)</label>
+                    <span className="text-[10px] text-sky-400 font-medium">Bisa upload .pdf langsung</span>
+                  </div>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/*,application/pdf"
                     onChange={(e) => handleImageUpload(e, (updater) => {
                       setCopyrightForm((prev) => {
                         const updated = typeof updater === 'function' ? updater(prev) : updater;
@@ -1385,21 +1388,41 @@ export default function AdminDashboard() {
                     className="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-sky-400"
                   />
                   {copyrightForm.certificateImage && (
-                    <img src={copyrightForm.certificateImage} alt="Preview Sertifikat" className="h-20 w-full object-cover mt-2 rounded-xl border border-slate-800" />
+                    copyrightForm.certificateImage.toLowerCase().endsWith('.pdf') ? (
+                      <div className="flex items-center gap-2 p-3 mt-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-sky-400">
+                        <svg className="w-5 h-5 text-rose-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
+                        </svg>
+                        <span className="truncate flex-1 font-mono">{copyrightForm.certificateImage}</span>
+                        <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 text-[10px] font-bold">PDF Terunggah</span>
+                      </div>
+                    ) : (
+                      <img src={copyrightForm.certificateImage} alt="Preview Sertifikat" className="h-20 w-full object-cover mt-2 rounded-xl border border-slate-800" />
+                    )
                   )}
                 </div>
 
                 {/* Upload Lampiran Pencipta */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">Lampiran Pencipta (Hal. 2 - Opsional)</label>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">Lampiran Pencipta (Opsional jika bukan PDF)</label>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/*,application/pdf"
                     onChange={handleAttachmentUpload}
                     className="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-sky-400"
                   />
                   {copyrightForm.attachmentImage && (
-                    <img src={copyrightForm.attachmentImage} alt="Preview Lampiran" className="h-20 w-full object-cover mt-2 rounded-xl border border-slate-800" />
+                    copyrightForm.attachmentImage.toLowerCase().endsWith('.pdf') ? (
+                      <div className="flex items-center gap-2 p-3 mt-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-sky-400">
+                        <svg className="w-5 h-5 text-rose-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
+                        </svg>
+                        <span className="truncate flex-1 font-mono">{copyrightForm.attachmentImage}</span>
+                        <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 text-[10px] font-bold">PDF</span>
+                      </div>
+                    ) : (
+                      <img src={copyrightForm.attachmentImage} alt="Preview Lampiran" className="h-20 w-full object-cover mt-2 rounded-xl border border-slate-800" />
+                    )
                   )}
                 </div>
 

@@ -31,8 +31,11 @@ const initialCopyrights = [
   }
 ];
 
-const getImageSrc = (src) => {
+const getImageSrc = (src, page = 1) => {
   if (!src) return '/images/copyright/aida-v2-cert.png';
+  if (typeof src === 'string' && src.toLowerCase().endsWith('.pdf') && src.includes('res.cloudinary.com')) {
+    return src.replace(/\/upload\/(?:v\d+\/)?/, (match) => `${match}pg_${page}/`).replace(/\.pdf$/, '.png');
+  }
   if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('/')) {
     return src;
   }
@@ -40,6 +43,10 @@ const getImageSrc = (src) => {
     return `https://res.cloudinary.com/dmy6ugxz0/${src.replace(/^z0\//, '')}`;
   }
   return `https://res.cloudinary.com/${src}`;
+};
+
+const isPdfFile = (url) => {
+  return typeof url === 'string' && url.toLowerCase().includes('.pdf');
 };
 
 export default function CopyrightClient() {
@@ -418,7 +425,19 @@ export default function CopyrightClient() {
 
                 {/* Switcher & Close */}
                 <div className="flex items-center gap-3 shrink-0">
-                  {activeModalItem.attachmentImage && (
+                  {isPdfFile(activeModalItem.certificateImage) ? (
+                    <a
+                      href={activeModalItem.certificateImage}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-sm transition-colors"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                      <span>Buka PDF Asli</span>
+                    </a>
+                  ) : activeModalItem.attachmentImage ? (
                     <div className="inline-flex rounded-lg bg-slate-800 p-0.5 border border-slate-700 text-xs">
                       <button
                         type="button"
@@ -443,7 +462,7 @@ export default function CopyrightClient() {
                         Hal 2: Lampiran
                       </button>
                     </div>
-                  )}
+                  ) : null}
 
                   <button
                     type="button"
@@ -457,22 +476,30 @@ export default function CopyrightClient() {
                 </div>
               </div>
 
-              {/* Image Canvas */}
-              <div className="relative flex-1 w-full bg-slate-950 flex items-center justify-center p-2 sm:p-4 overflow-auto">
-                <div className="relative w-full h-full min-h-[400px]">
-                  <Image
-                    src={getImageSrc(
-                      modalPage === 'attachment' && activeModalItem.attachmentImage
-                        ? activeModalItem.attachmentImage
-                        : activeModalItem.certificateImage
-                    )}
-                    alt={`${activeModalItem.title} - ${modalPage === 'attachment' ? 'Lampiran Pencipta' : 'Sertifikat'}`}
-                    fill
-                    className="object-contain"
-                    quality={100}
-                    unoptimized
+              {/* Canvas / Iframe Body */}
+              <div className="relative flex-1 w-full bg-slate-950 flex items-center justify-center overflow-hidden">
+                {isPdfFile(activeModalItem.certificateImage) ? (
+                  <iframe
+                    src={`${activeModalItem.certificateImage}#toolbar=1&navpanes=1`}
+                    className="w-full h-full border-0 bg-white"
+                    title={activeModalItem.title}
                   />
-                </div>
+                ) : (
+                  <div className="relative w-full h-full min-h-[400px] p-2 sm:p-4">
+                    <Image
+                      src={getImageSrc(
+                        modalPage === 'attachment' && activeModalItem.attachmentImage
+                          ? activeModalItem.attachmentImage
+                          : activeModalItem.certificateImage
+                      )}
+                      alt={`${activeModalItem.title} - ${modalPage === 'attachment' ? 'Lampiran Pencipta' : 'Sertifikat'}`}
+                      fill
+                      className="object-contain"
+                      quality={100}
+                      unoptimized
+                    />
+                  </div>
+                )}
               </div>
             </motion.div>
           </motion.div>

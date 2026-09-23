@@ -12,6 +12,10 @@ const nextConfig = {
       },
     ],
   },
+  onDemandEntries: {
+    maxInactiveAge: 120 * 1000,
+    pagesBufferLength: 10,
+  },
 };
 
 export default nextConfig;
