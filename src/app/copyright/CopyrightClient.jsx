@@ -345,9 +345,9 @@ export default function CopyrightClient() {
                                     </span>
                                     <span className="truncate">{creator}</span>
                                     {isUser && (
-                                      <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded bg-emerald-600 text-white font-semibold shrink-0">
-                                        Anda
-                                      </span>
+                                      <svg className="w-4 h-4 ml-auto text-emerald-600 dark:text-emerald-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                      </svg>
                                     )}
                                   </div>
                                 );
