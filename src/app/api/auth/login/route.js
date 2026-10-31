@@ -4,7 +4,8 @@ import { verifyPassword } from '@/lib/auth';
 export async function POST(request) {
   try {
     const { password } = await request.json();
-    if (verifyPassword(password)) {
+    const isValid = await verifyPassword(password);
+    if (isValid) {
       const response = NextResponse.json({ success: true, message: 'Authenticated' });
       response.cookies.set('admin_session', 'authenticated', {
         httpOnly: true,
