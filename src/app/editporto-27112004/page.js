@@ -597,7 +597,12 @@ export default function AdminDashboard() {
           </div>
 
           <button
-            onClick={() => {
+            onClick={async () => {
+              try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+              } catch (e) {
+                console.error(e);
+              }
               document.cookie = 'admin_session=; Max-Age=0; path=/;';
               setIsAuthenticated(false);
             }}
