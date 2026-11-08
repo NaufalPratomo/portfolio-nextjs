@@ -1,232 +1,194 @@
 "use client";
-import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import { useScrollSnap } from '@/providers/SmoothScrollProvider';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import ScrollLink from './ScrollLink';
 
-export default function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [theme, setTheme] = useState('light');
-  const [visible, setVisible] = useState(true);
-  const [activeSection, setActiveSection] = useState('home');
-  const lastScrollY = useRef(0);
-  const { scrollToId } = useScrollSnap();
+const NAV_LINKS = [
+  { id: 'about', label: 'Tentang' },
+  { id: 'projects', label: 'Proyek' },
+  { id: 'experience', label: 'Pengalaman' },
+  { id: 'skills', label: 'Keahlian' },
+  { id: 'achievements', label: 'Lomba' },
+  { id: 'copyright', label: 'Hak Cipta' },
+  { id: 'contact', label: 'Kontak' },
+];
 
-  const navLinks = [
-    { href: '#home', label: 'home' },
-    { href: '#about', label: 'about' },
-    { href: '#experience', label: 'experience' },
-    { href: '#skills', label: 'skills' },
-    { href: '#achievements', label: 'lomba' },
-    { href: '#copyright', label: 'hak cipta' },
-    { href: '#projects', label: 'projects' },
-    { href: '#contact', label: 'contact' },
-  ];
+function ThemeToggle({ className = '' }) {
+  const [dark, setDark] = useState(false);
 
+  // The desktop and mobile toggles are separate instances, so both follow the class on <html>.
   useEffect(() => {
+    const sync = () => setDark(document.documentElement.classList.contains('dark'));
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
+  const toggle = () => {
+    const next = !dark;
+    document.documentElement.classList.toggle('dark', next);
     try {
-      const saved = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const initial = saved || (prefersDark ? 'dark' : 'light');
-      setTheme(initial);
-      if (initial === 'dark') document.documentElement.classList.add('dark');
-      else document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', next ? 'dark' : 'light');
     } catch (e) {
-      // Ignore storage access errors in private/sandboxed contexts
+      // Private mode: the choice just will not persist.
     }
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      if (currentScrollY > lastScrollY.current && currentScrollY > 120) {
-        setVisible(false);
-      } else {
-        setVisible(true);
-      }
-      lastScrollY.current = currentScrollY;
-
-      const wrappers = Array.from(document.querySelectorAll('.overlap-section'));
-      let cumulative = 0;
-      let activeSectionId = 'home';
-
-      for (let i = 0; i < wrappers.length; i++) {
-        const section = wrappers[i].querySelector('section[id]');
-        if (section && currentScrollY >= cumulative) {
-          activeSectionId = section.id;
-        }
-        cumulative += wrappers[i].offsetHeight;
-      }
-
-      setActiveSection(activeSectionId);
-    };
-
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const handleNavLinkClick = (e, href) => {
-    e.preventDefault();
-    if (typeof window !== 'undefined' && window.location.pathname !== '/') {
-      window.location.href = `/${href}`;
-      return;
-    }
-    const id = href.substring(1);
-    setActiveSection(id);
-    scrollToId(id);
-    setMobileMenuOpen(false);
   };
 
   return (
-    <nav
-      style={{
-        transform: visible ? 'translateY(0)' : 'translateY(-100%)',
-        transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-      }}
-      className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-[100] border-b border-slate-200/60 dark:bg-slate-950/80 dark:border-slate-800/60 transition-colors duration-300 shadow-[0_2px_20px_-10px_rgba(0,0,0,0.05)]"
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={dark ? 'Ganti ke mode terang' : 'Ganti ke mode gelap'}
+      className={`inline-flex h-11 w-11 items-center justify-center rounded-md text-slate-700 hover:bg-slate-200/60 dark:text-slate-200 dark:hover:bg-slate-800 ${className}`}
     >
-      <div className="max-w-6xl mx-auto px-6 py-3.5">
-        <div className="flex justify-between items-center">
-          <Link
-            href="/"
-            className="text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-sky-600 dark:from-sky-400 dark:to-blue-400 focus-visible:rounded-md"
-          >
-            Naufal Pratomo
-          </Link>
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        {dark ? (
+          <>
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </>
+        ) : (
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        )}
+      </svg>
+    </button>
+  );
+}
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-6">
-            <div className="flex space-x-7 relative">
-              {navLinks.map((link) => {
-                const targetId = link.href.substring(1);
-                const isActive = activeSection === targetId;
-                return (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={(e) => handleNavLinkClick(e, link.href)}
-                    className={`relative py-1.5 text-sm font-medium transition-colors capitalize focus-visible:rounded-md ${
-                      isActive 
-                        ? 'text-blue-600 dark:text-blue-400' 
-                        : 'text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400'
-                    }`}
-                  >
-                    {link.label}
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeIndicator"
-                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-500 rounded-full"
-                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                      />
-                    )}
-                  </a>
-                );
-              })}
-            </div>
+export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [active, setActive] = useState('');
+  const lastY = useRef(0);
+  const menuOpenRef = useRef(false);
+  menuOpenRef.current = menuOpen;
 
-            <button
-              onClick={() => {
-                const next = theme === 'dark' ? 'light' : 'dark';
-                setTheme(next);
-                try {
-                  localStorage.setItem('theme', next);
-                } catch (e) { }
-                if (next === 'dark') document.documentElement.classList.add('dark');
-                else document.documentElement.classList.remove('dark');
-              }}
-              aria-label="Toggle theme"
-              title="Toggle theme"
-              className="min-w-[44px] min-h-[44px] flex items-center justify-center p-2 rounded-xl hover:bg-slate-200/60 dark:hover:bg-slate-800/60 transition-colors focus-visible:rounded-xl"
+  // Hide on scroll down to give reading room, show again on scroll up. Never hide while the menu is open.
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      setVisible(menuOpenRef.current || y < 120 || y < lastY.current);
+      lastY.current = y;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // The active link is whichever section crosses a band near the upper third of the viewport.
+  // The hero is observed too, so scrolling back to the top clears the highlight instead of keeping the last one.
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id === 'home' ? '' : entry.target.id);
+        });
+      },
+      { rootMargin: '-30% 0px -65% 0px' }
+    );
+    ['home', ...NAV_LINKS.map((link) => link.id)].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e) => e.key === 'Escape' && setMenuOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
+
+  return (
+    <header
+      className={`fixed inset-x-0 top-0 z-[60] border-b border-slate-200 bg-slate-50/95 transition-transform duration-300 dark:border-slate-800 dark:bg-slate-950/95 ${
+        visible ? 'translate-y-0' : '-translate-y-full'
+      }`}
+    >
+      <nav aria-label="Navigasi utama" className="mx-auto flex max-w-6xl items-center justify-between px-5 sm:px-8">
+        <ScrollLink
+          id="home"
+          onNavigate={() => setMenuOpen(false)}
+          className="inline-flex min-h-[56px] items-center font-display text-xl tracking-tight text-slate-900 dark:text-slate-50"
+        >
+          Naufal Pratomo
+        </ScrollLink>
+
+        <div className="hidden items-center gap-1 lg:flex">
+          {NAV_LINKS.map((link) => (
+            <ScrollLink
+              key={link.id}
+              id={link.id}
+              aria-current={active === link.id ? 'true' : undefined}
+              className={`inline-flex min-h-[44px] items-center border-b-2 px-3 text-sm font-medium ${
+                active === link.id
+                  ? 'border-accent-600 text-slate-900 dark:border-accent-400 dark:text-slate-50'
+                  : 'border-transparent text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-50'
+              }`}
             >
-              {theme === 'dark' ? (
-                <svg className="w-5 h-5 text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="4" />
-                  <path strokeLinecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-                </svg>
-              ) : (
-                <svg className="w-5 h-5 text-slate-700 dark:text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-                </svg>
-              )}
-            </button>
-          </div>
-
-          {/* Mobile Menu Button (min 44x44px touch target) */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={mobileMenuOpen ? "Tutup menu navigasi" : "Buka menu navigasi"}
-            className="md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 transition-colors focus-visible:rounded-xl"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-            </svg>
-          </button>
+              {link.label}
+            </ScrollLink>
+          ))}
+          <span aria-hidden="true" className="mx-3 h-5 w-px bg-slate-300 dark:bg-slate-700" />
+          <ThemeToggle />
         </div>
 
-        {/* Mobile Dropdown Menu */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden mt-3 pb-4 space-y-1 bg-white dark:bg-slate-900 absolute left-0 right-0 px-6 border-b border-slate-200 dark:border-slate-800 shadow-xl rounded-b-2xl"
-            >
-              {navLinks.map((link) => {
-                const targetId = link.href.substring(1);
-                const isActive = activeSection === targetId;
-                return (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={(e) => handleNavLinkClick(e, link.href)}
-                    className={`block min-h-[44px] flex items-center px-4 py-2.5 text-sm font-medium rounded-xl transition-all capitalize focus-visible:rounded-xl ${
-                      isActive 
-                        ? 'text-blue-600 bg-sky-50 dark:text-blue-400 dark:bg-slate-800/70 font-semibold' 
-                        : 'text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-sky-50/50 dark:hover:bg-slate-800/30'
+        <div className="flex items-center gap-1 lg:hidden">
+          <ThemeToggle />
+          <button
+            type="button"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
+            className="inline-flex min-h-[44px] items-center rounded-md px-3 text-sm font-medium text-slate-800 hover:bg-slate-200/60 dark:text-slate-100 dark:hover:bg-slate-800"
+          >
+            {menuOpen ? 'Tutup' : 'Menu'}
+          </button>
+        </div>
+      </nav>
+
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            id="mobile-menu"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18 }}
+            className="border-t border-slate-200 bg-slate-50 px-5 pb-4 pt-2 sm:px-8 lg:hidden dark:border-slate-800 dark:bg-slate-950"
+          >
+            <ul>
+              {NAV_LINKS.map((link) => (
+                <li key={link.id}>
+                  <ScrollLink
+                    id={link.id}
+                    onNavigate={() => setMenuOpen(false)}
+                    aria-current={active === link.id ? 'true' : undefined}
+                    className={`flex min-h-[48px] items-center border-b border-slate-200 text-base dark:border-slate-800 ${
+                      active === link.id
+                        ? 'font-semibold text-accent-700 dark:text-accent-400'
+                        : 'text-slate-800 dark:text-slate-100'
                     }`}
                   >
                     {link.label}
-                  </a>
-                );
-              })}
-
-              <div className="px-4 mt-3 border-t border-slate-100 dark:border-slate-800 pt-3">
-                <div className="flex items-center justify-between min-h-[44px]">
-                  <span className="text-sm text-slate-700 dark:text-slate-300 font-medium">Appearance</span>
-                  <button
-                    onClick={() => {
-                      const next = theme === 'dark' ? 'light' : 'dark';
-                      setTheme(next);
-                      try {
-                        localStorage.setItem('theme', next);
-                      } catch (e) { }
-                      if (next === 'dark') document.documentElement.classList.add('dark');
-                      else document.documentElement.classList.remove('dark');
-                    }}
-                    className="min-w-[44px] min-h-[44px] flex items-center justify-center p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-yellow-400 transition-colors focus-visible:rounded-xl"
-                    aria-label="Toggle theme"
-                  >
-                    {theme === 'dark' ? (
-                      <svg className="w-5 h-5 text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <circle cx="12" cy="12" r="4" />
-                        <path strokeLinecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-                      </svg>
-                    ) : (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                      </svg>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </nav>
+                  </ScrollLink>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
   );
 }

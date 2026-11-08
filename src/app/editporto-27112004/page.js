@@ -71,7 +71,7 @@ export default function AdminDashboard() {
     cloudinaryPublicId: '',
     tags: '',
     link: '',
-    tryMe: false,
+    featured: false,
   });
 
   // Modal / Form state for Skill
@@ -313,7 +313,7 @@ export default function AdminDashboard() {
           cloudinaryPublicId: '',
           tags: '',
           link: '',
-          tryMe: false,
+          featured: false,
         });
         setEditingId(null);
         fetchAllData();
@@ -987,12 +987,15 @@ export default function AdminDashboard() {
                 <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer pt-1">
                   <input
                     type="checkbox"
-                    checked={projForm.tryMe || false}
-                    onChange={(e) => setProjForm({ ...projForm, tryMe: e.target.checked })}
+                    checked={projForm.featured || false}
+                    onChange={(e) => setProjForm({ ...projForm, featured: e.target.checked })}
                     className="rounded bg-slate-950 border-slate-800 text-sky-500 focus:ring-0"
                   />
-                  Tampilkan Badge "Try Me"
+                  Proyek unggulan (tampil besar di bagian atas)
                 </label>
+                <p className="text-xs text-slate-500 -mt-1">
+                  Disarankan 3 proyek. Kalau tidak ada yang dicentang, situs memakai 3 proyek industri terbaru.
+                </p>
 
                 <div className="flex gap-2 pt-2">
                   <button
@@ -1017,7 +1020,7 @@ export default function AdminDashboard() {
                           cloudinaryPublicId: '',
                           tags: '',
                           link: '',
-                          tryMe: false,
+                          featured: false,
                         });
                       }}
                       className="px-4 py-2.5 bg-slate-800 text-slate-300 text-sm font-semibold rounded-xl"
@@ -1038,7 +1041,7 @@ export default function AdminDashboard() {
                     {proj.image && <img src={proj.image} alt={proj.title} className="h-12 w-16 object-cover rounded-lg border border-slate-800 bg-slate-950" />}
                     <div>
                       <h3 className="font-bold text-white text-sm line-clamp-1">{proj.title}</h3>
-                      <p className="text-xs text-sky-400 font-semibold">{proj.category === 'client' ? 'Client Project' : 'Private Project'}</p>
+                      <p className="text-xs text-sky-400 font-semibold">{proj.category === 'client' ? 'Client Project' : 'Private Project'}{proj.featured ? ' · Unggulan' : ''}</p>
                     </div>
                   </div>
 

@@ -1,8 +1,13 @@
-import { Inter } from 'next/font/google';
+import { Fraunces, Figtree, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import { SmoothScrollProvider } from '@/providers/SmoothScrollProvider';
 import { Analytics } from "@vercel/analytics/react";
-const inter = Inter({ subsets: ['latin'] });
+
+// Fraunces gives headings a voice; Figtree stays readable for long Indonesian paragraphs;
+// Plex Mono is only for small metadata (dates, stacks), never for headings.
+const display = Fraunces({ subsets: ['latin'], variable: '--font-display', display: 'swap' });
+const body = Figtree({ subsets: ['latin'], variable: '--font-body', display: 'swap' });
+const mono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-mono', display: 'swap' });
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
@@ -19,7 +24,7 @@ export const metadata = {
     siteName: 'Muhammad Naufal Pratomo',
     images: [
       {
-        url: '/images/profile.jpg', // Menggunakan foto profil sebagai gambar preview
+        url: '/images/profile.jpg',
         width: 800,
         height: 600,
         alt: 'Muhammad Naufal Pratomo - Portfolio',
@@ -38,8 +43,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html lang="id" suppressHydrationWarning className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <head>
+        {/* Runs before first paint so a dark-mode visitor never sees a light flash. */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -58,11 +64,9 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body className={`${inter.className} bg-gradient-to-br from-white to-sky-200 dark:from-slate-950 dark:to-slate-900 text-slate-800 dark:text-slate-100 min-h-screen w-full relative`}>
-        <SmoothScrollProvider snap={false}>
-          <main className="relative">
-            {children}
-          </main>
+      <body className="min-h-screen w-full">
+        <SmoothScrollProvider>
+          <main>{children}</main>
         </SmoothScrollProvider>
         <Analytics />
       </body>

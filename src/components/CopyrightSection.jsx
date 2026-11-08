@@ -104,13 +104,13 @@ export default function CopyrightSection() {
       <section
         id="copyright"
         ref={sectionRef}
-        className="relative min-h-[50vh] flex items-center px-4 py-16 md:py-24 overflow-hidden bg-white dark:bg-slate-950 transition-colors duration-300"
+        className="relative border-t border-slate-200 px-5 py-20 sm:px-8 md:py-28 dark:border-slate-800"
       >
         <div className="max-w-6xl mx-auto w-full relative z-10">
           {/* Header */}
-          <div className="text-center mb-10 md:mb-14">
+          <div className="mb-10 md:mb-14">
             <motion.h2
-              className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white"
+              className="section-title"
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6 }}
@@ -118,7 +118,7 @@ export default function CopyrightSection() {
               Hak Cipta & HKI
             </motion.h2>
             <motion.p
-              className="mt-3 text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed"
+              className="mt-4 text-slate-700 dark:text-slate-300 max-w-2xl text-base md:text-lg leading-relaxed"
               initial={{ opacity: 0, y: 15 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.1 }}

@@ -1,46 +1,26 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
+import Projects from '@/components/Projects';
 import Experience from '@/components/Experience';
 import Skills from '@/components/Skills';
-import Projects from '@/components/Projects';
 import Achievements from '@/components/Achievements';
 import CopyrightSection from '@/components/CopyrightSection';
 import Contact from '@/components/Contact';
-import ScrollObserver from '@/components/ScrollObserver';
-import OverlapSection from '@/components/OverlapSection';
 
+// Projects come right after About: they are the strongest evidence, so they should not sit below five other sections.
 export default function Home() {
   return (
-    <div className="relative w-full">
+    <>
       <Navbar />
-      <div className="w-full relative">
-        <ScrollObserver />
-        <OverlapSection className="bg-gradient-to-br from-white to-sky-100 dark:from-slate-950 dark:to-slate-900" zIndex={10}>
-          <Hero />
-        </OverlapSection>
-        <OverlapSection className="bg-white dark:bg-slate-950" zIndex={20}>
-          <About />
-        </OverlapSection>
-        <OverlapSection className="bg-slate-50 dark:bg-slate-900" zIndex={30}>
-          <Experience />
-        </OverlapSection>
-        <OverlapSection className="bg-white dark:bg-slate-950" zIndex={40}>
-          <Skills />
-        </OverlapSection>
-        <OverlapSection className="bg-slate-50 dark:bg-slate-900" zIndex={50}>
-          <Achievements />
-        </OverlapSection>
-        <OverlapSection className="bg-white dark:bg-slate-950" zIndex={60}>
-          <CopyrightSection />
-        </OverlapSection>
-        <OverlapSection className="bg-slate-50 dark:bg-slate-900" zIndex={70}>
-          <Projects />
-        </OverlapSection>
-        <OverlapSection className="bg-gradient-to-tr from-sky-50 to-blue-100 dark:from-slate-950 dark:to-slate-900" zIndex={80}>
-          <Contact />
-        </OverlapSection>
-      </div>
-    </div>
+      <Hero />
+      <About />
+      <Projects />
+      <Experience />
+      <Skills />
+      <Achievements />
+      <CopyrightSection />
+      <Contact />
+    </>
   );
 }

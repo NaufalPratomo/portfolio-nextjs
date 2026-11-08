@@ -94,17 +94,10 @@ export async function GET() {
     const collection = db.collection('experiences');
     let data = await collection.find({}).sort({ order: 1 }).toArray();
 
+    // Seed only an empty collection, so an experience deleted in the admin does not come back on the next read.
     if (data.length === 0) {
       await collection.insertMany(initialExperiences);
       data = await collection.find({}).sort({ order: 1 }).toArray();
-    } else {
-      const missingItems = initialExperiences.filter(
-        (initItem) => !data.some((dbItem) => dbItem.title === initItem.title && dbItem.company === initItem.company)
-      );
-      if (missingItems.length > 0) {
-        await collection.insertMany(missingItems);
-        data = await collection.find({}).sort({ order: 1 }).toArray();
-      }
     }
 
     return NextResponse.json({ success: true, data: sortExperiencesByDate(data) });

@@ -2,264 +2,101 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
-  html,
-  body {
-    min-height: 100%;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-  }
-
-  /* Keep scrolling behavior but hide scrollbar UI globally */
   html {
-    position: relative;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge legacy */
+    scroll-padding-top: 4.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.slate.400') transparent;
   }
 
   body {
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge legacy */
+    @apply bg-slate-50 font-sans text-slate-800 antialiased dark:bg-slate-950 dark:text-slate-100;
+    margin: 0;
   }
 
-  html::-webkit-scrollbar,
-  body::-webkit-scrollbar,
-  *::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-    display: none; /* Chrome, Safari, Edge (Chromium) */
+  h1,
+  h2 {
+    @apply font-display;
+    text-wrap: balance;
   }
 
-  html.lenis {
-    height: auto;
-  }
-
-  .lenis.lenis-smooth {
-    scroll-behavior: auto;
-  }
-
-  .lenis.lenis-smooth [data-lenis-prevent] {
-    overscroll-behavior: contain;
-  }
-
-  .lenis.lenis-stopped {
-    overflow: hidden;
-  }
-
-  .lenis.lenis-scrolling iframe {
-    pointer-events: none;
-  }
-
-  /* Accessible focus indicators for keyboard navigation (WCAG AA / R-32) */
   :focus-visible {
-    outline: 2px solid #2563eb;
-    outline-offset: 2px;
+    outline: 2px solid theme('colors.accent.600');
+    outline-offset: 3px;
   }
 
   .dark :focus-visible {
-    outline: 2px solid #60a5fa;
-    outline-offset: 2px;
+    outline-color: theme('colors.accent.400');
+  }
+
+  /* Lenis owns smooth scrolling; native smooth scrolling on top of it fights the easing. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html:not(.lenis) {
+      scroll-behavior: smooth;
+    }
   }
 }
 
-/* Parallax and Animation Utilities */
-@keyframes floatingElement {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
-  100% { transform: translateY(0px); }
+@layer components {
+  .section-title {
+    @apply font-display text-3xl leading-[1.1] tracking-tight text-slate-900 sm:text-4xl md:text-5xl dark:text-slate-50;
+  }
+
+  .meta {
+    @apply font-mono text-xs leading-relaxed text-slate-600 dark:text-slate-400;
+  }
 }
 
-@keyframes typewriter {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
-@keyframes blinkCursor {
-  from { border-right-color: rgba(255,255,255,.75); }
-  to { border-right-color: transparent; }
-}
-
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.floating {
-  animation: floatingElement 3s ease-in-out infinite;
-}
-
-.typewriter {
-  overflow: hidden;
-  border-right: 2px solid;
-  white-space: nowrap;
-  animation: 
-    typewriter 2s steps(40, end),
-    blinkCursor .75s step-end infinite;
-}
-
-.animated-gradient {
-  background: linear-gradient(270deg, #1d4ed8, #3b82f6, #60a5fa);
-  background-size: 200% 200%;
-  animation: gradient 6s ease infinite;
-}
-
-.parallax-container {
-  perspective: 1000px;
-  overflow: hidden;
-}
-
-.parallax-element {
-  will-change: transform;
-  transition: transform 0.1s ease-out;
-}
-
-@keyframes fadeIn {
+/* Hero entrance: one staggered rise on load, nothing that loops. */
+@keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 1s ease-out;
-}
-
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 4.5rem;
-}
-
-section {
-    section .reveal {
-      opacity: 0;
-      transform: translateY(18px) scale(0.995);
-      transition: opacity 600ms cubic-bezier(.2,.8,.2,1) var(--delay, 0s),
-                  transform 600ms cubic-bezier(.2,.8,.2,1) var(--delay, 0s),
-                  filter 600ms cubic-bezier(.2,.8,.2,1) var(--delay, 0s);
-      will-change: opacity, transform;
-    }
-
-    section.in-view .reveal {
-      opacity: 1;
-      transform: none;
-    }
-
-    /* Slight variation for images */
-    section .reveal-img {
-      opacity: 0;
-      transform: scale(0.98) translateY(10px);
-      transition: opacity 700ms cubic-bezier(.2,.8,.2,1) var(--delay, 0s), transform 700ms cubic-bezier(.2,.8,.2,1) var(--delay, 0s);
-    }
-    section.in-view .reveal-img {
-      opacity: 1;
-      transform: none;
-    }
-
-  /* scroll-snap-align: start; removed for smoother experience */
-  scroll-margin-top: 4.5rem;
-}
-
-@layer utilities {
-  .scroll-snap-y {
-    /* scroll-snap-type: y mandatory; removed */
-    height: 100vh;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 600ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: var(--d, 0ms);
   }
 }
 
-/* Dark mode base overrides (minimal, supplement Tailwind dark: variants) */
-.dark body {
-  /* darker background gradient for dark mode */
-  background: linear-gradient(135deg, #000000 0%, #0a0a0a 100%);
-  color: #ffffff;
-}
-
-.dark nav {
-  background-color: rgba(0,0,0,0.85) !important;
-  border-color: rgba(255,255,255,0.1) !important;
-  color: #ffffff;
-}
-
-/* Slightly darken the translucent white cards used across the site */
-.dark .bg-white\/60 {
-  background-color: rgba(255,255,255,0.05) !important;
-}
-
-/* Improve text contrast in dark mode for common Tailwind text color utilities */
-.dark .text-slate-900 {
-  color: #ffffff !important;
-}
-.dark .text-slate-700 {
-  color: #e2e8f0 !important; /* paragraphs, smaller text */
-}
-.dark .text-slate-600 {
-  color: #cbd5e1 !important; /* muted text */
-}
-.dark .text-sky-600,
-.dark .text-blue-600 {
-  color: #60a5fa !important; /* links / highlights */
-}
-
-/* Borders and shadows tuned for dark background */
-.dark .border-slate-200 {
-  border-color: rgba(255,255,255,0.15) !important;
-}
-.dark .shadow-lg {
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.8), 0 4px 6px -4px rgba(0,0,0,0.8) !important;
-}
-
-/* Buttons and interactive elements */
-.dark button,
-.dark a {
-  color: inherit;
-}
-
-/* Additional dark mode improvements for better contrast */
-.dark .text-slate-800 {
-  color: #f8fafc !important;
-}
+/* Achievements and Copyright were written against the old palette and have no dark: variant for these two. */
 .dark .text-slate-500 {
-  color: #94a3b8 !important;
+  color: theme('colors.slate.400');
 }
-.dark .text-gray-700 {
-  color: #e2e8f0 !important;
-}
-.dark .text-gray-600 {
-  color: #cbd5e1 !important;
-}
-.dark .text-gray-500 {
-  color: #94a3b8 !important;
+.dark .text-blue-600,
+.dark .text-sky-600 {
+  color: theme('colors.accent.400');
 }
 
-@media (max-height: 820px) {
-  #home {
-    padding-top: 6.5rem;
-    padding-bottom: 3rem;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-
-  #home h1 {
-    font-size: clamp(2.25rem, 7vw, 4.5rem);
-  }
-}
-
-/* Overlapping section classes */
-.overlap-section {
-  position: sticky;
-  min-height: 100vh;
-  width: 100%;
-  overflow: visible;
-  transform: translate3d(0, 0, 0);
-  box-shadow: 0 -10px 30px -15px rgba(0, 0, 0, 0.15);
-}
-
-.dark .overlap-section {
-  box-shadow: 0 -10px 40px -20px rgba(0, 0, 0, 0.6);
 }

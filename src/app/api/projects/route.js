@@ -183,17 +183,11 @@ export async function GET() {
     const collection = db.collection('projects');
     let data = await collection.find({}).sort({ order: 1 }).toArray();
 
+    // Seed only an empty collection. Re-adding "missing" defaults on every read would resurrect
+    // any project the admin deleted on purpose.
     if (data.length === 0) {
       await collection.insertMany(initialProjects);
       data = await collection.find({}).sort({ order: 1 }).toArray();
-    } else {
-      const missingItems = initialProjects.filter(
-        (initItem) => !data.some((dbItem) => dbItem.title === initItem.title)
-      );
-      if (missingItems.length > 0) {
-        await collection.insertMany(missingItems);
-        data = await collection.find({}).sort({ order: 1 }).toArray();
-      }
     }
 
     return NextResponse.json({ success: true, data: sortProjectsByEndDate(data) });

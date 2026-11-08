@@ -77,11 +77,11 @@ export default function Achievements() {
         <>
             <section
                 id="achievements"
-                className="relative min-h-[50vh] flex items-center px-4 py-12 md:py-20 overflow-hidden bg-slate-50 dark:bg-slate-900/50 transition-colors duration-300"
+                className="relative border-t border-slate-200 px-5 py-20 sm:px-8 md:py-28 dark:border-slate-800"
             >
                 <div className="max-w-6xl mx-auto w-full relative z-10">
                     <motion.h2
-                        className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white mb-8 md:mb-12 text-center"
+                        className="section-title mb-10 md:mb-14"
                         initial={{ opacity: 0, y: 20 }}
                         animate={isInView ? { opacity: 1, y: 0 } : {}}
                         transition={{ duration: 0.6 }}
